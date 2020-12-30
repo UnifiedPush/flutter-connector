@@ -1,45 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="flutter_unified_push.dart" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/flutter_unified_push.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.dart" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/example/lib/main.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
-  <component name="ToolWindowManager">
-    <editor active="true" />
-    <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-    </layout>
+  <component name="ChangeListManager">
+    <list default="true" id="015f043b-a7b4-47ce-a221-d72df196f906" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/CustomReceiver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/UnifiedPushPlugin.ktignore" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/UnifiedPushPlugin.ktignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/example/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/example/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_unified_push.iml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_unified_push.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/flutter_unified_push.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/flutter_unified_push.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/unified_push.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/unified_push.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <option name="show-excluded-files" value="false" />
-      </pane>
-    </panes>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[8747d4cd]" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1mOEqcgCbo5avYRe2nA99f5ItAa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="DEBUGGABLE_DEVICE" value="xiaomi-mi_a2-8747d4cd" />
+    <property name="DEBUGGABLE_PROCESS" value="cc.malhotra.karmanyaah.flutter_unified_push_example" />
+    <property name="DEBUGGER_ID" value="Java" />
+    <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="dart.analysis.tool.window.force.activate" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="015f043b-a7b4-47ce-a221-d72df196f906" name="Default Changelist" comment="" />
+      <created>1609356429487</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1609356429487</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog" timestamp="1609359319203">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359319203" />
+    <state width="1838" height="286" key="GridCell.Tab.0.bottom" timestamp="1609359432012">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.0.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432012" />
+    <state width="1838" height="286" key="GridCell.Tab.0.center" timestamp="1609359432012">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.0.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432012" />
+    <state width="1838" height="286" key="GridCell.Tab.0.left" timestamp="1609359432012">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.0.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432012" />
+    <state width="1838" height="286" key="GridCell.Tab.0.right" timestamp="1609359432012">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.0.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432012" />
+    <state width="1838" height="286" key="GridCell.Tab.1.bottom" timestamp="1609359432013">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.1.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432013" />
+    <state width="1838" height="286" key="GridCell.Tab.1.center" timestamp="1609359432013">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.1.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432013" />
+    <state width="1838" height="286" key="GridCell.Tab.1.left" timestamp="1609359432012">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.1.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432012" />
+    <state width="1838" height="286" key="GridCell.Tab.1.right" timestamp="1609359432013">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1838" height="286" key="GridCell.Tab.1.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359432013" />
   </component>
 </project>

@@ -19,7 +19,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -27,7 +26,8 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await FlutterUnifiedPush.platformVersion;
+      // platformVersion = await FlutterUnifiedPush.platformVersion;
+      platformVersion = (await FlutterUnifiedPush.distributors).toString();
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -44,15 +44,94 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+    FlutterUnifiedPush.initiateHandling();
+    return MaterialApp(routes: {
+      HomePage.routeName: (context) => HomePage(),
+      ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
+      RegisterScreen.routeName: (context) => RegisterScreen(),
+    });
+  }
+}
+
+class HomePage extends StatelessWidget {
+  static const routeName = '/';
+  bool _registered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          child: Text(_registered ? 'Unregister' : "Register"),
+          onPressed: () async {
+            Navigator.pushNamed(
+              context,
+              ExtractArgumentsScreen.routeName,
+              arguments: await FlutterUnifiedPush.distributors,
+            );
+          },
         ),
       ),
     );
+  }
+}
+
+class ExtractArgumentsScreen extends StatelessWidget {
+  static const routeName = '/extractArguments';
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> dist = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Pick provider"),
+      ),
+      body: ListView.builder(
+        shrinkWrap: true,
+        itemCount: dist.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(dist[index]),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                RegisterScreen.routeName,
+                arguments: dist[index],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RegisterScreen extends StatelessWidget {
+  static const routeName = '/registerscreen';
+
+  @override
+  Widget build(BuildContext context) {
+    final String dist = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Register"),
+        ),
+        body: Column(children: [
+          Text(dist),
+          Center(
+            child: RaisedButton(
+              child: Text("Register with this provider"),
+              onPressed: () async {
+                var token = await FlutterUnifiedPush.register(dist);
+                print(token);
+              },
+            ),
+          ),
+        ]));
   }
 }

@@ -12,7 +12,6 @@ import io.flutter.plugin.common.MethodChannel.Result
 import org.unifiedpush.android.connector.getDistributors
 import org.unifiedpush.android.connector.registerApp
 import org.unifiedpush.android.connector.saveDistributor
-//import org.unifiedpush.android.connector.saveToken
 import org.unifiedpush.android.connector.unregisterApp
 
 lateinit var channel: MethodChannel
@@ -62,8 +61,6 @@ class FlutterUnifiedPushPlugin : FlutterPlugin, MethodCallHandler {
             }
 //            event = "a"
         } else if (call.method == "unRegister") {
-            val token = call.argument<String>("token")
-            //saveToken(context, token!!)
             unregisterApp(context)
         } else {
             result.notImplemented()

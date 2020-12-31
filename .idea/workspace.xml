@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
   <component name="AndroidLogFilters">
     <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="015f043b-a7b4-47ce-a221-d72df196f906" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/res/drawable-anydpi-v24/notification_icon.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/res/drawable-hdpi/notification_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/res/drawable-mdpi/notification_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/res/drawable-xhdpi/notification_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/android/app/src/main/res/drawable-xxhdpi/notification_icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/CustomReceiver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/CustomReceiver.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/flutter_unified_push.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/flutter_unified_push.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/flutter_unified_push_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/flutter_unified_push_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +46,7 @@
     <property name="DEBUGGABLE_DEVICE" value="xiaomi-mi_a2-8747d4cd" />
     <property name="DEBUGGABLE_PROCESS" value="cc.malhotra.karmanyaah.flutter_unified_push_example" />
     <property name="DEBUGGER_ID" value="Java" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="dart.analysis.tool.window.force.activate" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
@@ -59,54 +74,74 @@
       <option name="project" value="LOCAL" />
       <updated>1609359590467</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="basic registration working">
+      <created>1609374266740</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1609374266740</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stuff kinda works" />
-    <option name="LAST_COMMIT_MESSAGE" value="stuff kinda works" />
+    <MESSAGE value="basic registration working" />
+    <option name="LAST_COMMIT_MESSAGE" value="basic registration working" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog" timestamp="1609359319203">
+    <state x="734" y="412" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1609393437055">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359319203" />
-    <state x="433" y="90" key="CommitChangelistDialog2" timestamp="1609359590304">
+    <state x="734" y="412" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609393437055" />
+    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog" timestamp="1609398562045">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state x="433" y="90" key="CommitChangelistDialog2/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609359590304" />
-    <state width="1838" height="303" key="GridCell.Tab.0.bottom" timestamp="1609374014549">
+    <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609398562045" />
+    <state x="433" y="90" key="CommitChangelistDialog2" timestamp="1609374266571">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.0.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014549" />
-    <state width="1838" height="303" key="GridCell.Tab.0.center" timestamp="1609374014549">
+    <state x="433" y="90" key="CommitChangelistDialog2/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374266571" />
+    <state width="540" height="495" key="DebuggerActiveHint" timestamp="1609399167740">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.0.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014549" />
-    <state width="1838" height="303" key="GridCell.Tab.0.left" timestamp="1609374014548">
+    <state width="540" height="495" key="DebuggerActiveHint/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609399167740" />
+    <state x="754" y="284" width="438" height="514" key="FileChooserDialogImpl" timestamp="1609398911495">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.0.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014548" />
-    <state width="1838" height="303" key="GridCell.Tab.0.right" timestamp="1609374014549">
+    <state x="754" y="284" width="438" height="514" key="FileChooserDialogImpl/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609398911495" />
+    <state width="1200" height="195" key="GridCell.Tab.0.bottom" timestamp="1609403551108">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.0.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014549" />
-    <state width="1838" height="303" key="GridCell.Tab.1.bottom" timestamp="1609374014475">
+    <state width="1200" height="195" key="GridCell.Tab.0.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551108" />
+    <state width="1200" height="195" key="GridCell.Tab.0.center" timestamp="1609403551107">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.1.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014475" />
-    <state width="1838" height="303" key="GridCell.Tab.1.center" timestamp="1609374014475">
+    <state width="1200" height="195" key="GridCell.Tab.0.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551107" />
+    <state width="1200" height="195" key="GridCell.Tab.0.left" timestamp="1609403551107">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.1.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014475" />
-    <state width="1838" height="303" key="GridCell.Tab.1.left" timestamp="1609374014475">
+    <state width="1200" height="195" key="GridCell.Tab.0.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551107" />
+    <state width="1200" height="195" key="GridCell.Tab.0.right" timestamp="1609403551107">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.1.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014475" />
-    <state width="1838" height="303" key="GridCell.Tab.1.right" timestamp="1609374014475">
+    <state width="1200" height="195" key="GridCell.Tab.0.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551107" />
+    <state width="1200" height="195" key="GridCell.Tab.1.bottom" timestamp="1609403551108">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="303" key="GridCell.Tab.1.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609374014475" />
+    <state width="1200" height="195" key="GridCell.Tab.1.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551108" />
+    <state width="1200" height="195" key="GridCell.Tab.1.center" timestamp="1609403551108">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1200" height="195" key="GridCell.Tab.1.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551108" />
+    <state width="1200" height="195" key="GridCell.Tab.1.left" timestamp="1609403551108">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1200" height="195" key="GridCell.Tab.1.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551108" />
+    <state width="1200" height="195" key="GridCell.Tab.1.right" timestamp="1609403551108">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state width="1200" height="195" key="GridCell.Tab.1.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403551108" />
     <state x="461" y="160" key="SettingsEditor" timestamp="1609370249284">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
@@ -115,9 +150,13 @@
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
     <state x="660" y="264" width="599" height="522" key="find.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609371878048" />
-    <state x="641" y="240" width="672" height="678" key="search.everywhere.popup" timestamp="1609371780753">
+    <state x="642" y="247" key="run.anything.popup" timestamp="1609403446811">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state x="641" y="240" width="672" height="678" key="search.everywhere.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609371780753" />
+    <state x="642" y="247" key="run.anything.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403446811" />
+    <state x="641" y="240" width="672" height="678" key="search.everywhere.popup" timestamp="1609395068756">
+      <screen x="36" y="0" width="1884" height="1080" />
+    </state>
+    <state x="641" y="240" width="672" height="678" key="search.everywhere.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609395068756" />
   </component>
 </project>

@@ -11,7 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_local_notifications:
+  http: ^0.12.2
   flutter_unified_push:
     # When depending on this package from a real application you should use:
     #   flutter_unified_push: ^x.y.z

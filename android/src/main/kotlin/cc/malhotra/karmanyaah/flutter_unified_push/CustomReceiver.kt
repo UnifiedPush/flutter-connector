@@ -3,6 +3,7 @@ package cc.malhotra.karmanyaah.flutter_unified_push
 import android.content.Context
 import org.unifiedpush.android.connector.MessagingReceiver
 import org.unifiedpush.android.connector.MessagingReceiverHandler
+import java.util.*
 
 class CustomReceiver : MessagingReceiver(handler)
 val handler = object : MessagingReceiverHandler {
@@ -14,6 +15,10 @@ val handler = object : MessagingReceiverHandler {
 //         val priority = params["priority"]?.toInt()?: 8
 //         val title = params["title"]?: "UP - Example"
         // Notifier(context!!).sendNotification(title,text,priority)
+        val args = HashMap<String, String>()
+        args.put("message", message)
+        // print(endpoint)
+        channel.invokeMethod("onMessage", args)
     }
 
     override fun onNewEndpoint(context: Context?, endpoint: String) {

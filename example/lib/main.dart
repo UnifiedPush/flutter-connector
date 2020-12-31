@@ -3,18 +3,52 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_unified_push/flutter_unified_push.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+const MethodChannel platform =
+    MethodChannel('dexterx.dev/flutter_local_notifications_example');
+
+class ReceivedNotification {
+  ReceivedNotification({
+    @required this.id,
+    @required this.title,
+    @required this.body,
+    @required this.payload,
+  });
+
+  final int id;
+  final String title;
+  final String body;
+  final String payload;
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // final NotificationAppLaunchDetails notificationAppLaunchDetails =
+  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('notification_icon');
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+    //selectNotificationSubject.add(payload);
+  });
+
   runApp(MyApp());
 }
 
 FlutterUnifiedPush flutterUnifiedPush;
-
-class Preferences {
-  static String endpoint = "";
-  static bool registered = false;
-  static String registrationToken = "";
-}
 
 class MyApp extends StatefulWidget {
   @override
@@ -22,30 +56,36 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
   @override
   void initState() {
     super.initState();
-    if (Preferences.endpoint.isNotEmpty) {
-      flutterUnifiedPush =
-          FlutterUnifiedPush(Preferences.endpoint, onEndpointUpdate);
-      Preferences.registered = true;
-    } else {
-      flutterUnifiedPush = FlutterUnifiedPush.first(onEndpointUpdate);
-    }
+    flutterUnifiedPush = FlutterUnifiedPush(onEndpointUpdate, onNotification);
+  }
+
+  Future<void> onNotification(String title, String body, int priority) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        playSound: false, importance: Importance.max, priority: Priority.high);
+    print(priority);
+    var platformChannelSpecifics =
+        new NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: 'No_Sound',
+    );
   }
 
   void onEndpointUpdate() {
     setState(() {
-      Preferences.endpoint = flutterUnifiedPush.endpoint;
-      Preferences.registered = Preferences.endpoint.isNotEmpty;
+      debugPrint(flutterUnifiedPush.endpoint);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print(Preferences.endpoint);
     return MaterialApp(routes: {
       HomePage.routeName: (context) => HomePage(),
       ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
@@ -57,10 +97,50 @@ class _MyAppState extends State<MyApp> {
 class HomePage extends StatelessWidget {
   static const routeName = '/';
 
+  final title = TextEditingController(text: "Notification Title");
+  final message = TextEditingController(text: "Noification Body");
+
+  void notify() async => await http.post(flutterUnifiedPush.endpoint,
+      body: "title=${title.text}&message=${message.text}&priority=6");
+
   @override
   Widget build(BuildContext context) {
-    print(Preferences.registered);
-    print(Preferences.endpoint);
+    List<Widget> row = [
+      ElevatedButton(
+        child: Text(flutterUnifiedPush.registered ? 'Unregister' : "Register"),
+        onPressed: () async {
+          if (flutterUnifiedPush.registered) {
+            flutterUnifiedPush.unRegister();
+          } else {
+            Navigator.pushNamed(
+              context,
+              ExtractArgumentsScreen.routeName,
+              arguments: await flutterUnifiedPush.distributors,
+            );
+          }
+        },
+      ),
+    ];
+
+    if (flutterUnifiedPush.registered) {
+      row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
+      row.add(
+        TextField(
+          controller: title,
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: 'Enter a search term'),
+        ),
+      );
+
+      row.add(TextField(
+        controller: message,
+        decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            hintText: 'Enter a search term'),
+      ));
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
@@ -68,22 +148,12 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             SelectableText("Endpoint: " +
-                (Preferences.registered ? Preferences.endpoint : "empty")),
+                (flutterUnifiedPush.registered
+                    ? flutterUnifiedPush.endpoint
+                    : "empty")),
             Center(
-              child: ElevatedButton(
-                child: Text(Preferences.registered ? 'Unregister' : "Register"),
-                onPressed: () async {
-                  if (Preferences.registered) {
-                    flutterUnifiedPush
-                        .unRegister(Preferences.registrationToken);
-                  } else {
-                    Navigator.pushNamed(
-                      context,
-                      ExtractArgumentsScreen.routeName,
-                      arguments: await flutterUnifiedPush.distributors,
-                    );
-                  }
-                },
+              child: Column(
+                children: row,
               ),
             ),
           ],
@@ -139,8 +209,7 @@ class RegisterScreen extends StatelessWidget {
             child: RaisedButton(
               child: Text("Register with this provider"),
               onPressed: () async {
-                Preferences.registrationToken =
-                    await flutterUnifiedPush.register(dist);
+                await flutterUnifiedPush.register(dist);
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(HomePage.routeName));
               },

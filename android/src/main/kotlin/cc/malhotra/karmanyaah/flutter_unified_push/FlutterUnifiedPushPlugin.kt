@@ -12,8 +12,9 @@ import io.flutter.plugin.common.MethodChannel.Result
 import org.unifiedpush.android.connector.getDistributors
 import org.unifiedpush.android.connector.registerApp
 import org.unifiedpush.android.connector.saveDistributor
+//import org.unifiedpush.android.connector.saveToken
+import org.unifiedpush.android.connector.unregisterApp
 
-const val UPDATE = "cc.malhotra.karmanyaah.flutter_unified_push.android.action.UPDATE"
 lateinit var channel: MethodChannel
 var event: String? = "b"
 
@@ -25,11 +26,11 @@ class FlutterUnifiedPushPlugin : FlutterPlugin, MethodCallHandler {
     // / when the Flutter Engine is detached from the Activity
     private lateinit var context: Context
 
-    private lateinit var endpoint: String
+    private var endpoint: String = ""
     private lateinit var registered: String
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_unified_push")
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_unified_push.method.channel")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
@@ -52,12 +53,18 @@ class FlutterUnifiedPushPlugin : FlutterPlugin, MethodCallHandler {
             saveDistributor(context, name!!)
             // print(getToken(context))
             val token = registerApp(context)
-            if (!event.isNullOrEmpty()) { result.success(event!!) } else if (token.isNullOrEmpty()) {
+            if (!event.isNullOrEmpty()) {
+                result.success(event!!)
+            } else if (token.isNullOrEmpty()) {
                 result.error("UNAVAILABLE", null, null)
             } else {
                 result.success(token!!)
             }
-            event = "a"
+//            event = "a"
+        } else if (call.method == "unRegister") {
+            val token = call.argument<String>("token")
+            //saveToken(context, token!!)
+            unregisterApp(context)
         } else {
             result.notImplemented()
         }
@@ -66,14 +73,5 @@ class FlutterUnifiedPushPlugin : FlutterPlugin, MethodCallHandler {
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
-    private val checkReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent!!.action) {
-                UPDATE -> {
-                    endpoint = intent.getStringExtra("endpoint") ?: ""
-                    registered = intent.getStringExtra("registered") ?: "false"
-                }
-            }
-        }
-    }
+
 }

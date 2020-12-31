@@ -8,6 +8,14 @@ void main() {
   runApp(MyApp());
 }
 
+FlutterUnifiedPush flutterUnifiedPush;
+
+class Preferences {
+  static String endpoint = "";
+  static bool registered = false;
+  static String registrationToken = "";
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -19,32 +27,25 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    if (Preferences.endpoint.isNotEmpty) {
+      flutterUnifiedPush =
+          FlutterUnifiedPush(Preferences.endpoint, onEndpointUpdate);
+      Preferences.registered = true;
+    } else {
+      flutterUnifiedPush = FlutterUnifiedPush.first(onEndpointUpdate);
+    }
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      // platformVersion = await FlutterUnifiedPush.platformVersion;
-      platformVersion = (await FlutterUnifiedPush.distributors).toString();
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
+  void onEndpointUpdate() {
     setState(() {
-      _platformVersion = platformVersion;
+      Preferences.endpoint = flutterUnifiedPush.endpoint;
+      Preferences.registered = Preferences.endpoint.isNotEmpty;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    FlutterUnifiedPush.initiateHandling();
+    print(Preferences.endpoint);
     return MaterialApp(routes: {
       HomePage.routeName: (context) => HomePage(),
       ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
@@ -55,27 +56,38 @@ class _MyAppState extends State<MyApp> {
 
 class HomePage extends StatelessWidget {
   static const routeName = '/';
-  bool _registered = false;
 
   @override
   Widget build(BuildContext context) {
+    print(Preferences.registered);
+    print(Preferences.endpoint);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Plugin example app'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text(_registered ? 'Unregister' : "Register"),
-          onPressed: () async {
-            Navigator.pushNamed(
-              context,
-              ExtractArgumentsScreen.routeName,
-              arguments: await FlutterUnifiedPush.distributors,
-            );
-          },
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
         ),
-      ),
-    );
+        body: Column(
+          children: [
+            SelectableText("Endpoint: " +
+                (Preferences.registered ? Preferences.endpoint : "empty")),
+            Center(
+              child: ElevatedButton(
+                child: Text(Preferences.registered ? 'Unregister' : "Register"),
+                onPressed: () async {
+                  if (Preferences.registered) {
+                    flutterUnifiedPush
+                        .unRegister(Preferences.registrationToken);
+                  } else {
+                    Navigator.pushNamed(
+                      context,
+                      ExtractArgumentsScreen.routeName,
+                      arguments: await flutterUnifiedPush.distributors,
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -127,8 +139,10 @@ class RegisterScreen extends StatelessWidget {
             child: RaisedButton(
               child: Text("Register with this provider"),
               onPressed: () async {
-                var token = await FlutterUnifiedPush.register(dist);
-                print(token);
+                Preferences.registrationToken =
+                    await flutterUnifiedPush.register(dist);
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName(HomePage.routeName));
               },
             ),
           ),

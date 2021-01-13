@@ -1,10 +1,10 @@
 package cc.malhotra.karmanyaah.flutter_unified_push
-
+//
 import android.content.Context
 import org.unifiedpush.android.connector.MessagingReceiver
 import org.unifiedpush.android.connector.MessagingReceiverHandler
-import java.util.*
-
+//import java.util.*
+//
 class CustomReceiver : MessagingReceiver(handler)
 val handler = object : MessagingReceiverHandler {
     override fun onMessage(context: Context?, message: String) {
@@ -15,23 +15,23 @@ val handler = object : MessagingReceiverHandler {
 //         val priority = params["priority"]?.toInt()?: 8
 //         val title = params["title"]?: "UP - Example"
         // Notifier(context!!).sendNotification(title,text,priority)
-        val args = HashMap<String, String>()
-        args.put("message", message)
-        // print(endpoint)
-        channel.invokeMethod("onMessage", args)
+//        FlutterMain.startInitialization(context)
+//        FlutterMain.ensureInitializationComplete(context, null)
+//        MyService.enqueNotification(context, intent)
+        print("message" + message);
     }
 
     override fun onNewEndpoint(context: Context?, endpoint: String) {
 //        event = "c"
-        val args = HashMap<String, String>()
-        args.put("name", context!!.packageName)
-        args.put("endpoint", endpoint)
-        // print(endpoint)
-        channel.invokeMethod("onNewEndpoint", args)
+//        val args = HashMap<String, String>()
+//        args.put("name", context!!.packageName)
+//        args.put("endpoint", endpoint)
+//        // print(endpoint)
+//        channel.invokeMethod("onNewEndpoint", args)
     }
 
     override fun onUnregistered(context: Context?) {
 //        event = "c"
-    channel.invokeMethod("onUnregister", null)
+//    channel.invokeMethod("onUnregister", null)
     }
 }

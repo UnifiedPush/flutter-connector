@@ -59,7 +59,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    flutterUnifiedPush = FlutterUnifiedPush(onEndpointUpdate, onNotification);
+    flutterUnifiedPush = FlutterUnifiedPush();
+FlutterUnifiedPush.onNotificationMethod = onNotification;
   }
 
   Future<void> onNotification(String title, String body, int priority) async {
@@ -80,7 +81,7 @@ class _MyAppState extends State<MyApp> {
 
   void onEndpointUpdate() {
     setState(() {
-      debugPrint(flutterUnifiedPush.endpoint);
+      debugPrint(FlutterUnifiedPush.endpoint);
     });
   }
 
@@ -100,29 +101,29 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Noification Body");
 
-  void notify() async => await http.post(flutterUnifiedPush.endpoint,
+  void notify() async => await http.post(FlutterUnifiedPush.endpoint,
       body: "title=${title.text}&message=${message.text}&priority=6");
 
   @override
   Widget build(BuildContext context) {
     List<Widget> row = [
       ElevatedButton(
-        child: Text(flutterUnifiedPush.registered ? 'Unregister' : "Register"),
+        child: Text(FlutterUnifiedPush.registered ? 'Unregister' : "Register"),
         onPressed: () async {
-          if (flutterUnifiedPush.registered) {
-            flutterUnifiedPush.unRegister();
+          if (FlutterUnifiedPush.registered) {
+            FlutterUnifiedPush.unRegister();
           } else {
             Navigator.pushNamed(
               context,
               ExtractArgumentsScreen.routeName,
-              arguments: await flutterUnifiedPush.distributors,
+              arguments: await FlutterUnifiedPush.distributors,
             );
           }
         },
       ),
     ];
 
-    if (flutterUnifiedPush.registered) {
+    if (FlutterUnifiedPush.registered) {
       row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
       row.add(
         TextField(
@@ -148,8 +149,8 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             SelectableText("Endpoint: " +
-                (flutterUnifiedPush.registered
-                    ? flutterUnifiedPush.endpoint
+                (FlutterUnifiedPush.registered
+                    ? FlutterUnifiedPush.endpoint
                     : "empty")),
             Center(
               child: Column(
@@ -209,7 +210,7 @@ class RegisterScreen extends StatelessWidget {
             child: RaisedButton(
               child: Text("Register with this provider"),
               onPressed: () async {
-                await flutterUnifiedPush.register(dist);
+                await FlutterUnifiedPush.register(dist);
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(HomePage.routeName));
               },

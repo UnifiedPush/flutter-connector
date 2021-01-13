@@ -1,25 +1,33 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter/services.dart';
+
+import 'CallbackDispatcher.dart';
+
 typedef OnUpdate = void Function();
 typedef OnNotification = void Function(
     String title, String body, int importance);
 
-class FlutterUnifiedPush {
-  String _endpoint;
-  OnUpdate onEndpointMethod;
-  OnNotification onNotificationMethod;
-  bool _registered = false;
-  SharedPreferences prefs;
 
-  bool get registered {
+class FlutterUnifiedPush {
+  static MethodChannel _channel = MethodChannel('flutter_unified_push.method.channel');
+  static OnNotification onNotificationMethod;
+
+  static String _endpoint;
+  static OnUpdate onEndpointMethod;
+  static bool _registered = false;
+  static SharedPreferences prefs;
+
+  static bool get registered {
     return _registered;
   }
 
-  String get endpoint {
+   static String get endpoint {
     try {
       _endpoint = prefs.getString('endpoint') ?? "";
     } on TypeError {
@@ -28,26 +36,27 @@ class FlutterUnifiedPush {
     return _endpoint;
   }
 
-  set endpoint(String ndpoint) {
+  static set endpoint(String ndpoint) {
     prefs.setString('endpoint', ndpoint ?? "");
     _endpoint = ndpoint;
     _registered = _endpoint.isNotEmpty;
     onEndpointMethod();
   }
 
-  FlutterUnifiedPush(this.onEndpointMethod, this.onNotificationMethod) {
-    _channel.setMethodCallHandler(onMethodCall);
-    main();
-  }
 
-  void main() async {
+  static Future<bool> initialize(OnUpdate onEndpoint) async {
+    onEndpointMethod = onEndpoint;
+    _channel.setMethodCallHandler(onMethodCall);
     prefs = await SharedPreferences.getInstance();
     onEndpointMethod();
+    final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
+    await _channel.invokeMethod('FlutterUnifiedPushPlugin.initializeService',
+        <dynamic>[callback.toRawHandle()]);
   }
 
-  MethodChannel _channel = MethodChannel('flutter_unified_push.method.channel');
 
-  Future<void> onMethodCall(MethodCall call) async {
+
+  static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
     switch (call.method) {
       case "onMessage":
@@ -70,10 +79,10 @@ class FlutterUnifiedPush {
     }
   }
 
-  Future<List<String>> get distributors async {
+  static Future<List<String>> get distributors async {
     try {
       final List<String> result =
-      (await _channel.invokeMethod('getDistributors')).cast<String>();
+      (await _channel.invokeMethod('FlutterUnifiedPushPlugin.getDistributors')).cast<String>();
       return result;
     } on PlatformException catch (e) {
       //ans = "Failed to get dist: '${e.message}'.";
@@ -82,18 +91,18 @@ class FlutterUnifiedPush {
     }
   }
 
-  Future<String> register(String providerName) async {
+  static Future<String> register(String providerName) async {
     try {
-      return await _channel.invokeMethod('register', {"name": providerName});
+      return await _channel.invokeMethod('FlutterUnifiedPushPlugin.register', [ providerName]);
     } on PlatformException catch (e) {
       //ans = "Failed to get token: '${e.message}'.";
       return null;
     }
   }
 
-  Future<void> unRegister() async {
+  static Future<void> unRegister() async {
     try {
-      return await _channel.invokeMethod('unRegister');
+      return await _channel.invokeMethod('FlutterUnifiedPushPlugin.unRegister');
     } on PlatformException catch (e) {
       //ans = "Failed to get token: '${e.message}'.";
     }

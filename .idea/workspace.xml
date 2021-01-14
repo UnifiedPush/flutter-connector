@@ -11,14 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="015f043b-a7b4-47ce-a221-d72df196f906" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyPlugin.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/android/app/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/CallbackDispatcher.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/CustomReceiver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/CustomReceiver.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/FlutterUnifiedPushPlugin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/example/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyPlugin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/cc/malhotra/karmanyaah/flutter_unified_push/MyService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/flutter_unified_push.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/flutter_unified_push.dart" afterDir="false" />
     </list>
@@ -90,14 +86,22 @@
       <option name="project" value="LOCAL" />
       <updated>1609403599655</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="registration works with new architecture">
+      <created>1610551998802</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1610551998802</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="stuff kinda works" />
     <MESSAGE value="basic registration working" />
     <MESSAGE value="basic stuff working" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic stuff working" />
+    <MESSAGE value="registration works with new architecture" />
+    <option name="LAST_COMMIT_MESSAGE" value="registration works with new architecture" />
   </component>
   <component name="WindowStateProjectService">
     <state x="734" y="412" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1609393437055">
@@ -108,10 +112,10 @@
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
     <state x="753" y="288" width="449" height="506" key="AndroidProcessChooserDialog/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610498888319" />
-    <state x="433" y="90" width="1090" height="898" key="CommitChangelistDialog2" timestamp="1609403599502">
+    <state x="433" y="90" width="1090" height="898" key="CommitChangelistDialog2" timestamp="1610551998574">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state x="433" y="90" width="1090" height="898" key="CommitChangelistDialog2/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609403599502" />
+    <state x="433" y="90" width="1090" height="898" key="CommitChangelistDialog2/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610551998574" />
     <state width="540" height="495" key="DebuggerActiveHint" timestamp="1609399167740">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
@@ -120,22 +124,22 @@
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
     <state x="754" y="284" width="438" height="514" key="FileChooserDialogImpl/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609398911495" />
-    <state width="1838" height="291" key="GridCell.Tab.0.bottom" timestamp="1610499122770">
+    <state width="1838" height="244" key="GridCell.Tab.0.bottom" timestamp="1610576690141">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="291" key="GridCell.Tab.0.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610499122770" />
-    <state width="1838" height="291" key="GridCell.Tab.0.center" timestamp="1610499122770">
+    <state width="1838" height="244" key="GridCell.Tab.0.bottom/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610576690141" />
+    <state width="1838" height="244" key="GridCell.Tab.0.center" timestamp="1610576690141">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="291" key="GridCell.Tab.0.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610499122770" />
-    <state width="1838" height="291" key="GridCell.Tab.0.left" timestamp="1610499122769">
+    <state width="1838" height="244" key="GridCell.Tab.0.center/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610576690141" />
+    <state width="1838" height="244" key="GridCell.Tab.0.left" timestamp="1610576690140">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="291" key="GridCell.Tab.0.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610499122769" />
-    <state width="1838" height="291" key="GridCell.Tab.0.right" timestamp="1610499122770">
+    <state width="1838" height="244" key="GridCell.Tab.0.left/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610576690140" />
+    <state width="1838" height="244" key="GridCell.Tab.0.right" timestamp="1610576690141">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state width="1838" height="291" key="GridCell.Tab.0.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610499122770" />
+    <state width="1838" height="244" key="GridCell.Tab.0.right/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610576690141" />
     <state width="1200" height="195" key="GridCell.Tab.1.bottom" timestamp="1609403603055">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
@@ -160,10 +164,10 @@
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
     <state width="498" height="468" key="SwitcherDM/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610320890359" />
-    <state x="660" y="264" width="599" height="522" key="find.popup" timestamp="1610321167188">
+    <state x="660" y="264" width="599" height="522" key="find.popup" timestamp="1610576617786">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
-    <state x="660" y="264" width="599" height="522" key="find.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610321167188" />
+    <state x="660" y="264" width="599" height="522" key="find.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1610576617786" />
     <state x="642" y="247" key="run.anything.popup" timestamp="1609403446811">
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
@@ -172,5 +176,16 @@
       <screen x="36" y="0" width="1884" height="1080" />
     </state>
     <state x="641" y="240" width="672" height="678" key="search.everywhere.popup/36.0.1884.1080/1920.710.1920.1080@36.0.1884.1080" timestamp="1609395068756" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/flutter_unified_push.dart</url>
+          <line>60</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

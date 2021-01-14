@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,11 +27,11 @@ class FlutterUnifiedPush {
   }
 
    static String get endpoint {
-    try {
-      _endpoint = prefs.getString('endpoint') ?? "";
-    } on TypeError {
-      _endpoint = "";
-    }
+ //   try {
+ //     _endpoint = prefs?.getString('endpoint') ?? "";
+ //   } on TypeError {
+ //     _endpoint = "";
+ //   }
     return _endpoint;
   }
 
@@ -48,16 +47,21 @@ class FlutterUnifiedPush {
     onEndpointMethod = onEndpoint;
     _channel.setMethodCallHandler(onMethodCall);
     prefs = await SharedPreferences.getInstance();
-    onEndpointMethod();
+endpoint = prefs.getString('endpoint') ?? "";
+
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
     await _channel.invokeMethod('FlutterUnifiedPushPlugin.initializeService',
         <dynamic>[callback.toRawHandle()]);
+    onEndpointMethod();
   }
 
 
 
   static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
+    debugPrint(call.arguments.toString());
+    print("aa");
+
     switch (call.method) {
       case "onMessage":
         debugPrint("onMessage");
@@ -68,7 +72,6 @@ class FlutterUnifiedPush {
         print("done awaiting");
         break;
       case "onNewEndpoint":
-        debugPrint(call.arguments.toString());
         endpoint = call.arguments["endpoint"];
         onEndpointMethod();
         break;

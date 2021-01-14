@@ -34,6 +34,7 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
         @JvmStatic
         val CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler"
 
+        var channel: MethodChannel? = null
 //        @JvmStatic
 //        fun reRegisterAfterReboot(context: Context) {
 //
@@ -96,8 +97,9 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         mContext = binding.getApplicationContext()
-        val channel = MethodChannel(binding.getBinaryMessenger(), "flutter_unified_push.method.channel")
-        channel.setMethodCallHandler(this)
+        channel = MethodChannel(binding.getBinaryMessenger(), "flutter_unified_push.method.channel")
+        channel?.setMethodCallHandler(this)
+
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

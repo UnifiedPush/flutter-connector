@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_unified_push/flutter_unified_push.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -56,11 +56,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+var endpoint = "";
+var registered = false;
   @override
   void initState() {
-    super.initState();
     flutterUnifiedPush = FlutterUnifiedPush();
+FlutterUnifiedPush.initialize(onEndpointUpdate);
 FlutterUnifiedPush.onNotificationMethod = onNotification;
+    super.initState();
   }
 
   Future<void> onNotification(String title, String body, int priority) async {
@@ -80,9 +83,7 @@ FlutterUnifiedPush.onNotificationMethod = onNotification;
   }
 
   void onEndpointUpdate() {
-    setState(() {
-      debugPrint(FlutterUnifiedPush.endpoint);
-    });
+    setState(() {});
   }
 
   @override
@@ -96,7 +97,7 @@ FlutterUnifiedPush.onNotificationMethod = onNotification;
 }
 
 class HomePage extends StatelessWidget {
-  static const routeName = '/';
+static const routeName = '/';
 
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Noification Body");
@@ -210,7 +211,7 @@ class RegisterScreen extends StatelessWidget {
             child: RaisedButton(
               child: Text("Register with this provider"),
               onPressed: () async {
-                await FlutterUnifiedPush.register(dist);
+                 await FlutterUnifiedPush.register(dist);
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(HomePage.routeName));
               },

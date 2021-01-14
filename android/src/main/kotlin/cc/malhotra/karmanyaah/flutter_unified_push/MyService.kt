@@ -3,27 +3,20 @@ package cc.malhotra.karmanyaah.flutter_unified_push
 
 import android.content.Context
 import android.content.Intent
-import android.os.IBinder
-import android.os.PowerManager
 import android.os.Handler
 import android.util.Log
 import androidx.core.app.JobIntentService
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.dart.DartExecutor.DartCallback
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
-import io.flutter.view.FlutterNativeView
-import io.flutter.view.FlutterRunArguments
-import java.util.ArrayDeque
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.UUID
-
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.embedding.engine.dart.DartExecutor.DartCallback
 
 
 class FlutterUnifiedPushService : MethodCallHandler, JobIntentService() {
@@ -77,15 +70,15 @@ Log.d(TAG, callbackHandle.toString())
                 sBackgroundFlutterEngine = FlutterEngine(context)
 
                 val args = DartCallback(
-                        context.getAssets(),
+                        context.assets,
                         FlutterMain.findAppBundlePath(context)!!,
                         callbackInfo
                 )
-                sBackgroundFlutterEngine!!.getDartExecutor().executeDartCallback(args)
+                sBackgroundFlutterEngine!!.dartExecutor.executeDartCallback(args)
 //                IsolateHolderService.setBackgroundFlutterEngine(sBackgroundFlutterEngine)
             }
         }
-        mBackgroundChannel = MethodChannel(sBackgroundFlutterEngine!!.getDartExecutor().getBinaryMessenger(),
+        mBackgroundChannel = MethodChannel(sBackgroundFlutterEngine!!.dartExecutor.binaryMessenger,
                 "flutter_unified_push.method.background_channel")
         mBackgroundChannel.setMethodCallHandler(this)
     }

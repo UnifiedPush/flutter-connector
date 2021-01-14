@@ -1,23 +1,16 @@
 package cc.malhotra.karmanyaah.flutter_unified_push
 
-import android.Manifest
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.PluginRegistry.Registrar
-import org.json.JSONArray
-import org.unifiedpush.android.connector.*
+import org.unifiedpush.android.connector.Registration
 
 
 class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler {
@@ -25,6 +18,7 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
     private var mActivity : Activity? = null
 
     companion object {
+
         @JvmStatic
         private val TAG = "FlutterUnifiedPushPlugin"
         @JvmStatic
@@ -35,6 +29,8 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
         val CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler"
 
         var channel: MethodChannel? = null
+        private var up = Registration()
+
 //        @JvmStatic
 //        fun reRegisterAfterReboot(context: Context) {
 //
@@ -47,14 +43,11 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
 //            val callbackHandle = args!![0] as Long
             val name = args!![0] as String
 
-            saveDistributor(context, name!!)
+            up.saveDistributor(context, name)
             // print(getToken(context))
-            val token = registerApp(context)
-             if (token.isNullOrEmpty()) {
-                result?.error("UNAVAILABLE", null, null)
-            } else {
-                result?.success(token!!)
-            }
+             up.registerApp(context)
+             //   result?.error("UNAVAILABLE", null, null)
+                result?.success(null)
 
 
         }
@@ -77,16 +70,16 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
                                    args: ArrayList<*>?,
                                    result: Result) {
 
-       unregisterApp(context)
+       up.unregisterApp(context)
             //assume it worked
-            result.success(true);
+            result.success(true)
         }
 
         @JvmStatic
         private fun getDistributorsList(context: Context, result: Result) {
-            val dist = getDistributors(context)
+            val dist = up.getDistributors(context)
 
-            if (dist.size != 0) {
+            if (dist.isNotEmpty()) {
                 result.success(dist)
             } else {
                 result.error("UNAVAILABLE", null, null)
@@ -98,8 +91,8 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        mContext = binding.getApplicationContext()
-        channel = MethodChannel(binding.getBinaryMessenger(), "flutter_unified_push.method.channel")
+        mContext = binding.applicationContext
+        channel = MethodChannel(binding.binaryMessenger, "flutter_unified_push.method.channel")
         channel?.setMethodCallHandler(this)
 
     }
@@ -109,7 +102,7 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        mActivity = binding.getActivity()
+        mActivity = binding.activity
     }
 
     override fun onDetachedFromActivity() {
@@ -121,7 +114,7 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        mActivity = binding.getActivity()
+        mActivity = binding.activity
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {

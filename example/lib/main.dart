@@ -1,81 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:io';
-import 'package:flutter/services.dart';
 import 'package:flutter_unified_push/flutter_unified_push.dart';
-import 'package:flutter_unified_push/Exceptions.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-import 'package:uuid/uuid.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-var uuid = Uuid();
-
-Future<bool> onNotification(String title, String body, int priority) async {
-  debugPrint("onNotification");
-  print(title);
-  if (!notificationInitialized) initNotifications();
-
-  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      'your channel id', 'your channel name', 'your channel description',
-      playSound: false, importance: Importance.max, priority: Priority.high);
-  print(priority);
-  var platformChannelSpecifics =
-      new NotificationDetails(android: androidPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.show(
-    uuid.v1().hashCode,
-    title,
-    body,
-    platformChannelSpecifics,
-    payload: 'No_Sound',
-  );
-  return true;
-}
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-var notificationInitialized = false;
-
-void initNotifications() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // final NotificationAppLaunchDetails notificationAppLaunchDetails =
-  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('notification_icon');
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-  notificationInitialized = await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings, onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: $payload');
-    }
-    //selectNotificationSubject.add(payload);
-  });
-}
-
-const MethodChannel platform =
-    MethodChannel('dexterx.dev/flutter_local_notifications_example');
-
-class ReceivedNotification {
-  ReceivedNotification({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.payload,
-  });
-
-  final int id;
-  final String title;
-  final String body;
-  final String payload;
-}
-
 Future<void> main() async {
   runApp(MyApp());
+  EasyLoading.instance.userInteractions = false;
 }
 
 FlutterUnifiedPush flutterUnifiedPush;
@@ -92,7 +24,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     flutterUnifiedPush = FlutterUnifiedPush();
-    FlutterUnifiedPush.initialize(onEndpointUpdate, onNotification);
+    FlutterUnifiedPush.initialize(
+        onEndpointUpdate, UPNotificationUtils.basicOnNotification);
     super.initState();
   }
 
@@ -119,7 +52,7 @@ class HomePage extends StatelessWidget {
   static const routeName = '/';
 
   final title = TextEditingController(text: "Notification Title");
-  final message = TextEditingController(text: "Noification Body");
+  final message = TextEditingController(text: "Notification Body");
 
   void notify() async => await http.post(FlutterUnifiedPush.endpoint,
       body: "title=${title.text}&message=${message.text}&priority=6");
@@ -232,12 +165,12 @@ class RegisterScreen extends StatelessWidget {
               onPressed: () async {
                 EasyLoading.show(status: 'loading...');
                 try {
-                    await FlutterUnifiedPush.register(dist);
-                    EasyLoading.showSuccess("Registered");
+                  await FlutterUnifiedPush.register(dist);
+                  EasyLoading.showSuccess("Registered");
                 } on RegistrationException catch (e) {
-                    EasyLoading.showError(e.cause);
-                  }
-              
+                  EasyLoading.showError(e.cause);
+                }
+
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(HomePage.routeName));
               },

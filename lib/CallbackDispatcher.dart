@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
 import 'flutter_unified_push.dart';
 
 void callbackDispatcher() {
@@ -22,31 +20,33 @@ void callbackDispatcher() {
     debugPrint("callbackdispatcher");
     final args = call.arguments as String;
     // 3.1. Retrieve callback instance for handle.
-debugPrint("aaa");
-debugPrint(FlutterUnifiedPush.prefs.toString());
+    debugPrint("aaa");
+    debugPrint(FlutterUnifiedPush.prefs.toString());
     if (FlutterUnifiedPush.prefs == null) {
       FlutterUnifiedPush.prefs = await SharedPreferences.getInstance();
       debugPrint("new prefs");
     }
 
-debugPrint(FlutterUnifiedPush.prefs.toString());
+    debugPrint(FlutterUnifiedPush.prefs.toString());
     final Function callback = PluginUtilities.getCallbackFromHandle(
         CallbackHandle.fromRawHandle(
             FlutterUnifiedPush.prefs.getInt('notification_method')));
     debugPrint(callback.toString());
-debugPrint(CallbackHandle.fromRawHandle(
-            FlutterUnifiedPush.prefs.getInt('notification_method')).toRawHandle().toString());
+    debugPrint(CallbackHandle.fromRawHandle(
+            FlutterUnifiedPush.prefs.getInt('notification_method'))
+        .toRawHandle()
+        .toString());
     assert(callback != null);
 
     //3.3. Invoke callback.
-    var message = decodeMessageContentsUri(args);
-    var title = message['title'] ?? "";
-    var messageBody = message['message'] ?? "";
-    int priority = int.parse( message['priority'])  ?? 5;
+    Map<String, String> message = decodeMessageContentsUri(args);
+    String title = message['title'] ?? "";
+    String messageBody = message['message'] ?? "";
+    int priority = int.parse(message['priority']) ?? 5;
     debugPrint(message.toString());
-debugPrint(messageBody);
+    debugPrint(messageBody);
 
-    var ans = await callback(title, messageBody, priority);
+    bool ans = await callback(title, messageBody, priority);
     print(ans);
   });
 
@@ -55,12 +55,12 @@ debugPrint(messageBody);
 }
 
 Map<String, String> decodeMessageContentsUri(String message) {
-  var uri = Uri.decodeComponent(message).split("&");
+  List<String> uri = Uri.decodeComponent(message).split("&");
   Map<String, String> decoded = {};
   uri.forEach((String i) {
     try {
       decoded[i.split("=")[0]] = i.split("=")[1];
-     // print(i);
+      // print(i);
     } on Exception {}
   });
   return decoded;

@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: '>=0.5.12 <2.0.0'
+  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:

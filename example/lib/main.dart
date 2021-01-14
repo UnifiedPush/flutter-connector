@@ -3,11 +3,59 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_unified_push/flutter_unified_push.dart';
+import 'package:flutter_unified_push/Exceptions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+var uuid = Uuid();
+
+Future<bool> onNotification(String title, String body, int priority) async {
+  debugPrint("onNotification");
+  print(title);
+  if (!notificationInitialized) initNotifications();
+
+  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      'your channel id', 'your channel name', 'your channel description',
+      playSound: false, importance: Importance.max, priority: Priority.high);
+  print(priority);
+  var platformChannelSpecifics =
+      new NotificationDetails(android: androidPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+    uuid.v1().hashCode,
+    title,
+    body,
+    platformChannelSpecifics,
+    payload: 'No_Sound',
+  );
+  return true;
+}
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+var notificationInitialized = false;
+
+void initNotifications() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // final NotificationAppLaunchDetails notificationAppLaunchDetails =
+  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('notification_icon');
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+  notificationInitialized = await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings, onSelectNotification: (String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+    //selectNotificationSubject.add(payload);
+  });
+}
 
 const MethodChannel platform =
     MethodChannel('dexterx.dev/flutter_local_notifications_example');
@@ -27,24 +75,6 @@ class ReceivedNotification {
 }
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // final NotificationAppLaunchDetails notificationAppLaunchDetails =
-  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('notification_icon');
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-  );
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: $payload');
-    }
-    //selectNotificationSubject.add(payload);
-  });
-
   runApp(MyApp());
 }
 
@@ -56,48 +86,37 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-var endpoint = "";
-var registered = false;
+  var endpoint = "";
+  var registered = false;
+
   @override
   void initState() {
     flutterUnifiedPush = FlutterUnifiedPush();
-FlutterUnifiedPush.initialize(onEndpointUpdate);
-FlutterUnifiedPush.onNotificationMethod = onNotification;
+    FlutterUnifiedPush.initialize(onEndpointUpdate, onNotification);
     super.initState();
   }
 
-  Future<void> onNotification(String title, String body, int priority) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        playSound: false, importance: Importance.max, priority: Priority.high);
-    print(priority);
-    var platformChannelSpecifics =
-        new NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: 'No_Sound',
-    );
-  }
-
   void onEndpointUpdate() {
-    setState(() {});
+    setState(() {
+      print(FlutterUnifiedPush.endpoint);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(routes: {
-      HomePage.routeName: (context) => HomePage(),
-      ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
-      RegisterScreen.routeName: (context) => RegisterScreen(),
-    });
+    return MaterialApp(
+      routes: {
+        HomePage.routeName: (context) => HomePage(),
+        ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
+        RegisterScreen.routeName: (context) => RegisterScreen(),
+      },
+      builder: EasyLoading.init(),
+    );
   }
 }
 
 class HomePage extends StatelessWidget {
-static const routeName = '/';
+  static const routeName = '/';
 
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Noification Body");
@@ -211,7 +230,14 @@ class RegisterScreen extends StatelessWidget {
             child: RaisedButton(
               child: Text("Register with this provider"),
               onPressed: () async {
-                 await FlutterUnifiedPush.register(dist);
+                EasyLoading.show(status: 'loading...');
+                try {
+                    await FlutterUnifiedPush.register(dist);
+                    EasyLoading.showSuccess("Registered");
+                } on RegistrationException catch (e) {
+                    EasyLoading.showError(e.cause);
+                  }
+              
                 Navigator.of(context)
                     .popUntil(ModalRoute.withName(HomePage.routeName));
               },

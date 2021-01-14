@@ -32,12 +32,11 @@ Log.d("CustomReceiver", "onMessage")
 
     override fun onNewEndpoint(context: Context?, endpoint: String) {
 //        event = "c"
-        val args = HashMap<String, String>()
-        args.put("name", context!!.packageName)
-        args.put("endpoint", endpoint)
         // print(endpoint)
-       Log.d("TAGGG", endpoint) 
-        FlutterUnifiedPushPlugin.channel?.invokeMethod("onNewEndpoint", args)
+       Log.d("TAGGG", endpoint)
+        if (FlutterUnifiedPushPlugin.channel != null)
+        FlutterUnifiedPushPlugin.channel!!.invokeMethod("onNewEndpoint", endpoint)
+        else Log.e("TAGGG", "channel is null")
 
     }
 

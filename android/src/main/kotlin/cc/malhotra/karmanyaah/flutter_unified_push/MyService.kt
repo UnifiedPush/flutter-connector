@@ -67,7 +67,7 @@ class FlutterUnifiedPushService : MethodCallHandler, JobIntentService() {
                     Log.e(TAG, "Fatal: no callback registered")
                     return
                 }
-
+Log.d(TAG, callbackHandle.toString())
                 val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle)
                 if (callbackInfo == null) {
                     Log.e(TAG, "Fatal: failed to find callback")
@@ -119,29 +119,7 @@ return
         val callbackHandle = intent.getLongExtra(FlutterUnifiedPushPlugin.CALLBACK_HANDLE_KEY, 0)
 val message = intent.getStringExtra("message")
 
-    //    Log.d(TAG, message)
-//        if (geofencingEvent.hasError()) {
-//            Log.e(TAG, "Geofencing error: ${geofencingEvent.errorCode}")
-//            return
-//        }
-//
-//        // Get the transition type.
-//        val geofenceTransition = geofencingEvent.geofenceTransition
-//
-//        // Get the geofences that were triggered. A single event can trigger
-//        // multiple geofences.
-//        val triggeringGeofences = geofencingEvent.triggeringGeofences.map {
-//            it.requestId
-//        }
-//
-//        val location = geofencingEvent.triggeringLocation
-//        val locationList = listOf(location.latitude,
-//                location.longitude)
-//        val geofenceUpdateList = listOf(callbackHandle,
-//                triggeringGeofences,
-//                locationList,
-//                geofenceTransition)
-//
+
         synchronized(sServiceStarted) {
             if (!sServiceStarted.get()) {
                 // Queue up geofencing events while background isolate is starting

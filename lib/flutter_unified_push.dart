@@ -1,37 +1,41 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/services.dart';
-
+import 'Exceptions.dart';
 import 'CallbackDispatcher.dart';
 
 typedef OnUpdate = void Function();
 typedef OnNotification = void Function(
     String title, String body, int importance);
 
+enum RegistrationReply { none, newRegistration, failed, refused, timeout }
 
 class FlutterUnifiedPush {
-  static MethodChannel _channel = MethodChannel('flutter_unified_push.method.channel');
-  static OnNotification onNotificationMethod;
+  static MethodChannel _channel =
+      MethodChannel('flutter_unified_push.method.channel');
 
   static String _endpoint;
   static OnUpdate onEndpointMethod;
   static bool _registered = false;
   static SharedPreferences prefs;
 
+  static RegistrationReply _registrationReply = RegistrationReply.none;
+
   static bool get registered {
     return _registered;
   }
 
-   static String get endpoint {
- //   try {
- //     _endpoint = prefs?.getString('endpoint') ?? "";
- //   } on TypeError {
- //     _endpoint = "";
- //   }
+  static String get endpoint {
+    //   try {
+    //     _endpoint = prefs?.getString('endpoint') ?? "";
+    //   } on TypeError {
+    //     _endpoint = "";
+    //   }
     return _endpoint;
   }
 
@@ -42,20 +46,22 @@ class FlutterUnifiedPush {
     onEndpointMethod();
   }
 
-
-  static Future<bool> initialize(OnUpdate onEndpoint) async {
+  static Future<bool> initialize(
+      OnUpdate onEndpoint, OnNotification onNotification) async {
     onEndpointMethod = onEndpoint;
     _channel.setMethodCallHandler(onMethodCall);
     prefs = await SharedPreferences.getInstance();
-endpoint = prefs.getString('endpoint') ?? "";
+    endpoint = prefs.getString('endpoint') ?? "";
 
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
     await _channel.invokeMethod('FlutterUnifiedPushPlugin.initializeService',
         <dynamic>[callback.toRawHandle()]);
+
+    prefs.setInt("notification_method",
+        PluginUtilities.getCallbackHandle(onNotification).toRawHandle());
+debugPrint( PluginUtilities.getCallbackHandle(onNotification).toRawHandle().toString());
     onEndpointMethod();
   }
-
-
 
   static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
@@ -63,16 +69,11 @@ endpoint = prefs.getString('endpoint') ?? "";
     print("aa");
 
     switch (call.method) {
-      case "onMessage":
-        debugPrint("onMessage");
-        var message = decodeUri(call.arguments["message"]);
-        print(message);
-        await onNotificationMethod(message["title"] ?? "title not available",
-            message["message"] ?? "no message?", int.parse(message["priority"]??"8"));
-        print("done awaiting");
-        break;
       case "onNewEndpoint":
-        endpoint = call.arguments["endpoint"];
+        endpoint = call.arguments;
+        _registrationReply = RegistrationReply.newRegistration;
+        print("set");
+
         onEndpointMethod();
         break;
       case "onUnregister":
@@ -84,8 +85,9 @@ endpoint = prefs.getString('endpoint') ?? "";
 
   static Future<List<String>> get distributors async {
     try {
-      final List<String> result =
-      (await _channel.invokeMethod('FlutterUnifiedPushPlugin.getDistributors')).cast<String>();
+      final List<String> result = (await _channel
+              .invokeMethod('FlutterUnifiedPushPlugin.getDistributors'))
+          .cast<String>();
       return result;
     } on PlatformException catch (e) {
       //ans = "Failed to get dist: '${e.message}'.";
@@ -94,32 +96,54 @@ endpoint = prefs.getString('endpoint') ?? "";
     }
   }
 
-  static Future<String> register(String providerName) async {
+  static Future<void> register(String providerName) async {
     try {
-      return await _channel.invokeMethod('FlutterUnifiedPushPlugin.register', [ providerName]);
+      await _channel
+          .invokeMethod('FlutterUnifiedPushPlugin.register', [providerName]);
     } on PlatformException catch (e) {
       //ans = "Failed to get token: '${e.message}'.";
-      return null;
+      throw RegistrationException("Unknown AAAA");
+    }
+
+    int n = 50;
+    int interval = 100;
+
+    while (_registrationReply == RegistrationReply.none) {
+      print(_registrationReply);
+      await Future.delayed(Duration(milliseconds: interval));
+      if (n-- < 0) {
+        _registrationReply = RegistrationReply.timeout;
+      }
+    }
+    var tmpRegReply = _registrationReply;
+    _registrationReply = RegistrationReply.none;
+
+    switch (tmpRegReply) {
+      case RegistrationReply.failed:
+        throw RegistrationException("failed");
+        break;
+      case RegistrationReply.refused:
+        throw RegistrationException("refused");
+        break;
+      case RegistrationReply.timeout:
+        throw RegistrationException("timeout");
+        break;
+      case RegistrationReply.newRegistration:
+        break;
+      default:
+        print("default in register function shouldn't happen");
+        print(_registrationReply);
     }
   }
 
   static Future<void> unRegister() async {
     try {
-      return await _channel.invokeMethod('FlutterUnifiedPushPlugin.unRegister');
+      await _channel.invokeMethod('FlutterUnifiedPushPlugin.unRegister');
     } on PlatformException catch (e) {
-      //ans = "Failed to get token: '${e.message}'.";
+//ans = "Failed to get token: '${e.message}'.";
+      //TODO
     }
-  }
-
-  static Map<String, String> decodeUri(String message) {
-    var uri = Uri.decodeComponent(message).split("&");
-    Map<String, String> decoded = {};
-    uri.forEach((String i) {
-      try {
-        decoded[i.split("=")[0]] = i.split("=")[1];
-        print(i);
-      } on Exception {}
-    });
-    return decoded;
+    endpoint = "";
   }
 }
+

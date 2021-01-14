@@ -1,74 +1,144 @@
-//package cc.malhotra.karmanyaah.flutter_unified_push
+package cc.malhotra.karmanyaah.flutter_unified_push
+
+import android.Manifest
+import android.app.Activity
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.PluginRegistry.Registrar
+import org.json.JSONArray
+import org.unifiedpush.android.connector.*
+
+
+class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler {
+    private var mContext : Context? = null
+    private var mActivity : Activity? = null
+
+    companion object {
+        @JvmStatic
+        private val TAG = "FlutterUnifiedPushPlugin"
+        @JvmStatic
+        val SHARED_PREFERENCES_KEY = "flutter_unified_push_plugin_cache"
+        @JvmStatic
+        val CALLBACK_HANDLE_KEY = "callback_handle"
+        @JvmStatic
+        val CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler"
+
+        var channel: MethodChannel? = null
+//        @JvmStatic
+//        fun reRegisterAfterReboot(context: Context) {
 //
-//import android.content.BroadcastReceiver
-//import android.content.Context
-//import android.content.Intent
-//import androidx.annotation.NonNull
-//import io.flutter.embedding.engine.plugins.FlutterPlugin
-//import io.flutter.plugin.common.MethodCall
-//import io.flutter.plugin.common.MethodChannel
-//import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-//import io.flutter.plugin.common.MethodChannel.Result
-//import org.unifiedpush.android.connector.getDistributors
-//import org.unifiedpush.android.connector.registerApp
-//import org.unifiedpush.android.connector.saveDistributor
-//import org.unifiedpush.android.connector.unregisterApp
-//
-//lateinit var channel: MethodChannel
-//var event: String? = "b"
-//
-///** FlutterUnifiedPushPlugin */
-//class FlutterUnifiedPushPlugin : FlutterPlugin, MethodCallHandler {
-//    // / The MethodChannel that will the communication between Flutter and native Android
-//    // /
-//    // / This local reference serves to register the plugin with the Flutter Engine and unregister it
-//    // / when the Flutter Engine is detached from the Activity
-//    private lateinit var context: Context
-//
-//    private var endpoint: String = ""
-//    private lateinit var registered: String
-//
-//    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-//        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_unified_push.method.channel")
-//        channel.setMethodCallHandler(this)
-//        context = flutterPluginBinding.applicationContext
-//    }
-//
-//    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-//        if (call.method == "getPlatformVersion") {
-//            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-//        } else if (call.method == "getDistributors") {
-//            val dist = getDistributors(context)
-//
-//            if (dist.size != 0) {
-//                result.success(dist)
-//            } else {
-//                result.error("UNAVAILABLE", null, null)
-//            }
-//        } else if (call.method == "register") {
-//            channel.invokeMethod("onMessage", null)
-//
-//            val name = call.argument<String>("name")
-//            saveDistributor(context, name!!)
-//            // print(getToken(context))
-//            val token = registerApp(context)
-//            if (!event.isNullOrEmpty()) {
-//                result.success(event!!)
-//            } else if (token.isNullOrEmpty()) {
-//                result.error("UNAVAILABLE", null, null)
-//            } else {
-//                result.success(token!!)
-//            }
-////            event = "a"
-//        } else if (call.method == "unRegister") {
-//            unregisterApp(context)
-//        } else {
-//            result.notImplemented()
 //        }
-//    }
-//
-//    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-//        channel.setMethodCallHandler(null)
-//    }
-//
-//}
+
+        @JvmStatic
+        private fun register(context: Context,
+                                     args: ArrayList<*>?,
+                                     result: Result?) {
+//            val callbackHandle = args!![0] as Long
+            val name = args!![0] as String
+
+            saveDistributor(context, name!!)
+            // print(getToken(context))
+            val token = registerApp(context)
+             if (token.isNullOrEmpty()) {
+                result?.error("UNAVAILABLE", null, null)
+            } else {
+                result?.success(token!!)
+            }
+
+
+        }
+
+
+
+        @JvmStatic
+        private fun initializeService(context: Context, args: ArrayList<*>?) {
+            Log.d(TAG, "Initializing FlutterUnifiedPushService")
+            val callbackHandle = args!![0] as Long
+            context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                    .edit()
+                    .putLong(CALLBACK_DISPATCHER_HANDLE_KEY, callbackHandle)
+                    .apply()
+        }
+
+
+        @JvmStatic
+        private fun unregister(context: Context,
+                                   args: ArrayList<*>?,
+                                   result: Result) {
+
+       unregisterApp(context)
+            //assume it worked
+            result.success(true);
+        }
+
+        @JvmStatic
+        private fun getDistributorsList(context: Context, result: Result) {
+            val dist = getDistributors(context)
+
+            if (dist.size != 0) {
+                result.success(dist)
+            } else {
+                result.error("UNAVAILABLE", null, null)
+            }
+
+
+        }
+
+    }
+
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        mContext = binding.getApplicationContext()
+        channel = MethodChannel(binding.getBinaryMessenger(), "flutter_unified_push.method.channel")
+        channel?.setMethodCallHandler(this)
+
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        mContext = null
+    }
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        mActivity = binding.getActivity()
+    }
+
+    override fun onDetachedFromActivity() {
+        mActivity = null
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        mActivity = null
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        mActivity = binding.getActivity()
+    }
+
+    override fun onMethodCall(call: MethodCall, result: Result) {
+        val args = call.arguments<ArrayList<*>>()
+        when(call.method) {
+            "FlutterUnifiedPushPlugin.initializeService" -> {
+                              initializeService(mContext!!, args)
+                result.success(true)
+            }
+            "FlutterUnifiedPushPlugin.register" -> register(mContext!!,
+                    args,
+                    result)
+            "FlutterUnifiedPushPlugin.unRegister" -> unregister(mContext!!,
+                    args,
+                    result)
+            "FlutterUnifiedPushPlugin.getDistributors" -> getDistributorsList(mContext!!, result)
+            else -> result.notImplemented()
+        }
+    }
+}

@@ -1,4 +1,4 @@
-package cc.malhotra.karmanyaah.flutter_unified_push_example
+package org.unifiedpush.flutter.example
 
 import io.flutter.embedding.android.FlutterActivity
 

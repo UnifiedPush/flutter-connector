@@ -1,5 +1,5 @@
-name: flutter_unified_push_example
-description: Demonstrates how to use the flutter_unified_push plugin.
+name: unified_push_example
+description: Demonstrates how to use the unified_push plugin.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   http: ^0.12.2
   flutter_easyloading: ^2.2.2
-  flutter_unified_push:
+  unified_push:
     # When depending on this package from a real application you should use:
     #   flutter_unified_push: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints

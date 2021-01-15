@@ -4,7 +4,7 @@
   <component name="SuppressABINotification">
     <option name="modulesWithSuppressedNotConfigured">
       <set>
-        <option value="flutter_unified_push_android" />
+        <option value="unified_push_android" />
       </set>
     </option>
   </component>

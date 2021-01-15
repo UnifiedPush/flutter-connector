@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flutter_unified_push.iml" filepath="$PROJECT_DIR$/.idea/modules/flutter_unified_push.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/unified_push.iml" filepath="$PROJECT_DIR$/.idea/modules/unified_push.iml" />
     </modules>
   </component>
 </project>

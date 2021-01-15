@@ -1,4 +1,4 @@
-class RegistrationException implements Exception {
+class UPRegistrationException implements Exception {
   String cause;
-  RegistrationException(this.cause);
+  UPRegistrationException(this.cause);
 }

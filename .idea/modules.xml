@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/flutter_unified_push.iml" filepath="$PROJECT_DIR$/flutter_unified_push.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/flutter_unified_push_android.iml" filepath="$PROJECT_DIR$/android/flutter_unified_push_android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/example/android/flutter_unified_push_example_android.iml" filepath="$PROJECT_DIR$/example/android/flutter_unified_push_example_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unified_push.iml" filepath="$PROJECT_DIR$/unified_push.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/unified_push_android.iml" filepath="$PROJECT_DIR$/android/unified_push_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/android/unified_push_example_android.iml" filepath="$PROJECT_DIR$/example/android/unified_push_example_android.iml" />
     </modules>
   </component>
 </project>

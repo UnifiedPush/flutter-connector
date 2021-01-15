@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_unified_push/flutter_unified_push.dart';
+import 'package:unified_push/unified_push.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,7 +10,7 @@ Future<void> main() async {
   EasyLoading.instance.userInteractions = false;
 }
 
-FlutterUnifiedPush flutterUnifiedPush;
+UnifiedPush unifiedPush;
 
 class MyApp extends StatefulWidget {
   @override
@@ -23,15 +23,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    flutterUnifiedPush = FlutterUnifiedPush();
-    FlutterUnifiedPush.initialize(
+    UnifiedPush.initialize(
         onEndpointUpdate, UPNotificationUtils.basicOnNotification);
     super.initState();
   }
 
   void onEndpointUpdate() {
     setState(() {
-      print(FlutterUnifiedPush.endpoint);
+      print(UnifiedPush.endpoint);
     });
   }
 
@@ -54,29 +53,29 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  void notify() async => await http.post(FlutterUnifiedPush.endpoint,
+  void notify() async => await http.post(UnifiedPush.endpoint,
       body: "title=${title.text}&message=${message.text}&priority=6");
 
   @override
   Widget build(BuildContext context) {
     List<Widget> row = [
       ElevatedButton(
-        child: Text(FlutterUnifiedPush.registered ? 'Unregister' : "Register"),
+        child: Text(UnifiedPush.registered ? 'Unregister' : "Register"),
         onPressed: () async {
-          if (FlutterUnifiedPush.registered) {
-            FlutterUnifiedPush.unRegister();
+          if (UnifiedPush.registered) {
+            UnifiedPush.unRegister();
           } else {
             Navigator.pushNamed(
               context,
               ExtractArgumentsScreen.routeName,
-              arguments: await FlutterUnifiedPush.distributors,
+              arguments: await UnifiedPush.distributors,
             );
           }
         },
       ),
     ];
 
-    if (FlutterUnifiedPush.registered) {
+    if (UnifiedPush.registered) {
       row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
       row.add(
         TextField(
@@ -102,9 +101,7 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             SelectableText("Endpoint: " +
-                (FlutterUnifiedPush.registered
-                    ? FlutterUnifiedPush.endpoint
-                    : "empty")),
+                (UnifiedPush.registered ? UnifiedPush.endpoint : "empty")),
             Center(
               child: Column(
                 children: row,
@@ -165,9 +162,9 @@ class RegisterScreen extends StatelessWidget {
               onPressed: () async {
                 EasyLoading.show(status: 'loading...');
                 try {
-                  await FlutterUnifiedPush.register(dist);
+                  await UnifiedPush.register(dist);
                   EasyLoading.showSuccess("Registered");
-                } on RegistrationException catch (e) {
+                } on UPRegistrationException catch (e) {
                   EasyLoading.showError(e.cause);
                 }
 

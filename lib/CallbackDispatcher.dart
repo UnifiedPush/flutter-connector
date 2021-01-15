@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'flutter_unified_push.dart';
+import 'main.dart';
 
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin.
@@ -21,19 +21,19 @@ void callbackDispatcher() {
     final args = call.arguments as String;
     // 3.1. Retrieve callback instance for handle.
     debugPrint("aaa");
-    debugPrint(FlutterUnifiedPush.prefs.toString());
-    if (FlutterUnifiedPush.prefs == null) {
-      FlutterUnifiedPush.prefs = await SharedPreferences.getInstance();
+    debugPrint(UnifiedPush.prefs.toString());
+    if (UnifiedPush.prefs == null) {
+      UnifiedPush.prefs = await SharedPreferences.getInstance();
       debugPrint("new prefs");
     }
 
-    debugPrint(FlutterUnifiedPush.prefs.toString());
+    debugPrint(UnifiedPush.prefs.toString());
     final Function callback = PluginUtilities.getCallbackFromHandle(
         CallbackHandle.fromRawHandle(
-            FlutterUnifiedPush.prefs.getInt('notification_method')));
+            UnifiedPush.prefs.getInt('notification_method')));
     debugPrint(callback.toString());
     debugPrint(CallbackHandle.fromRawHandle(
-            FlutterUnifiedPush.prefs.getInt('notification_method'))
+            UnifiedPush.prefs.getInt('notification_method'))
         .toRawHandle()
         .toString());
     assert(callback != null);

@@ -5,8 +5,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 abstract class UPNotificationUtils {
   static final FlutterLocalNotificationsPlugin
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // static const MethodChannel _platform =
-  // MethodChannel('dexterx.dev/flutter_local_notifications_example');
 
   static bool _notificationInitialized = false;
 
@@ -23,7 +21,7 @@ abstract class UPNotificationUtils {
     var platformChannelSpecifics =
         new NotificationDetails(android: androidPlatformChannelSpecifics);
     await _flutterLocalNotificationsPlugin.show(
-      DateTime.now().microsecondsSinceEpoch % 10000000,
+      DateTime.now().microsecondsSinceEpoch % 100000000,
       title,
       body,
       platformChannelSpecifics,

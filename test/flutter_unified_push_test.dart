@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_unified_push/flutter_unified_push.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_unified_push');

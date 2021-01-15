@@ -13,12 +13,12 @@ typedef OnNotification = void Function(
 
 enum RegistrationReply { none, newRegistration, failed, refused, timeout }
 
-class FlutterUnifiedPush {
+class UnifiedPush {
   static MethodChannel _channel =
       MethodChannel('org.unifiedpush.flutter.connector.channel');
 
   static String _endpoint;
-  static OnUpdate onEndpointMethod;
+  static OnUpdate _onEndpointMethod = () {};
   static bool _registered = false;
   static SharedPreferences prefs;
 
@@ -29,11 +29,6 @@ class FlutterUnifiedPush {
   }
 
   static String get endpoint {
-    //   try {
-    //     _endpoint = prefs?.getString('endpoint') ?? "";
-    //   } on TypeError {
-    //     _endpoint = "";
-    //   }
     return _endpoint;
   }
 
@@ -41,40 +36,38 @@ class FlutterUnifiedPush {
     prefs.setString('endpoint', ndpoint ?? "");
     _endpoint = ndpoint;
     _registered = _endpoint.isNotEmpty;
-    onEndpointMethod();
+    _onEndpointMethod();
   }
 
   static Future<void> initialize(
       OnUpdate onEndpoint, OnNotification onNotification) async {
-    onEndpointMethod = onEndpoint;
+    _onEndpointMethod = onEndpoint;
+
     _channel.setMethodCallHandler(onMethodCall);
+
     prefs = await SharedPreferences.getInstance();
     endpoint = prefs.getString('endpoint') ?? "";
-
-    final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
-    await _channel.invokeMethod('initializeService',
-        <dynamic>[callback.toRawHandle()]);
-
     prefs.setInt("notification_method",
         PluginUtilities.getCallbackHandle(onNotification).toRawHandle());
+
+    final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
+    await _channel
+        .invokeMethod('initializeService', <dynamic>[callback.toRawHandle()]);
     debugPrint(PluginUtilities.getCallbackHandle(onNotification)
         .toRawHandle()
         .toString());
-    onEndpointMethod();
+
+    _onEndpointMethod();
   }
 
   static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
-    debugPrint(call.arguments.toString());
-    print("aa");
     debugPrint(call.method);
     switch (call.method) {
       case "onNewEndpoint":
         endpoint = call.arguments;
         _registrationReply = RegistrationReply.newRegistration;
-        print("set");
-
-        onEndpointMethod();
+        _onEndpointMethod();
         break;
       case "onRegistrationRefused":
         _registrationReply = RegistrationReply.refused;
@@ -83,7 +76,7 @@ class FlutterUnifiedPush {
         _registrationReply = RegistrationReply.failed;
         break;
       case "onUnregister":
-        print("unreg");
+        print("unregister");
         endpoint = "";
         break;
     }
@@ -91,28 +84,24 @@ class FlutterUnifiedPush {
 
   static Future<List<String>> get distributors async {
     try {
-      final List<String> result = (await _channel
-              .invokeMethod('getDistributors'))
-          .cast<String>();
+      final List<String> result =
+          (await _channel.invokeMethod('getDistributors')).cast<String>();
       return result;
     } on PlatformException catch (e) {
-      debugPrint("Failed to get dist: '${e.message}'.");
-      //throw e;
+      debugPrint("Failed to get distributors: '${e.message}'.");
       return null;
     }
   }
 
   static Future<void> register(String providerName) async {
     try {
-      await _channel
-          .invokeMethod('register', [providerName]);
+      await _channel.invokeMethod('register', [providerName]);
     } on PlatformException catch (e) {
-      //ans = "Failed to get token: '${e.message}'.";
-      throw RegistrationException("Unknown AAAA ${e.message}");
+      throw UPRegistrationException("Unknown AAAA ${e.message}");
     }
 
-    int n = 50;
-    int interval = 200;
+    int n = 16;
+    int interval = 250;
 
     while (_registrationReply == RegistrationReply.none) {
       print(_registrationReply);
@@ -126,13 +115,13 @@ class FlutterUnifiedPush {
 
     switch (tmpRegReply) {
       case RegistrationReply.failed:
-        throw RegistrationException("failed");
+        throw UPRegistrationException("failed");
         break;
       case RegistrationReply.refused:
-        throw RegistrationException("refused");
+        throw UPRegistrationException("refused");
         break;
       case RegistrationReply.timeout:
-        throw RegistrationException("timeout");
+        throw UPRegistrationException("timeout");
         break;
       case RegistrationReply.newRegistration:
         break;
@@ -146,9 +135,7 @@ class FlutterUnifiedPush {
     try {
       await _channel.invokeMethod('unRegister');
     } on PlatformException catch (e) {
-//ans = "Failed to get token: '${e.message}'.";
       debugPrint("unregister failed ${e.message}");
-      //TODO
     }
     endpoint = "";
   }

@@ -10,7 +10,7 @@ import 'flutter_unified_push.dart';
 void callbackDispatcher() {
   // 1. Initialize MethodChannel used to communicate with the platform portion of the plugin.
   const MethodChannel _backgroundChannel =
-      MethodChannel('flutter_unified_push.method.background_channel');
+      MethodChannel('org.unifiedpush.flutter.connector.background_channel');
 
   // 2. Setup internal state needed for MethodChannels.
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +51,7 @@ void callbackDispatcher() {
   });
 
   // 4. Alert plugin that the callback handler is ready for events.
-  _backgroundChannel.invokeMethod('FlutterUnifiedPushService.initialized');
+  _backgroundChannel.invokeMethod('initialized');
 }
 
 Map<String, String> decodeMessageContentsUri(String message) {

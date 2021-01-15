@@ -1,4 +1,4 @@
-package cc.malhotra.karmanyaah.flutter_unified_push
+package org.unifiedpush.flutter.connector
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import org.unifiedpush.android.connector.Registration
 
 
-class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler {
+class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
     private var mActivity : Activity? = null
 
@@ -92,7 +92,7 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         mContext = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "flutter_unified_push.method.channel")
+        channel = MethodChannel(binding.binaryMessenger, "org.unifiedpush.flutter.connector.channel")
         channel?.setMethodCallHandler(this)
 
     }
@@ -120,17 +120,17 @@ class FlutterUnifiedPushPlugin : ActivityAware, FlutterPlugin, MethodCallHandler
     override fun onMethodCall(call: MethodCall, result: Result) {
         val args = call.arguments<ArrayList<*>>()
         when(call.method) {
-            "FlutterUnifiedPushPlugin.initializeService" -> {
+            "initializeService" -> {
                               initializeService(mContext!!, args)
                 result.success(true)
             }
-            "FlutterUnifiedPushPlugin.register" -> register(mContext!!,
+            "register" -> register(mContext!!,
                     args,
                     result)
-            "FlutterUnifiedPushPlugin.unRegister" -> unregister(mContext!!,
+            "unRegister" -> unregister(mContext!!,
                     args,
                     result)
-            "FlutterUnifiedPushPlugin.getDistributors" -> getDistributorsList(mContext!!, result)
+            "getDistributors" -> getDistributorsList(mContext!!, result)
             else -> result.notImplemented()
         }
     }

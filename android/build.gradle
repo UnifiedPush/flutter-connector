@@ -1,4 +1,4 @@
-group 'cc.malhotra.karmanyaah.flutter_unified_push'
+group 'org.unifiedpush.flutter.connector'
 version '1.0-SNAPSHOT'
 
 buildscript {

@@ -1,4 +1,4 @@
-package cc.malhotra.karmanyaah.flutter_unified_push
+package org.unifiedpush.flutter.connector
 //
 import android.content.Context
 import android.content.Intent
@@ -12,6 +12,8 @@ import org.unifiedpush.android.connector.MessagingReceiverHandler
 
 val handler = object : MessagingReceiverHandler {
 
+    private val TAG = "FlutterUnifiedPushReceiver"
+    
     override fun onMessage(context: Context?, message: String) {
 //        event = "c"
 //         val dict = URLDecoder.decode(message,"UTF-8").split("&")
@@ -22,37 +24,37 @@ val handler = object : MessagingReceiverHandler {
         // Notifier(context!!).sendNotification(title,text,priority)
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        val intent = Intent(context, CustomReceiver::class.java)
+        val intent = Intent(context, Receiver::class.java)
 
         intent.putExtra("message", message)
-        Log.d("CustomReceiver", "onMessage")
-        FlutterUnifiedPushService.enqueueWork(context, intent)
+        Log.d(TAG, "onMessage")
+        Service.enqueueWork(context, intent)
     }
 
     override fun onNewEndpoint(context: Context?, endpoint: String) {
 //        event = "c"
         // print(endpoint)
-        Log.d("TAGGG", endpoint)
-Log.d("TAGGG", FlutterUnifiedPushPlugin.toString())
+        Log.d(TAG, endpoint)
+Log.d(TAG, Plugin.toString())
 
-Log.d("TAGGG", FlutterUnifiedPushPlugin?.channel.toString())
-        if (FlutterUnifiedPushPlugin?.channel != null)
-            FlutterUnifiedPushPlugin?.channel!!.invokeMethod("onNewEndpoint", endpoint)
-        else Log.e("TAGGG", "channel is null")
+Log.d(TAG, Plugin?.channel.toString())
+        if (Plugin?.channel != null)
+            Plugin?.channel!!.invokeMethod("onNewEndpoint", endpoint)
+        else Log.e(TAG, "channel is null")
 
     }
 
     override fun onRegistrationFailed(context: Context?) {
-        FlutterUnifiedPushPlugin.channel?.invokeMethod("onRegistrationFailed", null)
+        Plugin.channel?.invokeMethod("onRegistrationFailed", null)
     }
     override fun onRegistrationRefused(context: Context?) {
-        FlutterUnifiedPushPlugin.channel?.invokeMethod("onRegistrationRefused", null)
+        Plugin.channel?.invokeMethod("onRegistrationRefused", null)
     }
 
     override fun onUnregistered(context: Context?) {
 //        event = "c"
-        FlutterUnifiedPushPlugin.channel?.invokeMethod("onUnregister", null)
+        Plugin.channel?.invokeMethod("onUnregister", null)
     }
 }
 
-class CustomReceiver : MessagingReceiver(handler)
+class Receiver : MessagingReceiver(handler)

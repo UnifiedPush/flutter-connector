@@ -15,7 +15,7 @@ enum RegistrationReply { none, newRegistration, failed, refused, timeout }
 
 class FlutterUnifiedPush {
   static MethodChannel _channel =
-      MethodChannel('flutter_unified_push.method.channel');
+      MethodChannel('org.unifiedpush.flutter.connector.channel');
 
   static String _endpoint;
   static OnUpdate onEndpointMethod;
@@ -52,7 +52,7 @@ class FlutterUnifiedPush {
     endpoint = prefs.getString('endpoint') ?? "";
 
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
-    await _channel.invokeMethod('FlutterUnifiedPushPlugin.initializeService',
+    await _channel.invokeMethod('initializeService',
         <dynamic>[callback.toRawHandle()]);
 
     prefs.setInt("notification_method",
@@ -92,7 +92,7 @@ class FlutterUnifiedPush {
   static Future<List<String>> get distributors async {
     try {
       final List<String> result = (await _channel
-              .invokeMethod('FlutterUnifiedPushPlugin.getDistributors'))
+              .invokeMethod('getDistributors'))
           .cast<String>();
       return result;
     } on PlatformException catch (e) {
@@ -105,7 +105,7 @@ class FlutterUnifiedPush {
   static Future<void> register(String providerName) async {
     try {
       await _channel
-          .invokeMethod('FlutterUnifiedPushPlugin.register', [providerName]);
+          .invokeMethod('register', [providerName]);
     } on PlatformException catch (e) {
       //ans = "Failed to get token: '${e.message}'.";
       throw RegistrationException("Unknown AAAA ${e.message}");
@@ -144,7 +144,7 @@ class FlutterUnifiedPush {
 
   static Future<void> unRegister() async {
     try {
-      await _channel.invokeMethod('FlutterUnifiedPushPlugin.unRegister');
+      await _channel.invokeMethod('unRegister');
     } on PlatformException catch (e) {
 //ans = "Failed to get token: '${e.message}'.";
       debugPrint("unregister failed ${e.message}");

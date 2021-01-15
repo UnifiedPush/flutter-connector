@@ -1,4 +1,4 @@
-package cc.malhotra.karmanyaah.flutter_unified_push
+package org.unifiedpush.flutter.connector
 
 
 import android.content.Context
@@ -19,7 +19,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-class FlutterUnifiedPushService : MethodCallHandler, JobIntentService() {
+class Service : MethodCallHandler, JobIntentService() {
     private val queue = ArrayDeque<String>()
     private lateinit var mBackgroundChannel: MethodChannel
     private lateinit var mContext: Context
@@ -39,7 +39,7 @@ class FlutterUnifiedPushService : MethodCallHandler, JobIntentService() {
 
         @JvmStatic
         fun enqueueWork(context: Context, work: Intent) {
-            enqueueWork(context, FlutterUnifiedPushService::class.java, JOB_ID, work)
+            enqueueWork(context, Service::class.java, JOB_ID, work)
         }
 
         @JvmStatic
@@ -53,9 +53,9 @@ class FlutterUnifiedPushService : MethodCallHandler, JobIntentService() {
             mContext = context
             if (sBackgroundFlutterEngine == null) {
                 val callbackHandle = context.getSharedPreferences(
-                        FlutterUnifiedPushPlugin.SHARED_PREFERENCES_KEY,
+                        Plugin.SHARED_PREFERENCES_KEY,
                         Context.MODE_PRIVATE)
-                        .getLong(FlutterUnifiedPushPlugin.CALLBACK_DISPATCHER_HANDLE_KEY, 0)
+                        .getLong(Plugin.CALLBACK_DISPATCHER_HANDLE_KEY, 0)
                 if (callbackHandle == 0L) {
                     Log.e(TAG, "Fatal: no callback registered")
                     return
@@ -79,13 +79,13 @@ Log.d(TAG, callbackHandle.toString())
             }
         }
         mBackgroundChannel = MethodChannel(sBackgroundFlutterEngine!!.dartExecutor.binaryMessenger,
-                "flutter_unified_push.method.background_channel")
+                "org.unifiedpush.flutter.connector.background_channel")
         mBackgroundChannel.setMethodCallHandler(this)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when(call.method) {
-            "FlutterUnifiedPushService.initialized" -> {
+            "initialized" -> {
                 synchronized(sServiceStarted) {
                     while (!queue.isEmpty()) {
                         mBackgroundChannel.invokeMethod("", queue.remove())
@@ -109,7 +109,7 @@ return
 
     override fun onHandleWork(intent: Intent) {
 
-        val callbackHandle = intent.getLongExtra(FlutterUnifiedPushPlugin.CALLBACK_HANDLE_KEY, 0)
+        val callbackHandle = intent.getLongExtra(Plugin.CALLBACK_HANDLE_KEY, 0)
 val message = intent.getStringExtra("message")
 
 

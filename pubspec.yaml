@@ -30,8 +30,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: cc.malhotra.karmanyaah.flutter_unified_push
-        pluginClass: FlutterUnifiedPushPlugin
+        package: org.unifiedpush.flutter.connector
+        pluginClass: Plugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

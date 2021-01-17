@@ -39,29 +39,10 @@ void callbackDispatcher() {
     assert(callback != null);
 
     //3.3. Invoke callback.
-    Map<String, String> message = decodeMessageContentsUri(args);
-    String title = message['title'] ?? "";
-    String messageBody = message['message'] ?? "";
-    int priority = int.parse(message['priority']) ?? 5;
-    debugPrint(message.toString());
-    debugPrint(messageBody);
-
-    bool ans = await callback(title, messageBody, priority);
+    bool ans = await callback(args);
     print(ans);
   });
 
   // 4. Alert plugin that the callback handler is ready for events.
   _backgroundChannel.invokeMethod('initialized');
-}
-
-Map<String, String> decodeMessageContentsUri(String message) {
-  List<String> uri = Uri.decodeComponent(message).split("&");
-  Map<String, String> decoded = {};
-  uri.forEach((String i) {
-    try {
-      decoded[i.split("=")[0]] = i.split("=")[1];
-      // print(i);
-    } on Exception {}
-  });
-  return decoded;
 }

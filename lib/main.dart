@@ -8,8 +8,7 @@ import 'Exceptions.dart';
 import 'CallbackDispatcher.dart';
 
 typedef OnUpdate = void Function();
-typedef OnNotification = void Function(
-    String title, String body, int importance);
+typedef OnNotification = void Function(String payload);
 
 enum RegistrationReply { none, newRegistration, failed, refused, timeout }
 

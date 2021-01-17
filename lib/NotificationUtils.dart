@@ -8,9 +8,24 @@ abstract class UPNotificationUtils {
 
   static bool _notificationInitialized = false;
 
-  static Future<bool> basicOnNotification(
-      String title, String body, int priority) async {
+  static Map<String, String> decodeMessageContentsUri(String message) {
+    List<String> uri = Uri.decodeComponent(message).split("&");
+    Map<String, String> decoded = {};
+    uri.forEach((String i) {
+      try {
+        decoded[i.split("=")[0]] = i.split("=")[1];
+        // print(i);
+      } on Exception {}
+    });
+    return decoded;
+  }
+
+  static Future<bool> basicOnNotification(String payload) async {
     debugPrint("onNotification");
+    Map<String, String> message = decodeMessageContentsUri(payload);
+    String title = message['title'] ?? "";
+    String body = message['message'] ?? "";
+    int priority = int.parse(message['priority']) ?? 5;
     print(title);
     if (!_notificationInitialized) _initNotifications();
 

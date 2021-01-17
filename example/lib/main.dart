@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter-connector/unified_push.dart';
+import 'package:flutter_connector/unified_push.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';

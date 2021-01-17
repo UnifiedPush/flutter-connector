@@ -31,28 +31,15 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         var channel: MethodChannel? = null
         private var up = Registration()
 
-//        @JvmStatic
-//        fun reRegisterAfterReboot(context: Context) {
-//
-//        }
-
         @JvmStatic
         private fun register(context: Context,
                                      args: ArrayList<*>?,
                                      result: Result?) {
-//            val callbackHandle = args!![0] as Long
             val name = args!![0] as String
-
             up.saveDistributor(context, name)
-            // print(getToken(context))
              up.registerApp(context)
-             //   result?.error("UNAVAILABLE", null, null)
                 result?.success(null)
-
-
         }
-
-
 
         @JvmStatic
         private fun initializeService(context: Context, args: ArrayList<*>?) {
@@ -64,14 +51,11 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                     .apply()
         }
 
-
         @JvmStatic
         private fun unregister(context: Context,
                                    args: ArrayList<*>?,
                                    result: Result) {
-
-       up.unregisterApp(context)
-            //assume it worked
+            up.unregisterApp(context)
             result.success(true)
         }
 
@@ -84,8 +68,6 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             } else {
                 result.error("UNAVAILABLE", null, null)
             }
-
-
         }
 
     }
@@ -121,15 +103,11 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         val args = call.arguments<ArrayList<*>>()
         when(call.method) {
             "initializeService" -> {
-                              initializeService(mContext!!, args)
+                initializeService(mContext!!, args)
                 result.success(true)
             }
-            "register" -> register(mContext!!,
-                    args,
-                    result)
-            "unRegister" -> unregister(mContext!!,
-                    args,
-                    result)
+            "register" -> register(mContext!!, args, result)
+            "unRegister" -> unregister(mContext!!, args, result)
             "getDistributors" -> getDistributorsList(mContext!!, result)
             else -> result.notImplemented()
         }

@@ -60,7 +60,7 @@ class Service : MethodCallHandler, JobIntentService() {
                     Log.e(TAG, "Fatal: no callback registered")
                     return
                 }
-Log.d(TAG, callbackHandle.toString())
+                Log.d(TAG, callbackHandle.toString())
                 val callbackInfo = FlutterCallbackInformation.lookupCallbackInformation(callbackHandle)
                 if (callbackInfo == null) {
                     Log.e(TAG, "Fatal: failed to find callback")
@@ -92,11 +92,10 @@ Log.d(TAG, callbackHandle.toString())
                     sServiceStarted.set(true)
                 }
             }
-
             else -> {
- result.notImplemented()
-return
-}
+                result.notImplemented()
+                return
+            }
         }
         result.success(null)
     }
@@ -109,8 +108,7 @@ return
     override fun onHandleWork(intent: Intent) {
 
         val callbackHandle = intent.getLongExtra(Plugin.CALLBACK_HANDLE_KEY, 0)
-val message = intent.getStringExtra("message")
-
+        val message = intent.getStringExtra("message")
 
         synchronized(sServiceStarted) {
             if (!sServiceStarted.get()) {

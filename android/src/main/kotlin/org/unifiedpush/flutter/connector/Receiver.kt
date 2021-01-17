@@ -24,7 +24,6 @@ val handler = object : MessagingReceiverHandler {
     override fun onNewEndpoint(context: Context?, endpoint: String) {
         Log.d(TAG, endpoint)
         Log.d(TAG, Plugin.toString())
-
         Log.d(TAG, Plugin?.channel.toString())
         if (Plugin?.channel != null)
             Plugin?.channel!!.invokeMethod("onNewEndpoint", endpoint)
@@ -34,6 +33,7 @@ val handler = object : MessagingReceiverHandler {
     override fun onRegistrationFailed(context: Context?) {
         Plugin.channel?.invokeMethod("onRegistrationFailed", null)
     }
+
     override fun onRegistrationRefused(context: Context?) {
         Plugin.channel?.invokeMethod("onRegistrationRefused", null)
     }

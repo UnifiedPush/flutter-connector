@@ -22,7 +22,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         @JvmStatic
         private val TAG = "FlutterUnifiedPushPlugin"
         @JvmStatic
-        val SHARED_PREFERENCES_KEY = "flutter_unified_push_plugin_cache"
+        val SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache"
         @JvmStatic
         val CALLBACK_HANDLE_KEY = "callback_handle"
         @JvmStatic

@@ -1,4 +1,4 @@
-name: unified_push_example
+name: flutter-connector_example
 description: Demonstrates how to use the unified_push plugin.
 
 # The following line prevents the package from being accidentally published to

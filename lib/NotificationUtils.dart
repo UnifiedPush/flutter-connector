@@ -14,7 +14,6 @@ abstract class UPNotificationUtils {
     uri.forEach((String i) {
       try {
         decoded[i.split("=")[0]] = i.split("=")[1];
-        // print(i);
       } on Exception {}
     });
     return decoded;

@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('flutter_unified_push');
+  const MethodChannel channel = MethodChannel('flutter-connector');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -15,8 +15,4 @@ void main() {
   tearDown(() {
     channel.setMockMethodCallHandler(null);
   });
-
-  // test('getPlatformVersion', () async {
-  //   expect(await FlutterUnifiedPush.platformVersion, '42');
-  // });
 }

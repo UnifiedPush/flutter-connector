@@ -10,7 +10,7 @@ import org.unifiedpush.android.connector.MessagingReceiverHandler
 val handler = object : MessagingReceiverHandler {
 
     private val TAG = "FlutterUnifiedPushReceiver"
-    
+
     override fun onMessage(context: Context?, message: String) {
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
@@ -25,9 +25,8 @@ val handler = object : MessagingReceiverHandler {
         Log.d(TAG, endpoint)
         Log.d(TAG, Plugin.toString())
         Log.d(TAG, Plugin?.channel.toString())
-        if (Plugin?.channel != null)
-            Plugin?.channel!!.invokeMethod("onNewEndpoint", endpoint)
-        else Log.e(TAG, "channel is null")
+        Plugin.channel?.invokeMethod("onNewEndpoint", endpoint)
+        Log.e(TAG, "channel is null")
     }
 
     override fun onRegistrationFailed(context: Context?) {

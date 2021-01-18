@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Exceptions.dart';
 import 'CallbackDispatcher.dart';
 
 typedef OnUpdate = void Function();
@@ -21,7 +19,6 @@ class UnifiedPush {
   static bool _registered = false;
   static SharedPreferences prefs;
 
-  static RegistrationReply _registrationReply = RegistrationReply.none;
 
   static bool get registered {
     return _registered;
@@ -31,9 +28,9 @@ class UnifiedPush {
     return _endpoint;
   }
 
-  static set endpoint(String ndpoint) {
-    prefs.setString('endpoint', ndpoint ?? "");
-    _endpoint = ndpoint;
+  static set endpoint(String endpoint) {
+    prefs.setString('endpoint', endpoint ?? "");
+    _endpoint = endpoint;
     _registered = _endpoint.isNotEmpty;
     _onEndpointMethod();
   }
@@ -65,14 +62,11 @@ class UnifiedPush {
     switch (call.method) {
       case "onNewEndpoint":
         endpoint = call.arguments;
-        _registrationReply = RegistrationReply.newRegistration;
         _onEndpointMethod();
         break;
       case "onRegistrationRefused":
-        _registrationReply = RegistrationReply.refused;
         break;
       case "onRegistrationFailed":
-        _registrationReply = RegistrationReply.failed;
         break;
       case "onUnregistered":
         print("unregister");
@@ -80,56 +74,7 @@ class UnifiedPush {
         break;
     }
   }
-
-  static Future<List<String>> get distributors async {
-    try {
-      final List<String> result =
-          (await _channel.invokeMethod('getDistributors')).cast<String>();
-      return result;
-    } on PlatformException catch (e) {
-      debugPrint("Failed to get distributors: '${e.message}'.");
-      return null;
-    }
-  }
-
-  static Future<void> register(String providerName) async {
-    try {
-      await _channel.invokeMethod('register', [providerName]);
-    } on PlatformException catch (e) {
-      throw UPRegistrationException("Unknown AAAA ${e.message}");
-    }
-
-    int n = 16;
-    int interval = 250;
-
-    while (_registrationReply == RegistrationReply.none) {
-      print(_registrationReply);
-      await Future.delayed(Duration(milliseconds: interval));
-      if (n-- < 0) {
-        _registrationReply = RegistrationReply.timeout;
-      }
-    }
-    var tmpRegReply = _registrationReply;
-    _registrationReply = RegistrationReply.none;
-
-    switch (tmpRegReply) {
-      case RegistrationReply.failed:
-        throw UPRegistrationException("failed");
-        break;
-      case RegistrationReply.refused:
-        throw UPRegistrationException("refused");
-        break;
-      case RegistrationReply.timeout:
-        throw UPRegistrationException("timeout");
-        break;
-      case RegistrationReply.newRegistration:
-        break;
-      default:
-        print("default in register function shouldn't happen");
-        print(_registrationReply);
-    }
-  }
-
+  
   static Future<void> unRegister() async {
     try {
       await _channel.invokeMethod('unregister');

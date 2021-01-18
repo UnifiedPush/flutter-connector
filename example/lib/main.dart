@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'NotificationUtils.dart';
 
 Future<void> main() async {
   runApp(MyApp());
@@ -38,9 +38,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        HomePage.routeName: (context) => HomePage(),
+        HomePage.routeName: (context) => HomePage()/*,
         ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
-        RegisterScreen.routeName: (context) => RegisterScreen(),
+        RegisterScreen.routeName: (context) => RegisterScreen(),*/
       },
       builder: EasyLoading.init(),
     );
@@ -65,11 +65,6 @@ class HomePage extends StatelessWidget {
           if (UnifiedPush.registered) {
             UnifiedPush.unRegister();
           } else {
-/*            Navigator.pushNamed(
-              context,
-              ExtractArgumentsScreen.routeName,
-              arguments: await UnifiedPush.distributors,
-            );*/
             UnifiedPush.registerAppWithDialog();
           }
         },
@@ -110,70 +105,5 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ));
-  }
-}
-
-class ExtractArgumentsScreen extends StatelessWidget {
-  static const routeName = '/extractArguments';
-
-  @override
-  Widget build(BuildContext context) {
-    final List<String> dist = ModalRoute.of(context).settings.arguments;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Pick provider"),
-      ),
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemCount: dist.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(dist[index]),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                RegisterScreen.routeName,
-                arguments: dist[index],
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class RegisterScreen extends StatelessWidget {
-  static const routeName = '/registerscreen';
-
-  @override
-  Widget build(BuildContext context) {
-    final String dist = ModalRoute.of(context).settings.arguments;
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Register"),
-        ),
-        body: Column(children: [
-          Text(dist),
-          Center(
-            child: RaisedButton(
-              child: Text("Register with this provider"),
-              onPressed: () async {
-                EasyLoading.show(status: 'loading...');
-                try {
-                  await UnifiedPush.register(dist);
-                  EasyLoading.showSuccess("Registered");
-                } on UPRegistrationException catch (e) {
-                  EasyLoading.showError(e.cause);
-                }
-
-                Navigator.of(context)
-                    .popUntil(ModalRoute.withName(HomePage.routeName));
-              },
-            ),
-          ),
-        ]));
   }
 }

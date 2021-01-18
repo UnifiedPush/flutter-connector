@@ -24,14 +24,30 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     UnifiedPush.initialize(
-        onEndpointUpdate, UPNotificationUtils.basicOnNotification);
+        onNewEndpoint,
+        onRegistrationFailed,
+        onRegistrationRefused,
+        onUnregistered,
+        UPNotificationUtils.basicOnNotification);
     super.initState();
   }
 
-  void onEndpointUpdate() {
+  void onNewEndpoint() {
     setState(() {
       print(UnifiedPush.endpoint);
     });
+  }
+
+  void onRegistrationRefused() {
+    //TODO
+  }
+
+  void onRegistrationFailed() {
+   //TODO
+  }
+
+  void onUnregistered() {
+    //TODO
   }
 
   @override
@@ -63,7 +79,7 @@ class HomePage extends StatelessWidget {
         child: Text(UnifiedPush.registered ? 'Unregister' : "Register"),
         onPressed: () async {
           if (UnifiedPush.registered) {
-            UnifiedPush.unRegister();
+            UnifiedPush.unregister();
           } else {
             UnifiedPush.registerAppWithDialog();
           }

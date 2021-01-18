@@ -1,6 +1,5 @@
 package org.unifiedpush.flutter.connector
 
-
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -12,7 +11,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback
 import io.flutter.view.FlutterCallbackInformation
 import io.flutter.view.FlutterMain
 import java.util.*
@@ -35,16 +33,8 @@ class Service : MethodCallHandler, JobIntentService() {
         private val sServiceStarted = AtomicBoolean(false)
 
         @JvmStatic
-        private lateinit var sPluginRegistrantCallback: PluginRegistrantCallback
-
-        @JvmStatic
         fun enqueueWork(context: Context, work: Intent) {
             enqueueWork(context, Service::class.java, JOB_ID, work)
-        }
-
-        @JvmStatic
-        fun setPluginRegistrant(callback: PluginRegistrantCallback) {
-            sPluginRegistrantCallback = callback
         }
     }
 
@@ -107,7 +97,6 @@ class Service : MethodCallHandler, JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
 
-        val callbackHandle = intent.getLongExtra(Plugin.CALLBACK_HANDLE_KEY, 0)
         val message = intent.getStringExtra("message")
 
         synchronized(sServiceStarted) {

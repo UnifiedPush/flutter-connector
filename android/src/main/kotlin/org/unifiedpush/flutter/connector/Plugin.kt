@@ -21,33 +21,18 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private val TAG = "FlutterUnifiedPushPlugin"
+
         @JvmStatic
         val SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache"
+
         @JvmStatic
         val CALLBACK_HANDLE_KEY = "callback_handle"
+
         @JvmStatic
         val CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler"
 
         var channel: MethodChannel? = null
         private var up = Registration()
-
-        @JvmStatic
-        private fun register(context: Context,
-                             args: ArrayList<*>?,
-                             result: Result?) {
-            val name = args!![0] as String
-            up.saveDistributor(context, name)
-            up.registerApp(context)
-            result?.success(null)
-        }
-
-        @JvmStatic
-        private fun registerAppWithDialog(context: Context,
-                                          args: ArrayList<*>?,
-                                          result: Result?) {
-            up.registerAppWithDialog(context)
-            result?.success(null)
-        }
 
         @JvmStatic
         private fun initializeService(context: Context, args: ArrayList<*>?) {
@@ -60,24 +45,20 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         }
 
         @JvmStatic
-        private fun unregister(context: Context,
-                                   args: ArrayList<*>?,
-                                   result: Result) {
-            up.unregisterApp(context)
-            result.success(true)
+        private fun registerAppWithDialog(context: Context,
+                                          args: ArrayList<*>?,
+                                          result: Result?) {
+            up.registerAppWithDialog(context)
+            result?.success(null)
         }
 
         @JvmStatic
-        private fun getDistributorsList(context: Context, result: Result) {
-            val dist = up.getDistributors(context)
-
-            if (dist.isNotEmpty()) {
-                result.success(dist)
-            } else {
-                result.error("UNAVAILABLE", null, null)
-            }
+        private fun unregister(context: Context,
+                               args: ArrayList<*>?,
+                               result: Result) {
+            up.unregisterApp(context)
+            result.success(true)
         }
-
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -114,10 +95,8 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                 initializeService(mContext!!, args)
                 result.success(true)
             }
-            "register" -> register(mContext!!, args, result)
             "registerAppWithDialog" -> registerAppWithDialog(mActivity!!,args,result)
             "unregister" -> unregister(mContext!!, args, result)
-            "getDistributors" -> getDistributorsList(mContext!!, result)
             else -> result.notImplemented()
         }
     }

@@ -1,6 +1,6 @@
-# flutter-connector_example
+# flutter-example
 
-Demonstrates how to use the flutter-connector plugin.
+Demonstrates how to use the unifiedpush flutter-connector plugin for Flutter.
 
 ## Getting Started
 

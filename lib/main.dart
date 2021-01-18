@@ -74,7 +74,7 @@ class UnifiedPush {
       case "onRegistrationFailed":
         _registrationReply = RegistrationReply.failed;
         break;
-      case "onUnregister":
+      case "onUnregistered":
         print("unregister");
         endpoint = "";
         break;
@@ -132,7 +132,7 @@ class UnifiedPush {
 
   static Future<void> unRegister() async {
     try {
-      await _channel.invokeMethod('unRegister');
+      await _channel.invokeMethod('unregister');
     } on PlatformException catch (e) {
       debugPrint("unregister failed ${e.message}");
     }

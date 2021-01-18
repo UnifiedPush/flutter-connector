@@ -107,7 +107,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                 result.success(true)
             }
             "register" -> register(mContext!!, args, result)
-            "unRegister" -> unregister(mContext!!, args, result)
+            "unregister" -> unregister(mContext!!, args, result)
             "getDistributors" -> getDistributorsList(mContext!!, result)
             else -> result.notImplemented()
         }

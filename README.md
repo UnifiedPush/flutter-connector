@@ -1,4 +1,4 @@
-# flutter_unified_push
+# flutter-connector
 
 A new flutter plugin project.
 

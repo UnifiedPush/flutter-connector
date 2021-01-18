@@ -1,4 +1,4 @@
-name: unified_push_example
+name: unifiedpush_example
 description: Demonstrates how to use the unified_push plugin.
 
 # The following line prevents the package from being accidentally published to
@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   http: ^0.12.2
   flutter_easyloading: ^2.2.2
-  unified_push:
+  unifiedpush:
     # When depending on this package from a real application you should use:
     #   flutter_unified_push: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints

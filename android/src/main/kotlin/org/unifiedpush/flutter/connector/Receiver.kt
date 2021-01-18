@@ -39,7 +39,7 @@ val handler = object : MessagingReceiverHandler {
     }
 
     override fun onUnregistered(context: Context?) {
-        Plugin.channel?.invokeMethod("onUnregister", null)
+        Plugin.channel?.invokeMethod("onUnregistered", null)
     }
 }
 

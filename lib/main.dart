@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -89,6 +90,55 @@ class UnifiedPush {
     } on PlatformException catch (e) {
       debugPrint("Failed to get distributors: '${e.message}'.");
       return null;
+    }
+  }
+
+  static Future<void> registerWithPopup(BuildContext inpContext) async {
+    List<String> dist = await distributors;
+    String selected;
+
+    if (dist.length == 1) {
+      selected = dist[0]; //use default distributor
+    } else {
+      selected = await showDialog<String>(
+          context: inpContext,
+          builder: (BuildContext context) => SimpleDialog(
+                title: const Text('Select distributors'),
+                children: dist
+                    .map<Widget>((v) => ListTile(
+                        onTap: () => Navigator.pop(context, v), title: Text(v)))
+                    .toList(),
+              ));
+    }
+    
+    if (selected != null) {
+    BuildContext loadingContext;
+      try {
+        showDialog(
+          context: inpContext,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+          loadingContext = context;
+            return Dialog(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    new CircularProgressIndicator(),
+                    Text("    Loading ..."),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+        await register(selected);
+      } on UPRegistrationException catch (e) {
+        Scaffold.of(inpContext).showSnackBar(SnackBar(content: Text(e.cause)));
+      }
+      Navigator.pop(loadingContext);
+
     }
   }
 

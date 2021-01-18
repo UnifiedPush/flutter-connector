@@ -58,40 +58,58 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> row = [
-      ElevatedButton(
-        child: Text(UnifiedPush.registered ? 'Unregister' : "Register"),
-        onPressed: () async {
-          if (UnifiedPush.registered) {
-            UnifiedPush.unRegister();
-          } else {
-            Navigator.pushNamed(
-              context,
-              ExtractArgumentsScreen.routeName,
-              arguments: await UnifiedPush.distributors,
-            );
-          }
-        },
-      ),
-    ];
+    List<Widget> row=[];
 
     if (UnifiedPush.registered) {
-      row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
-      row.add(
+      row += [
+        ElevatedButton(
+          child: Text('Unregister'),
+          onPressed: () async {
+            UnifiedPush.unRegister();
+          },
+        ),
+        ElevatedButton(child: Text("Notify"), onPressed: notify),
         TextField(
           controller: title,
           decoration: InputDecoration(
               border: const OutlineInputBorder(),
               hintText: 'Enter a search term'),
         ),
-      );
+        TextField(
+          controller: message,
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: 'Enter a search term'),
+        ),
+      ];
+    } else {
+      row += [
+        Builder(
+          //Context passed to registerWithPopup needs to be under Scaffold (Builder is only needed if registrWithPopup is in the same Build as Scaffold)
+          builder: (BuildContext context) => ElevatedButton(
+            child: Text(UnifiedPush.registered ? 'Unregister' : "Register"),
+            onPressed: () async {
+              if (UnifiedPush.registered) {
+                UnifiedPush.unRegister();
+              } else {
+                await UnifiedPush.registerWithPopup(context);
+              }
+            },
+          ),
+        ),
 
-      row.add(TextField(
-        controller: message,
-        decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: 'Enter a search term'),
-      ));
+        //manual registration example
+        ElevatedButton(
+          child: Text("Manually Register"),
+          onPressed: () async {
+            Navigator.pushNamed(
+              context,
+              ExtractArgumentsScreen.routeName,
+              arguments: await UnifiedPush.distributors,
+            );
+          },
+        ),
+      ];
     }
 
     return Scaffold(

@@ -20,7 +20,6 @@ void callbackDispatcher() {
     debugPrint("callbackdispatcher");
     final args = call.arguments as String;
     // 3.1. Retrieve callback instance for handle.
-    debugPrint("aaa");
     debugPrint(UnifiedPush.prefs.toString());
     if (UnifiedPush.prefs == null) {
       UnifiedPush.prefs = await SharedPreferences.getInstance();

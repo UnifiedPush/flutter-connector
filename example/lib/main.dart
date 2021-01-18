@@ -65,11 +65,12 @@ class HomePage extends StatelessWidget {
           if (UnifiedPush.registered) {
             UnifiedPush.unRegister();
           } else {
-            Navigator.pushNamed(
+/*            Navigator.pushNamed(
               context,
               ExtractArgumentsScreen.routeName,
               arguments: await UnifiedPush.distributors,
-            );
+            );*/
+            UnifiedPush.registerAppWithDialog();
           }
         },
       ),

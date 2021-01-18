@@ -138,4 +138,12 @@ class UnifiedPush {
     }
     endpoint = "";
   }
+
+  static Future<void> registerAppWithDialog() async {
+    try{
+      await _channel.invokeMethod("registerAppWithDialog");
+    } on PlatformException catch (e) {
+      debugPrint("registerAppWithDialog failed ${e.message}");
+    }
+  }
 }

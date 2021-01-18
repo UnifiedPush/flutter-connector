@@ -33,12 +33,20 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun register(context: Context,
-                                     args: ArrayList<*>?,
-                                     result: Result?) {
+                             args: ArrayList<*>?,
+                             result: Result?) {
             val name = args!![0] as String
             up.saveDistributor(context, name)
-             up.registerApp(context)
-                result?.success(null)
+            up.registerApp(context)
+            result?.success(null)
+        }
+
+        @JvmStatic
+        private fun registerAppWithDialog(context: Context,
+                                          args: ArrayList<*>?,
+                                          result: Result?) {
+            up.registerAppWithDialog(context)
+            result?.success(null)
         }
 
         @JvmStatic
@@ -107,6 +115,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                 result.success(true)
             }
             "register" -> register(mContext!!, args, result)
+            "registerAppWithDialog" -> registerAppWithDialog(mActivity!!,args,result)
             "unregister" -> unregister(mContext!!, args, result)
             "getDistributors" -> getDistributorsList(mContext!!, result)
             else -> result.notImplemented()

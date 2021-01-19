@@ -17,12 +17,6 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
     companion object {
 
-        @JvmStatic
-        val SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache"
-
-        @JvmStatic
-        val CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler"
-
         var channel: MethodChannel? = null
         private var up = Registration()
 

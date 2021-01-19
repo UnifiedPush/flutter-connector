@@ -12,14 +12,15 @@ Future<void> main() async {
 
 UnifiedPush unifiedPush;
 
+var endpoint = "";
+var registered = false;
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  var endpoint = "";
-  var registered = false;
 
   @override
   void initState() {
@@ -32,9 +33,11 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  void onNewEndpoint() {
+  void onNewEndpoint(String _endpoint) {
+    registered = true;
+    endpoint = _endpoint;
     setState(() {
-      print(UnifiedPush.endpoint);
+      print(endpoint);
     });
   }
 
@@ -47,16 +50,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onUnregistered() {
-    //TODO
+    registered = false;
+    setState(() {
+      print("unregistered");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        HomePage.routeName: (context) => HomePage()/*,
-        ExtractArgumentsScreen.routeName: (context) => ExtractArgumentsScreen(),
-        RegisterScreen.routeName: (context) => RegisterScreen(),*/
+        HomePage.routeName: (context) => HomePage()
       },
       builder: EasyLoading.init(),
     );
@@ -69,16 +73,18 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  void notify() async => await http.post(UnifiedPush.endpoint,
-      body: "title=${title.text}&message=${message.text}&priority=6");
+  void notify() async => await http.post(
+      endpoint,
+      body: "title=${title.text}&message=${message.text}&priority=6"
+  );
 
   @override
   Widget build(BuildContext context) {
     List<Widget> row = [
       ElevatedButton(
-        child: Text(UnifiedPush.registered ? 'Unregister' : "Register"),
+        child: Text(registered ? 'Unregister' : "Register"),
         onPressed: () async {
-          if (UnifiedPush.registered) {
+          if (registered) {
             UnifiedPush.unregister();
           } else {
             UnifiedPush.registerAppWithDialog();
@@ -87,7 +93,7 @@ class HomePage extends StatelessWidget {
       ),
     ];
 
-    if (UnifiedPush.registered) {
+    if (registered) {
       row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
       row.add(
         TextField(
@@ -113,7 +119,7 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             SelectableText("Endpoint: " +
-                (UnifiedPush.registered ? UnifiedPush.endpoint : "empty")),
+                (registered ? endpoint : "empty")),
             Center(
               child: Column(
                 children: row,

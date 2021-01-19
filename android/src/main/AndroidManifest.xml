@@ -7,19 +7,17 @@
 
   <application>
 
-      <receiver android:exported="true"  android:enabled="true"  android:name=".Receiver"
-          >
+      <receiver android:exported="true"  android:enabled="true"  android:name=".Receiver">
           <intent-filter>
               <action android:name="org.unifiedpush.android.connector.MESSAGE"/>
               <action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>
               <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT"/>
-                <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
-                <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED" />
+              <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
+              <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED" />
           </intent-filter>
       </receiver>
 
-	              <service android:name="org.unifiedpush.flutter.connector.Service"
-                 android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
+	              <service android:name=".Service" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
   </application>
 
 

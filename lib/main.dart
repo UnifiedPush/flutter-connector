@@ -1,12 +1,6 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'CallbackDispatcher.dart';
-
-typedef OnUpdate = void Function();
-typedef OnMessage = void Function(String message);
 
 enum RegistrationReply { none, newRegistration, failed, refused, timeout }
 
@@ -14,53 +8,27 @@ class UnifiedPush {
   static MethodChannel _channel =
       MethodChannel('org.unifiedpush.flutter.connector.channel');
 
-  static String _endpoint;
-  static OnUpdate _onNewEndpoint = () {};
-  static OnUpdate _onRegistrationRefused = () {};
-  static OnUpdate _onRegistrationFailed = () {};
-  static OnUpdate _onUnregistered = () {};
-  static bool _registered = false;
-  static SharedPreferences prefs;
 
+  static void Function(String endpoint) _onNewEndpoint = (String _) {};
+  static void Function() _onRegistrationRefused = () {};
+  static void Function() _onRegistrationFailed = () {};
+  static void Function() _onUnregistered = () {};
+  static void Function(String message) _onMessage = (String _) {};
 
-  static bool get registered {
-    return _registered;
-  }
-
-  static String get endpoint {
-    return _endpoint;
-  }
-
-  static set endpoint(String endpoint) {
-    prefs.setString('endpoint', endpoint ?? "");
-    _endpoint = endpoint;
-    _registered = _endpoint.isNotEmpty;
-    _onNewEndpoint();
-  }
-
-  static Future<void> initialize(OnUpdate onNewEndpoint, OnUpdate onRegistrationFailed,
-      OnUpdate onRegistrationRefused, OnUpdate onUnregistered,
-      OnMessage onMessage) async {
+  static Future<void> initialize(
+      void Function(String endpoint) onNewEndpoint,
+      void Function() onRegistrationFailed,
+      void Function() onRegistrationRefused,
+      void Function() onUnregistered,
+      void Function(String message) onMessage
+      ) async {
     _onNewEndpoint = onNewEndpoint;
     _onRegistrationFailed = onRegistrationFailed;
     _onRegistrationRefused = onRegistrationRefused;
     _onUnregistered = onUnregistered;
+    _onMessage = onMessage;
 
     _channel.setMethodCallHandler(onMethodCall);
-
-    prefs = await SharedPreferences.getInstance();
-    endpoint = prefs.getString('endpoint') ?? "";
-    prefs.setInt("notification_method",
-        PluginUtilities.getCallbackHandle(onMessage).toRawHandle());
-
-    final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
-    await _channel
-        .invokeMethod('initializeService', <dynamic>[callback.toRawHandle()]);
-    debugPrint(PluginUtilities.getCallbackHandle(onMessage)
-        .toRawHandle()
-        .toString());
-
-    _onNewEndpoint();
   }
 
   static Future<void> onMethodCall(MethodCall call) async {
@@ -68,8 +36,7 @@ class UnifiedPush {
     debugPrint(call.method);
     switch (call.method) {
       case "onNewEndpoint":
-        endpoint = call.arguments;
-        _onNewEndpoint();
+        _onNewEndpoint(call.arguments);
         break;
       case "onRegistrationRefused":
         _onRegistrationRefused();
@@ -78,9 +45,10 @@ class UnifiedPush {
         _onRegistrationFailed();
         break;
       case "onUnregistered":
-        print("unregistered");
         _onUnregistered();
-        endpoint = "";
+        break;
+      case "onMessage":
+        _onMessage(call.arguments);
         break;
     }
   }
@@ -91,7 +59,6 @@ class UnifiedPush {
     } on PlatformException catch (e) {
       debugPrint("unregister failed ${e.message}");
     }
-    endpoint = "";
   }
 
   static Future<void> registerAppWithDialog() async {

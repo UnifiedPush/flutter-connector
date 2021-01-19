@@ -20,11 +20,47 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         var channel: MethodChannel? = null
         private var up = Registration()
 
+        /**
+         * To:
+         * 1. ask for the distributor the user want to use
+         * 2. saveIt
+         * 3. register the end user application to the distributor
+         * You can use registerAppWithDialog()
+         */
         @JvmStatic
         private fun registerAppWithDialog(context: Context,
                                           result: Result?) {
             up.registerAppWithDialog(context)
             result?.success(null)
+        }
+
+        /**
+         * If you prefer doing it by yourself:
+         * 1. getDistributors() gives the distributors list
+         * 2. saveDistributor(distributor) saves the user's distributor
+         * 3. registerApp() register the end user application to the distributor
+         */
+        @JvmStatic
+        private fun getDistributors(context: Context,
+                                    result: Result?){
+            val distributors = up.getDistributors(context)
+            result?.success(distributors)
+        }
+
+        @JvmStatic
+        private fun saveDistributor(context: Context,
+                                    args: ArrayList<*>?,
+                                    result: Result?){
+            val distributor = args!![0] as String
+            up.saveDistributor(context,distributor)
+            result?.success(true)
+        }
+
+        @JvmStatic
+        private fun registerApp(context: Context,
+                                result: Result?){
+            up.registerApp(context)
+            result?.success(true)
         }
 
         @JvmStatic
@@ -63,8 +99,12 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
+        val args = call.arguments<ArrayList<*>>()
         when(call.method) {
             "registerAppWithDialog" -> registerAppWithDialog(mActivity!!, result)
+            "getDistributors" -> getDistributors(mActivity!!, result)
+            "saveDistributor" -> saveDistributor(mActivity!!, args, result)
+            "registerApp" -> registerApp(mActivity!!, result)
             "unregister" -> unregister(mActivity!!, result)
             else -> result.notImplemented()
         }

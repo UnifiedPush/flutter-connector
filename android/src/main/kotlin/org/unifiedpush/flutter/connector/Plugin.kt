@@ -2,6 +2,8 @@ package org.unifiedpush.flutter.connector
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
+import android.content.Intent
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -69,43 +71,61 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             up.unregisterApp(context)
             result.success(true)
         }
+
+        @JvmStatic
+        private fun initializeService(context: Context, args: ArrayList<*>?, result: Result) {
+            val callbackHandle = args!![0] as Long
+            context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                    .edit()
+                    .putLong(CALLBACK_DISPATCHER_HANDLE_KEY, callbackHandle)
+                    .apply()
+            result.success(true)
+        }
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        Log.d("Plugin", "onAttachedToEngine")
         mContext = binding.applicationContext
-        channel = MethodChannel(binding.binaryMessenger, "org.unifiedpush.flutter.connector.channel")
+        channel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
         channel?.setMethodCallHandler(this)
 
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        Log.d("Plugin", "onDetachedFromEngine")
         mContext = null
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        Log.d("Plugin", "onAttachedToActivity")
         mActivity = binding.activity
     }
 
     override fun onDetachedFromActivity() {
+        Log.d("Plugin", "onDetachedFromActivity")
         mActivity = null
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
+      Log.d("Plugin", "onDetachedFromActivityForConfigChanges")
         mActivity = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        Log.d("Plugin", "onReattachedToActivityForConfigChanges")
         mActivity = binding.activity
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
+        Log.d("Plugin","Method: ${call.method}")
         val args = call.arguments<ArrayList<*>>()
         when(call.method) {
-            "registerAppWithDialog" -> registerAppWithDialog(mActivity!!, result)
-            "getDistributors" -> getDistributors(mActivity!!, result)
-            "saveDistributor" -> saveDistributor(mActivity!!, args, result)
-            "registerApp" -> registerApp(mActivity!!, result)
-            "unregister" -> unregister(mActivity!!, result)
+            PLUGIN_EVENT_INITIALIZE_CALLBACK -> initializeService(mContext!!, args, result)
+            PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG -> registerAppWithDialog(mActivity!!, result)
+            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
+            PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
+            PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, result)
+            PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, result)
             else -> result.notImplemented()
         }
     }

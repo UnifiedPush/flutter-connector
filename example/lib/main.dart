@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -29,7 +28,11 @@ class _MyAppState extends State<MyApp> {
         onRegistrationFailed,
         onRegistrationRefused,
         onUnregistered,
-        UPNotificationUtils.basicOnNotification);
+        UPNotificationUtils.basicOnNotification,
+        bgNewEndpoint, // called when new endpoint in background , need to be static
+        bgUnregistered, // called when unregistered in background , need to be static
+        UPNotificationUtils.basicOnNotification // called when receiving a message in background , need to be static
+    );
     super.initState();
   }
 
@@ -54,6 +57,16 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       print("unregistered");
     });
+  }
+
+  static bgNewEndpoint(String _endpoint) {
+    print("BG: New endpoint: $_endpoint");
+    //TODO
+  }
+
+  static bgUnregistered() {
+    print("BG: Unregistered");
+    //TODO
   }
 
   @override

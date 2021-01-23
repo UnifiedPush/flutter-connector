@@ -22,8 +22,8 @@ abstract class UPNotificationUtils {
   static Future<bool> basicOnNotification(String payload) async {
     debugPrint("onNotification");
     Map<String, String> message = decodeMessageContentsUri(payload);
-    String title = message['title'] ?? "";
-    String body = message['message'] ?? "";
+    String title = message['title'] ?? "UP - Example";
+    String body = message['message'] ?? "with flutter-connector";
     int priority = int.parse(message['priority']) ?? 5;
     print(title);
     if (!_notificationInitialized) _initNotifications();

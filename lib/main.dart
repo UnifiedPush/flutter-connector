@@ -99,7 +99,7 @@ class UnifiedPush {
   }
 
   static Future<List<String>> getDistributors() async {
-    return await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS);
+    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS)).cast<String>();
   }
 
   static Future<void> saveDistributor(String distributor) async {

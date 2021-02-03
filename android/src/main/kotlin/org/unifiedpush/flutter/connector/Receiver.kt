@@ -13,9 +13,11 @@ val handler = object : MessagingReceiverHandler {
         Log.d("Receiver","OnMessage")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.channel != null){
+        if (Plugin.channel != null && !CallbackService.sServiceStarted.get()){
+            Log.d("Receiver","foregroundChannel")
             Plugin.channel?.invokeMethod("onMessage", message)
         } else {
+            Log.d("Receiver","CallbackChannel")
             val intent = Intent(context, CallbackService::class.java)
             intent.putExtra(EXTRA_CALLBACK_EVENT, CALLBACK_EVENT_MESSAGE)
             intent.putExtra(EXTRA_CALLBACK_DATA, message)
@@ -27,7 +29,7 @@ val handler = object : MessagingReceiverHandler {
         Log.d("Receiver","OnNewEndpoint")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.channel != null) {
+        if (Plugin.channel != null && !CallbackService.sServiceStarted.get()) {
             Plugin.channel?.invokeMethod("onNewEndpoint", endpoint)
         } else {
             val intent = Intent(context, CallbackService::class.java)
@@ -51,7 +53,7 @@ val handler = object : MessagingReceiverHandler {
         Log.d("Receiver","OnUnregistered")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.channel != null) {
+        if (Plugin.channel != null && !CallbackService.sServiceStarted.get()) {
             Plugin.channel?.invokeMethod("onUnregistered", null)
         } else {
             val intent = Intent(context, CallbackService::class.java)

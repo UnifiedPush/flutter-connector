@@ -32,7 +32,7 @@ class CallbackService : MethodCallHandler, JobIntentService() {
         @JvmStatic
         private var sBackgroundFlutterEngine: FlutterEngine? = null
         @JvmStatic
-        private val sServiceStarted = AtomicBoolean(false)
+        val sServiceStarted = AtomicBoolean(false)
 
         @JvmStatic
         fun enqueueWork(context: Context, work: Intent) {

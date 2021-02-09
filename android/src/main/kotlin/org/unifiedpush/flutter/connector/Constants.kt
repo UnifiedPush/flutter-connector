@@ -8,6 +8,10 @@ const val PLUGIN_EVENT_REGISTER_APP = "registerApp"
 const val PLUGIN_EVENT_UNREGISTER = "unregister"
 const val PLUGIN_CHANNEL = "org.unifiedpush.flutter.connector.PLUGIN_CHANNEL"
 
+const val LISTENER_METHOD = "listenerMethod"
+const val LISTENER_METHOD_CALLBACK = "listenerMethod_callback"
+const val LISTENER_METHOD_APP_RECEIVER = "listenerMethod_appReceiver"
+
 const val EXTRA_CALLBACK_EVENT = "event"
 const val EXTRA_CALLBACK_DATA = "data"
 const val CALLBACK_EVENT_MESSAGE = "message"

@@ -94,6 +94,11 @@ class UnifiedPush {
     }
 
     _channel.setMethodCallHandler(onMethodCall);
+
+    await _channel.invokeMethod(
+        PLUGIN_EVENT_INITIALIZE_CALLBACK,
+        null
+    );
     debugPrint("initialization finished");
   }
 

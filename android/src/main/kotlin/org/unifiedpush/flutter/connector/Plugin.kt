@@ -74,7 +74,12 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun initializeCallback(context: Context, args: ArrayList<*>?, result: Result) {
-            val callbackHandle = args!![0] as Long
+            val callbackHandle = args.let {
+                when {
+                    it != null -> it[0] as Long;
+                    else -> 0
+                }
+            }
             context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
                     .edit()
                     .putLong(CALLBACK_DISPATCHER_HANDLE_KEY, callbackHandle)
@@ -83,11 +88,10 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         }
 
         fun listenerMethodIsCallback(context: Context): Boolean {
-            val method = context.getSharedPreferences(
-                    "FlutterSharedPreferences",
-                    Context.MODE_PRIVATE)
-                    .getString("flutter.$LISTENER_METHOD", "")
-            return method == LISTENER_METHOD_CALLBACK
+            val method = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                    .getLong(CALLBACK_DISPATCHER_HANDLE_KEY, 0)
+            Log.d("listenerMethodIsCallback","${method > 0}")
+            return method > 0
         }
     }
 

@@ -26,15 +26,15 @@ class UnifiedPush {
   static void Function() _onUnregistered = () {};
   static void Function(String message) _onMessage = (String _) {};
 
-  static Future<void> initialize(
+  static Future<void> initializeWithCallback(
       void Function(String endpoint) onNewEndpoint,
       void Function() onRegistrationFailed,
       void Function() onRegistrationRefused,
       void Function() onUnregistered,
       void Function(String message) onMessage,
-      void Function(String endpoint) bgNewEndpoint,
-      void Function() bgUnregistered,
-      void Function(String message) bgMessage
+      void Function(String endpoint) callbackOnNewEndpoint, //need to be static
+      void Function() callbackOnUnregistered, //need to be static
+      void Function(String message) callbackOnMessage //need to be static
       ) async {
 
     prefs = await SharedPreferences.getInstance();
@@ -49,15 +49,15 @@ class UnifiedPush {
 
     prefs.setInt(
         PREF_ON_NEW_ENDPOINT,
-        PluginUtilities.getCallbackHandle(bgNewEndpoint)?.toRawHandle()
+        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)?.toRawHandle()
     );
     prefs.setInt(
         PREF_ON_UNREGISTERED,
-        PluginUtilities.getCallbackHandle(bgUnregistered)?.toRawHandle()
+        PluginUtilities.getCallbackHandle(callbackOnUnregistered)?.toRawHandle()
     );
     prefs.setInt(
         PREF_ON_MESSAGE,
-        PluginUtilities.getCallbackHandle(bgMessage)?.toRawHandle()
+        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle()
     );
 
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
@@ -69,7 +69,7 @@ class UnifiedPush {
     debugPrint("initialization finished");
   }
 
-  static Future<void> setListeners({
+  static Future<void> initializeWithReceiver({
     void Function(String endpoint) onNewEndpoint,
     void Function() onRegistrationFailed,
     void Function() onRegistrationRefused,

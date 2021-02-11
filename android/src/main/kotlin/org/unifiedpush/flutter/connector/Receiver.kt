@@ -10,7 +10,7 @@ import org.unifiedpush.android.connector.MessagingReceiver
 import org.unifiedpush.android.connector.MessagingReceiverHandler
 
 /***
- * For static method
+ * Handler used when there is a callback
  */
 
 val handler = object : MessagingReceiverHandler {
@@ -19,9 +19,9 @@ val handler = object : MessagingReceiverHandler {
         Log.d("Receiver","OnMessage")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.staticChannel != null && !CallbackService.sServiceStarted.get()){
+        if (Plugin.withCallbackChannel != null && !CallbackService.sServiceStarted.get()){
             Log.d("Receiver","foregroundChannel")
-            Plugin.staticChannel?.invokeMethod("onMessage", message)
+            Plugin.withCallbackChannel?.invokeMethod("onMessage", message)
         } else {
             Log.d("Receiver","CallbackChannel")
             val intent = Intent(context, CallbackService::class.java)
@@ -35,8 +35,8 @@ val handler = object : MessagingReceiverHandler {
         Log.d("Receiver","OnNewEndpoint")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.staticChannel != null && !CallbackService.sServiceStarted.get()) {
-            Plugin.staticChannel?.invokeMethod("onNewEndpoint", endpoint)
+        if (Plugin.withCallbackChannel != null && !CallbackService.sServiceStarted.get()) {
+            Plugin.withCallbackChannel?.invokeMethod("onNewEndpoint", endpoint)
         } else {
             val intent = Intent(context, CallbackService::class.java)
             intent.putExtra(EXTRA_CALLBACK_EVENT, CALLBACK_EVENT_NEW_ENDPOINT)
@@ -47,20 +47,20 @@ val handler = object : MessagingReceiverHandler {
 
     override fun onRegistrationFailed(context: Context?) {
         Log.d("Receiver","OnRegistrationFailed")
-        Plugin.staticChannel?.invokeMethod("onRegistrationFailed", null)
+        Plugin.withCallbackChannel?.invokeMethod("onRegistrationFailed", null)
     }
 
     override fun onRegistrationRefused(context: Context?) {
         Log.d("Receiver","OnRegistrationRefused")
-        Plugin.staticChannel?.invokeMethod("onRegistrationRefused", null)
+        Plugin.withCallbackChannel?.invokeMethod("onRegistrationRefused", null)
     }
 
     override fun onUnregistered(context: Context?) {
         Log.d("Receiver","OnUnregistered")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
-        if (Plugin.staticChannel != null && !CallbackService.sServiceStarted.get()) {
-            Plugin.staticChannel?.invokeMethod("onUnregistered", null)
+        if (Plugin.withCallbackChannel != null && !CallbackService.sServiceStarted.get()) {
+            Plugin.withCallbackChannel?.invokeMethod("onUnregistered", null)
         } else {
             val intent = Intent(context, CallbackService::class.java)
             intent.putExtra(EXTRA_CALLBACK_EVENT, CALLBACK_EVENT_UNREGISTERED)
@@ -71,14 +71,14 @@ val handler = object : MessagingReceiverHandler {
 
 class Receiver : MessagingReceiver(handler) {
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (Plugin.listenerMethodIsCallback(context!!)) {
+        if (Plugin.isWithCallback(context!!)) {
             super.onReceive(context, intent)
         }
     }
 }
 
 /***
- * For runtime method
+ * Handler used when the Receiver is defined in the app
  */
 
 abstract class UnifiedPushHandler : MessagingReceiverHandler {
@@ -99,34 +99,34 @@ abstract class UnifiedPushHandler : MessagingReceiverHandler {
     override fun onMessage(context: Context?, message: String) {
         Log.d("Receiver","OnMessage")
         handler.post {
-            getPlugin(context!!).runtimeChannel?.invokeMethod("onMessage", message)
+            getPlugin(context!!).withReceiverChannel?.invokeMethod("onMessage", message)
         }
     }
 
     override fun onNewEndpoint(context: Context?, endpoint: String) {
         Log.d("Receiver","OnNewEndpoint")
         handler.post {
-            getPlugin(context!!).runtimeChannel?.invokeMethod("onNewEndpoint", endpoint)
+            getPlugin(context!!).withReceiverChannel?.invokeMethod("onNewEndpoint", endpoint)
         }
     }
 
     override fun onRegistrationFailed(context: Context?) {
         handler.post {
-            getPlugin(context!!).runtimeChannel?.invokeMethod("onRegistrationFailed", null)
+            getPlugin(context!!).withReceiverChannel?.invokeMethod("onRegistrationFailed", null)
         }
     }
 
     override fun onRegistrationRefused(context: Context?) {
         Log.d("Receiver","OnRegistrationRefused")
         handler.post {
-            getPlugin(context!!).runtimeChannel?.invokeMethod("onRegistrationRefused", null)
+            getPlugin(context!!).withReceiverChannel?.invokeMethod("onRegistrationRefused", null)
         }
     }
 
     override fun onUnregistered(context: Context?) {
         Log.d("Receiver","OnUnregistered")
         handler.post {
-            getPlugin(context!!).runtimeChannel?.invokeMethod("onUnregistered", null)
+            getPlugin(context!!).withReceiverChannel?.invokeMethod("onUnregistered", null)
         }
     }
 }

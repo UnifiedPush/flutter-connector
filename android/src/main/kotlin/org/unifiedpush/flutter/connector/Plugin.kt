@@ -15,11 +15,11 @@ import org.unifiedpush.android.connector.Registration
 class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
     private var mActivity : Activity? = null
-    var runtimeChannel: MethodChannel? = null
+    var withReceiverChannel: MethodChannel? = null
 
     companion object {
 
-        var staticChannel: MethodChannel? = null
+        var withCallbackChannel: MethodChannel? = null
         private var up = Registration()
 
         /**
@@ -74,12 +74,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun initializeCallback(context: Context, args: ArrayList<*>?, result: Result) {
-            val callbackHandle = args.let {
-                when {
-                    it != null -> it[0] as Long;
-                    else -> 0
-                }
-            }
+            val callbackHandle = args?.get(0) as? Long ?: 0
             context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
                     .edit()
                     .putLong(CALLBACK_DISPATCHER_HANDLE_KEY, callbackHandle)
@@ -87,10 +82,10 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             result.success(true)
         }
 
-        fun listenerMethodIsCallback(context: Context): Boolean {
+        fun isWithCallback(context: Context): Boolean {
             val method = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
                     .getLong(CALLBACK_DISPATCHER_HANDLE_KEY, 0)
-            Log.d("listenerMethodIsCallback","${method > 0}")
+            Log.d("Plugin","isWithCallback: ${method > 0}")
             return method > 0
         }
     }
@@ -98,16 +93,16 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         Log.d("Plugin", "onAttachedToEngine")
         mContext = binding.applicationContext
-        runtimeChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
-        runtimeChannel?.setMethodCallHandler(this)
-        staticChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
-        staticChannel?.setMethodCallHandler(this)
+        withReceiverChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
+        withReceiverChannel?.setMethodCallHandler(this)
+        withCallbackChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
+        withCallbackChannel?.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         Log.d("Plugin", "onDetachedFromEngine")
-        runtimeChannel?.setMethodCallHandler(null)
-        staticChannel?.setMethodCallHandler(null)
+        withReceiverChannel?.setMethodCallHandler(null)
+        withCallbackChannel?.setMethodCallHandler(null)
         mContext = null
     }
 

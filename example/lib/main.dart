@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    UnifiedPush.initialize(
+    UnifiedPush.initializeWithCallback(
         onNewEndpoint,
         onRegistrationFailed,
         onRegistrationRefused,

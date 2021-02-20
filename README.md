@@ -13,5 +13,8 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+For help with this package itself, please refer to our
+[documentation](https://unifiedpush.org/developers/flutter/).
+
 ## Credits
 * Architecture derived from https://github.com/bkonyi/FlutterGeofencing

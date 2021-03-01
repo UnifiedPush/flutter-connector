@@ -15,7 +15,7 @@ import org.unifiedpush.android.connector.MessagingReceiverHandler
 
 val handler = object : MessagingReceiverHandler {
 
-    override fun onMessage(context: Context?, message: String) {
+    override fun onMessage(context: Context?, message: String, instance: String) {
         Log.d("Receiver","OnMessage")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
@@ -31,7 +31,7 @@ val handler = object : MessagingReceiverHandler {
         }
     }
 
-    override fun onNewEndpoint(context: Context?, endpoint: String) {
+    override fun onNewEndpoint(context: Context?, endpoint: String, instance: String) {
         Log.d("Receiver","OnNewEndpoint")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
@@ -45,17 +45,17 @@ val handler = object : MessagingReceiverHandler {
         }
     }
 
-    override fun onRegistrationFailed(context: Context?) {
+    override fun onRegistrationFailed(context: Context?, instance: String) {
         Log.d("Receiver","OnRegistrationFailed")
         Plugin.withCallbackChannel?.invokeMethod("onRegistrationFailed", null)
     }
 
-    override fun onRegistrationRefused(context: Context?) {
+    override fun onRegistrationRefused(context: Context?, instance: String) {
         Log.d("Receiver","OnRegistrationRefused")
         Plugin.withCallbackChannel?.invokeMethod("onRegistrationRefused", null)
     }
 
-    override fun onUnregistered(context: Context?) {
+    override fun onUnregistered(context: Context?, instance: String) {
         Log.d("Receiver","OnUnregistered")
         FlutterMain.startInitialization(context!!)
         FlutterMain.ensureInitializationComplete(context, null)
@@ -96,34 +96,34 @@ abstract class UnifiedPushHandler : MessagingReceiverHandler {
         return plugin;
     }
 
-    override fun onMessage(context: Context?, message: String) {
+    override fun onMessage(context: Context?, message: String, instance: String) {
         Log.d("Receiver","OnMessage")
         handler.post {
             getPlugin(context!!).withReceiverChannel?.invokeMethod("onMessage", message)
         }
     }
 
-    override fun onNewEndpoint(context: Context?, endpoint: String) {
+    override fun onNewEndpoint(context: Context?, endpoint: String, instance: String) {
         Log.d("Receiver","OnNewEndpoint")
         handler.post {
             getPlugin(context!!).withReceiverChannel?.invokeMethod("onNewEndpoint", endpoint)
         }
     }
 
-    override fun onRegistrationFailed(context: Context?) {
+    override fun onRegistrationFailed(context: Context?, instance: String) {
         handler.post {
             getPlugin(context!!).withReceiverChannel?.invokeMethod("onRegistrationFailed", null)
         }
     }
 
-    override fun onRegistrationRefused(context: Context?) {
+    override fun onRegistrationRefused(context: Context?, instance: String) {
         Log.d("Receiver","OnRegistrationRefused")
         handler.post {
             getPlugin(context!!).withReceiverChannel?.invokeMethod("onRegistrationRefused", null)
         }
     }
 
-    override fun onUnregistered(context: Context?) {
+    override fun onUnregistered(context: Context?, instance: String) {
         Log.d("Receiver","OnUnregistered")
         handler.post {
             getPlugin(context!!).withReceiverChannel?.invokeMethod("onUnregistered", null)

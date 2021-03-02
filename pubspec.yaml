@@ -1,5 +1,5 @@
 name: unifiedpush
-description: Push notifications with the provider chosen by the user (Non-FCM version).
+description: Push notifications with the provider chosen by the user.
 version: 1.0.1
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"

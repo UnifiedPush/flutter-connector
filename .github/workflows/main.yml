@@ -1,0 +1,39 @@
+
+on: [push, pull_request]
+
+name: Build
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: subosito/flutter-action@v1
+      - run: |
+          flutter pub get
+          cd example
+          flutter build apk
+      - uses: actions/upload-artifact@v2
+        with:
+          name: example
+          path: example/build/app/outputs/flutter-apk/app-release.apk
+      - if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p ~/.pub-cache 
+          cat <<EOF > ~/.pub-cache/credentials.json
+          {
+            "accessToken":"${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}",
+            "refreshToken":"${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}",
+            "tokenEndpoint":"${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}",
+            "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
+            "expiration": "${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}"
+          }
+          EOF
+      - name: Check Publish Warnings
+        run: pub publish --dry-run
+      - name: Publish package
+        run: pub publish -f

@@ -1,3 +1,7 @@
+## 1.0.2
+
+* fix: Null safe dependencies
+
 ## 1.0.1
 
 * The first version ready to publish.

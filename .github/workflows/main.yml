@@ -35,5 +35,6 @@ jobs:
           EOF
       - name: Check Publish Warnings
         run: pub publish --dry-run
-      - name: Publish package
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish package
         run: pub publish -f

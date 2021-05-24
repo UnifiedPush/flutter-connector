@@ -1,3 +1,8 @@
+## 1.0.4
+
+* android-connector:1.1.2
+* update dependencies
+
 ## 1.0.3
 
 * update dependencies

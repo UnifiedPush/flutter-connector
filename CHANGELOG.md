@@ -1,3 +1,9 @@
+## 1.0.5
+
+* android-connector:1.1.3
+    * Fix safeRemoveDistributor
+* update dependencies
+
 ## 1.0.4
 
 * android-connector:1.1.2

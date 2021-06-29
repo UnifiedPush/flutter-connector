@@ -1,3 +1,9 @@
+## 1.0.6
+* android-connector:1.2.0
+    * registerAppWithDialog now displays application name instead of package name.
+    * registerAppWithDialog now check if a distributor is already saved and re-register if so.
+    * getDistributor(context: Context) now removes the saved distributor and returns an empty String if the distributor is not installed anymore.
+
 ## 1.0.5
 
 * android-connector:1.1.3

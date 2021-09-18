@@ -24,7 +24,7 @@ abstract class UPNotificationUtils {
     Map<String, String> message = decodeMessageContentsUri(payload);
     String title = message['title'] ?? "UP - Example";
     String body = message['message'] ?? "with flutter-connector";
-    int priority = int.parse(message['priority']) ?? 5;
+    int priority = int.parse(message['priority'] ?? "5");
     print(title);
     if (!_notificationInitialized) _initNotifications();
 

@@ -1,3 +1,11 @@
+## 1.1.0
+* Add GetDistributor
+* Add multi-instance support
+* Fix saveDistributor
+* Add custom distributor picker to the example
+* Small fix on the example
+* Update dependencies
+
 ## 1.0.6
 * android-connector:1.2.0
     * registerAppWithDialog now displays application name instead of package name.

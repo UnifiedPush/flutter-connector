@@ -246,4 +246,4 @@ fabric.properties
 .pub/
 
 build/
-pubspec.lock
+# pubspec.lock

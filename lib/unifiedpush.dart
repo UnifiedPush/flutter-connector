@@ -136,6 +136,10 @@ class UnifiedPush {
     return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS)).cast<String>();
   }
 
+  static Future<String> getDistributor() async {
+    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTOR)) as String;
+  }
+
   static Future<void> saveDistributor(String distributor) async {
     await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, distributor);
   }

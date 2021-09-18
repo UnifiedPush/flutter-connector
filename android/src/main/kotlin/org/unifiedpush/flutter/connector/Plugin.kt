@@ -50,6 +50,13 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         }
 
         @JvmStatic
+        private fun getDistributor(context: Context,
+                                    result: Result?){
+            val distributor = up.getDistributor(context)
+            result?.success(distributor)
+        }
+
+        @JvmStatic
         private fun saveDistributor(context: Context,
                                     args: ArrayList<*>?,
                                     result: Result?){
@@ -133,6 +140,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             PLUGIN_EVENT_INITIALIZE_CALLBACK -> initializeCallback(mContext!!, args, result)
             PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG -> registerAppWithDialog(mActivity!!, result)
             PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
+            PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, result)

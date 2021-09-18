@@ -3,6 +3,7 @@ package org.unifiedpush.flutter.connector
 const val PLUGIN_EVENT_INITIALIZE_CALLBACK = "initializeCallback"
 const val PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG = "registerAppWithDialog"
 const val PLUGIN_EVENT_GET_DISTRIBUTORS = "getDistributors"
+const val PLUGIN_EVENT_GET_DISTRIBUTOR = "getDistributor"
 const val PLUGIN_EVENT_SAVE_DISTRIBUTOR = "saveDistributor"
 const val PLUGIN_EVENT_REGISTER_APP = "registerApp"
 const val PLUGIN_EVENT_UNREGISTER = "unregister"

@@ -141,7 +141,7 @@ class UnifiedPush {
   }
 
   static Future<void> saveDistributor(String distributor) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, distributor);
+    await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, [distributor]);
   }
 
   static Future<void> registerApp([String instance= ""]) async {

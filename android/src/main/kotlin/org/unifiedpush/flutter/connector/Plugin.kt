@@ -31,8 +31,14 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
          */
         @JvmStatic
         private fun registerAppWithDialog(context: Context,
+                                          args: ArrayList<*>?,
                                           result: Result?) {
-            up.registerAppWithDialog(context)
+            val instance: String = (args?.get(0) ?: "") as String
+            if (instance.isEmpty()) {
+                up.registerAppWithDialog(context)
+            } else {
+                up.registerAppWithDialog(context, instance)
+            }
             result?.success(null)
         }
 
@@ -67,15 +73,27 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun registerApp(context: Context,
+                                args: ArrayList<*>?,
                                 result: Result?){
-            up.registerApp(context)
+            val instance: String = (args?.get(0) ?: "") as String
+            if (instance.isEmpty()) {
+                up.registerApp(context)
+            } else {
+                up.registerApp(context, instance)
+            }
             result?.success(true)
         }
 
         @JvmStatic
         private fun unregister(context: Context,
+                               args: ArrayList<*>?,
                                result: Result) {
-            up.unregisterApp(context)
+            val instance: String = (args?.get(0) ?: "") as String
+            if (instance.isEmpty()) {
+                up.unregisterApp(context)
+            } else {
+                up.unregisterApp(context, instance)
+            }
             result.success(true)
         }
 
@@ -138,12 +156,12 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         val args = call.arguments<ArrayList<*>>()
         when(call.method) {
             PLUGIN_EVENT_INITIALIZE_CALLBACK -> initializeCallback(mContext!!, args, result)
-            PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG -> registerAppWithDialog(mActivity!!, result)
+            PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG -> registerAppWithDialog(mActivity!!, args, result)
             PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
             PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
-            PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, result)
-            PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, result)
+            PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
+            PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
             else -> result.notImplemented()
         }
     }

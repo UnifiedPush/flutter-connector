@@ -124,12 +124,12 @@ class UnifiedPush {
     }
   }
 
-  static Future<void> unregister() async {
-    await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER);
+  static Future<void> unregister([String instance= ""]) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [instance]);
   }
 
-  static Future<void> registerAppWithDialog() async {
-    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG);
+  static Future<void> registerAppWithDialog([String instance= ""]) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG, [instance]);
   }
 
   static Future<List<String>> getDistributors() async {
@@ -144,7 +144,7 @@ class UnifiedPush {
     await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, distributor);
   }
 
-  static Future<void> registerApp() async {
-    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP);
+  static Future<void> registerApp([String instance= ""]) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP, [instance]);
   }
 }

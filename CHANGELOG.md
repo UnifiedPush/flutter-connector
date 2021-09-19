@@ -1,3 +1,9 @@
+## 2.0.0
+* Add multi-instance support for receiving events:
+    * Add initializeWithReceiverInstanciated
+    * Add initializeWithCallbackInstanciated
+* Callback functions passed as argument for initializeWithCallback now require to have `dynamic` args
+
 ## 1.1.0
 * Add GetDistributor
 * Add multi-instance support

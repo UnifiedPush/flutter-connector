@@ -17,16 +17,14 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class CallbackService : MethodCallHandler, JobIntentService() {
-    private val messageQueue = ArrayDeque<String>()
-    private val endpointQueue = ArrayDeque<String>()
-    private val unregisteredQueue = ArrayDeque<String>()
+    private val instances: MutableMap<String, CallbackInstance> = mutableMapOf()
 
     private lateinit var mBackgroundChannel: MethodChannel
     private lateinit var mContext: Context
 
     companion object {
         @JvmStatic
-        private val TAG = "FlutterUnifiedPushService"
+        private val TAG = "FlutterUPService"
         @JvmStatic
         private val JOB_ID = UUID.randomUUID().mostSignificantBits.toInt()
         @JvmStatic
@@ -78,22 +76,33 @@ class CallbackService : MethodCallHandler, JobIntentService() {
             CALLBACK_EVENT_INITIALIZED -> {
                 Log.i("CallbackService","EVENT_INITIALIZED")
                 synchronized(sServiceStarted) {
-                    unregisteredQueue.poll()?.let{
-                        Log.d("CallbackService","unregisteredQueue not empty")
-                        mBackgroundChannel.invokeMethod(CALLBACK_EVENT_UNREGISTERED, null)
-                        unregisteredQueue.clear()
-                        endpointQueue.clear()
-                        messageQueue.clear()
-                    }
-                    endpointQueue.removeAll {
-                        Log.d("CallbackService","endpointQueue not empty")
-                        mBackgroundChannel.invokeMethod(CALLBACK_EVENT_NEW_ENDPOINT, it)
-                        true
-                    }
-                    messageQueue.removeAll {
-                        Log.d("CallbackService","messageQueue not empty")
-                        mBackgroundChannel.invokeMethod(CALLBACK_EVENT_MESSAGE, it)
-                        true
+                    instances.values.forEach { instance ->
+                        instance.unregisteredQueue.poll()?.let {
+                            Log.d("CallbackService", "unregisteredQueue not empty")
+                            mBackgroundChannel.invokeMethod(
+                                CALLBACK_EVENT_UNREGISTERED,
+                                mapOf("instance" to instance.name)
+                            )
+                            instance.unregisteredQueue.clear()
+                            instance.endpointQueue.clear()
+                            instance.messageQueue.clear()
+                        }
+                        instance.endpointQueue.removeAll {
+                            Log.d("CallbackService", "endpointQueue not empty")
+                            mBackgroundChannel.invokeMethod(
+                                CALLBACK_EVENT_NEW_ENDPOINT,
+                                mapOf("endpoint" to it, "instance" to instance.name)
+                            )
+                            true
+                        }
+                        instance.messageQueue.removeAll {
+                            Log.d("CallbackService", "messageQueue not empty")
+                            mBackgroundChannel.invokeMethod(
+                                CALLBACK_EVENT_MESSAGE,
+                                mapOf("message" to it, "instance" to instance.name)
+                            )
+                            true
+                        }
                     }
                     sServiceStarted.set(true)
                 }
@@ -112,32 +121,41 @@ class CallbackService : MethodCallHandler, JobIntentService() {
     }
 
     override fun onHandleWork(intent: Intent) {
-
         val event = intent.getStringExtra(EXTRA_CALLBACK_EVENT)?: ""
-        val data = intent.getStringExtra(EXTRA_CALLBACK_DATA)?: ""
+        val instanceKey = intent.getStringExtra(EXTRA_CALLBACK_INSTANCE)?: ""
+        val message = intent.getStringExtra(EXTRA_CALLBACK_MESSAGE)?: ""
+        val endpoint = intent.getStringExtra(EXTRA_CALLBACK_ENDPOINT)?: ""
+        if (!instances.keys.contains(instanceKey))
+            instances[instanceKey] = CallbackInstance(instanceKey)
+
+        val instance = instances[instanceKey]!!
 
         synchronized(sServiceStarted) {
             if (!sServiceStarted.get()) {
                 Log.d("CallbackService","Not yet started")
                 when(event){
                     CALLBACK_EVENT_MESSAGE -> {
-                        messageQueue.add(data)
+                        instance.messageQueue.add(message)
                     }
                     CALLBACK_EVENT_NEW_ENDPOINT -> {
-                        endpointQueue.clear()
-                        endpointQueue.add(data)
+                        instance.endpointQueue.clear()
+                        instance.endpointQueue.add(endpoint)
                     }
                     CALLBACK_EVENT_UNREGISTERED -> {
-                        unregisteredQueue.clear()
-                        unregisteredQueue.add(null)
+                        instance.unregisteredQueue.clear()
+                        instance.unregisteredQueue.add(null)
                     }
                     else -> {}
                 }
             } else {
                 Handler(mContext.mainLooper).post {
+                    val data = mapOf(
+                        "instance" to instanceKey,
+                        "message" to message,
+                        "endpoint" to endpoint
+                    )
                     mBackgroundChannel.invokeMethod(event, data)
                 }
-
             }
         }
     }

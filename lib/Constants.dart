@@ -7,8 +7,6 @@ const PLUGIN_EVENT_REGISTER_APP = "registerApp";
 const PLUGIN_EVENT_UNREGISTER = "unregister";
 const PLUGIN_CHANNEL = "org.unifiedpush.flutter.connector.PLUGIN_CHANNEL";
 
-const EXTRA_CALLBACK_EVENT = "event";
-const EXTRA_CALLBACK_DATA = "data";
 const CALLBACK_EVENT_MESSAGE = "message";
 const CALLBACK_EVENT_NEW_ENDPOINT = "new_endpoint";
 const CALLBACK_EVENT_UNREGISTERED = "unregistered";

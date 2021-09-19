@@ -14,7 +14,7 @@ void callbackDispatcher() {
 
   _backgroundChannel.setMethodCallHandler((MethodCall call) async {
     debugPrint("callbackDispatcher: MethodCallHandler");
-    final arg = call.arguments as String;
+    final arg = call.arguments;
 
     if (UnifiedPush.prefs == null) {
       UnifiedPush.prefs = await SharedPreferences.getInstance();
@@ -23,6 +23,7 @@ void callbackDispatcher() {
 
     var rawHandle;
     debugPrint("callbackDispatcher: call.method: ${call.method}");
+    //TODO make args there
     switch(call.method){
       case CALLBACK_EVENT_NEW_ENDPOINT : {
         rawHandle = UnifiedPush.prefs.getInt(PREF_ON_NEW_ENDPOINT);

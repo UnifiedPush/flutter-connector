@@ -6,6 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'NotificationUtils.dart';
 
+/**
+ * Instance
+ * Option 1: Single instance
+ */
+
 Future<void> main() async {
   runApp(MyApp());
   EasyLoading.instance.userInteractions = false;
@@ -33,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         UPNotificationUtils.basicOnNotification,
         bgNewEndpoint, // called when new endpoint in background , need to be static
         bgUnregistered, // called when unregistered in background , need to be static
-        UPNotificationUtils.basicOnNotification // called when receiving a message in background , need to be static
+        bgOnMessage // called when receiving a message in background , need to be static
     );
     super.initState();
   }
@@ -61,12 +66,17 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  static bgNewEndpoint(String _endpoint) {
-    print("BG: New endpoint: $_endpoint");
+  static bgOnMessage(dynamic args) {
+    print(args["message"]);
+    UPNotificationUtils.basicOnNotification(args["message"]);
+  }
+
+  static bgNewEndpoint(dynamic args) {
+    print("BG: New endpoint: ${args["endpoint"]}");
     //TODO
   }
 
-  static bgUnregistered() {
+  static bgUnregistered(dynamic args) {
     print("BG: Unregistered");
     //TODO
   }
@@ -112,11 +122,13 @@ class HomePage extends StatelessWidget {
             UnifiedPush.unregister();
           } else {
             /**
+             * Registration
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
             UnifiedPush.registerAppWithDialog();
             /**
+             * Registration
              * Option 2: Do your own function to pick the distrib
              */
             /*

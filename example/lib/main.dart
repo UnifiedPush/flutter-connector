@@ -6,11 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'NotificationUtils.dart';
 
-/**
- * Instance
- * Option 1: Single instance
- */
-
+/// Instance
+/// Option 1: Single instance
 Future<void> main() async {
   runApp(MyApp());
   EasyLoading.instance.userInteractions = false;
@@ -27,7 +24,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     UnifiedPush.initializeWithCallback(
@@ -39,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         bgNewEndpoint, // called when new endpoint in background , need to be static
         bgUnregistered, // called when unregistered in background , need to be static
         bgOnMessage // called when receiving a message in background , need to be static
-    );
+        );
     super.initState();
   }
 
@@ -56,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onRegistrationFailed() {
-   //TODO
+    //TODO
   }
 
   void onUnregistered() {
@@ -84,9 +80,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        HomePage.routeName: (context) => HomePage()
-      },
+      routes: {HomePage.routeName: (context) => HomePage()},
       builder: EasyLoading.init(),
     );
   }
@@ -98,10 +92,8 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  void notify() async => await http.post(
-      endpoint,
-      body: "title=${title.text}&message=${message.text}&priority=6"
-  );
+  void notify() async => await http.post(endpoint,
+      body: "title=${title.text}&message=${message.text}&priority=6");
 
   String myPickerFunc(List<String> distributors) {
     // Do not do a random func, this is an example.
@@ -171,8 +163,7 @@ class HomePage extends StatelessWidget {
         ),
         body: Column(
           children: [
-            SelectableText("Endpoint: " +
-                (registered ? endpoint : "empty")),
+            SelectableText("Endpoint: " + (registered ? endpoint : "empty")),
             Center(
               child: Column(
                 children: row,

@@ -51,9 +51,7 @@ class UnifiedPush {
     _onMessageNoInstance?.call(m);
   };
 
-  /**
-   * INIT: 1.A With Callback, Default Instance
-   */
+  /// INIT: 1.A With Callback, Default Instance
   static Future<void> initializeWithCallback(
       void Function(String endpoint) onNewEndpoint,
       void Function() onRegistrationFailed,
@@ -96,9 +94,7 @@ class UnifiedPush {
     debugPrint("initialization finished");
   }
 
-  /**
-   * INIT: 1.B With Callback, Multi Instance
-   */
+  /// INIT: 1.B With Callback, Multi Instance
   static Future<void> initializeWithCallbackInstanciated(
       void Function(String endpoint, String instance) onNewEndpoint,
       void Function(String instance) onRegistrationFailed,
@@ -141,9 +137,7 @@ class UnifiedPush {
     debugPrint("initialization finished");
   }
 
-  /**
-   * INIT: 2.A With Receiver, Default Instance
-   */
+  /// INIT: 2.A With Receiver, Default Instance
   static Future<void> initializeWithReceiver({
     void Function(String endpoint)? onNewEndpoint,
     void Function()? onRegistrationFailed,
@@ -174,9 +168,7 @@ class UnifiedPush {
     debugPrint("initialization finished");
   }
 
-  /**
-   * INIT: 2.B With Receiver, Multi Instance
-   */
+  /// INIT: 2.B With Receiver, Multi Instance
   static Future<void> initializeWithReceiverInstanciated({
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
@@ -207,10 +199,7 @@ class UnifiedPush {
     debugPrint("initialization finished");
   }
 
-  /**
-   * Call handler
-   */
-
+  /// Call handler
   static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
     debugPrint(call.method);

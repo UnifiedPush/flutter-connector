@@ -23,29 +23,32 @@ class Message {
 class UnifiedPush {
   static MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
 
-  static SharedPreferences prefs;
+  static late SharedPreferences prefs;
   static final _msg = <Message>[];
 
-  static void Function(String endpoint) _onNewEndpointNoInstance = (String _) {};
-  static void Function() _onRegistrationRefusedNoInstance = () {};
-  static void Function() _onRegistrationFailedNoInstance = () {};
-  static void Function() _onUnregisteredNoInstance = () {};
-  static void Function(String message) _onMessageNoInstance = (String _) {};
+  static void Function(String endpoint)? _onNewEndpointNoInstance =
+      (String _) {};
+  static void Function()? _onRegistrationRefusedNoInstance = () {};
+  static void Function()? _onRegistrationFailedNoInstance = () {};
+  static void Function()? _onUnregisteredNoInstance = () {};
+  static void Function(String message)? _onMessageNoInstance = (String _) {};
 
-  static void Function(String endpoint, String instance) _onNewEndpoint = (String e, String _) {
-    _onNewEndpointNoInstance(e);
+  static void Function(String endpoint, String instance)? _onNewEndpoint =
+      (String e, String _) {
+    _onNewEndpointNoInstance?.call(e);
   };
-  static void Function(String instance) _onRegistrationRefused = (String _) {
-    _onRegistrationRefusedNoInstance();
+  static void Function(String instance)? _onRegistrationRefused = (String _) {
+    _onRegistrationRefusedNoInstance?.call();
   };
-  static void Function(String instance) _onRegistrationFailed = (String _) {
-    _onRegistrationFailedNoInstance();
+  static void Function(String instance)? _onRegistrationFailed = (String _) {
+    _onRegistrationFailedNoInstance?.call();
   };
-  static void Function(String instance) _onUnregistered = (String _) {
-    _onUnregisteredNoInstance();
+  static void Function(String instance)? _onUnregistered = (String _) {
+    _onUnregisteredNoInstance?.call();
   };
-  static void Function(String message, String instance) _onMessage = (String m, String _) {
-    _onMessageNoInstance(m);
+  static void Function(String message, String instance)? _onMessage =
+      (String m, String _) {
+    _onMessageNoInstance?.call(m);
   };
 
   /**
@@ -61,8 +64,7 @@ class UnifiedPush {
       void Function(dynamic args) callbackOnUnregistered, //need to be static
       void Function(dynamic args) callbackOnMessage //need to be static
       ) async {
-
-    prefs = await SharedPreferences.getInstance();
+    UnifiedPush.prefs = await SharedPreferences.getInstance();
 
     _onNewEndpointNoInstance = onNewEndpoint;
     _onRegistrationFailedNoInstance = onRegistrationFailed;
@@ -74,23 +76,23 @@ class UnifiedPush {
 
     prefs.setInt(
         PREF_ON_NEW_ENDPOINT,
-        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)
+                ?.toRawHandle() ??
+            0);
     prefs.setInt(
         PREF_ON_UNREGISTERED,
-        PluginUtilities.getCallbackHandle(callbackOnUnregistered)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnUnregistered)
+                ?.toRawHandle() ??
+            0);
     prefs.setInt(
         PREF_ON_MESSAGE,
-        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle() ??
+            0);
 
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
 
     await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_CALLBACK,
-        <dynamic>[callback.toRawHandle()]
-    );
+        PLUGIN_EVENT_INITIALIZE_CALLBACK, <dynamic>[callback?.toRawHandle()]);
     debugPrint("initialization finished");
   }
 
@@ -107,7 +109,6 @@ class UnifiedPush {
       void Function(dynamic args) callbackOnUnregistered, //need to be static
       void Function(dynamic args) callbackOnMessage //need to be static
       ) async {
-
     prefs = await SharedPreferences.getInstance();
 
     _onNewEndpoint = onNewEndpoint;
@@ -120,23 +121,23 @@ class UnifiedPush {
 
     prefs.setInt(
         PREF_ON_NEW_ENDPOINT,
-        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)
+                ?.toRawHandle() ??
+            0);
     prefs.setInt(
         PREF_ON_UNREGISTERED,
-        PluginUtilities.getCallbackHandle(callbackOnUnregistered)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnUnregistered)
+                ?.toRawHandle() ??
+            0);
     prefs.setInt(
         PREF_ON_MESSAGE,
-        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle()
-    );
+        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle() ??
+            0);
 
     final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
 
     await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_CALLBACK,
-        <dynamic>[callback.toRawHandle()]
-    );
+        PLUGIN_EVENT_INITIALIZE_CALLBACK, <dynamic>[callback?.toRawHandle()]);
     debugPrint("initialization finished");
   }
 
@@ -144,11 +145,11 @@ class UnifiedPush {
    * INIT: 2.A With Receiver, Default Instance
    */
   static Future<void> initializeWithReceiver({
-    void Function(String endpoint) onNewEndpoint,
-    void Function() onRegistrationFailed,
-    void Function() onRegistrationRefused,
-    void Function() onUnregistered,
-    void Function(String message) onMessage,
+    void Function(String endpoint)? onNewEndpoint,
+    void Function()? onRegistrationFailed,
+    void Function()? onRegistrationRefused,
+    void Function()? onUnregistered,
+    void Function(String message)? onMessage,
   }) async {
     _onNewEndpointNoInstance = onNewEndpoint;
     _onRegistrationFailedNoInstance = onRegistrationFailed;
@@ -158,21 +159,18 @@ class UnifiedPush {
       if (onMessage != null) {
         onMessage(message);
       } else {
-        _msg.add(Message(message,""));
+        _msg.add(Message(message, ""));
       }
     };
 
     if (_onMessageNoInstance != null) {
-      _msg.forEach((msg)  => _onMessageNoInstance(msg.message));
+      _msg.forEach((msg) => _onMessageNoInstance?.call(msg.message));
       _msg.clear();
     }
 
     _channel.setMethodCallHandler(onMethodCall);
 
-    await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_CALLBACK,
-        null
-    );
+    await _channel.invokeMethod(PLUGIN_EVENT_INITIALIZE_CALLBACK, null);
     debugPrint("initialization finished");
   }
 
@@ -180,11 +178,11 @@ class UnifiedPush {
    * INIT: 2.B With Receiver, Multi Instance
    */
   static Future<void> initializeWithReceiverInstanciated({
-    void Function(String endpoint, String instance) onNewEndpoint,
-    void Function(String instance) onRegistrationFailed,
-    void Function(String instance) onRegistrationRefused,
-    void Function(String instance) onUnregistered,
-    void Function(String message, String instance) onMessage,
+    void Function(String endpoint, String instance)? onNewEndpoint,
+    void Function(String instance)? onRegistrationFailed,
+    void Function(String instance)? onRegistrationRefused,
+    void Function(String instance)? onUnregistered,
+    void Function(String message, String instance)? onMessage,
   }) async {
     _onNewEndpoint = onNewEndpoint;
     _onRegistrationFailed = onRegistrationFailed;
@@ -195,20 +193,17 @@ class UnifiedPush {
         onMessage(message, instance);
       } else {
         _msg.add(Message(message, instance));
-        }
+      }
     };
 
     if (_onMessage != null) {
-      _msg.forEach((msg) => _onMessage(msg.message, msg.instance));
+      _msg.forEach((msg) => _onMessage?.call(msg.message, msg.instance));
       _msg.clear();
     }
 
     _channel.setMethodCallHandler(onMethodCall);
 
-    await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_CALLBACK,
-        null
-    );
+    await _channel.invokeMethod(PLUGIN_EVENT_INITIALIZE_CALLBACK, null);
     debugPrint("initialization finished");
   }
 
@@ -222,44 +217,47 @@ class UnifiedPush {
     final instance = call.arguments["instance"];
     switch (call.method) {
       case "onNewEndpoint":
-        _onNewEndpoint(call.arguments["endpoint"], instance);
+        _onNewEndpoint?.call(call.arguments["endpoint"], instance);
         break;
       case "onRegistrationRefused":
-        _onRegistrationRefused(instance);
+        _onRegistrationRefused?.call(instance);
         break;
       case "onRegistrationFailed":
-        _onRegistrationFailed(instance);
+        _onRegistrationFailed?.call(instance);
         break;
       case "onUnregistered":
-        _onUnregistered(instance);
+        _onUnregistered?.call(instance);
         break;
       case "onMessage":
-        _onMessage(call.arguments["message"], instance);
+        _onMessage?.call(call.arguments["message"], instance);
         break;
     }
   }
 
-  static Future<void> unregister([String instance= ""]) async {
+  static Future<void> unregister([String instance = ""]) async {
     await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [instance]);
   }
 
-  static Future<void> registerAppWithDialog([String instance= ""]) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG, [instance]);
+  static Future<void> registerAppWithDialog([String instance = ""]) async {
+    await _channel
+        .invokeMethod(PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG, [instance]);
   }
 
   static Future<List<String>> getDistributors() async {
-    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS)).cast<String>();
+    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS))
+        .cast<String>();
   }
 
   static Future<String> getDistributor() async {
-    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTOR)) as String;
+    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTOR))
+        as String;
   }
 
   static Future<void> saveDistributor(String distributor) async {
     await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, [distributor]);
   }
 
-  static Future<void> registerApp([String instance= ""]) async {
+  static Future<void> registerApp([String instance = ""]) async {
     await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP, [instance]);
   }
 }

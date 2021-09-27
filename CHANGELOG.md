@@ -1,3 +1,7 @@
+## 3.0.0
+* Make the lib null safe
+* It is supposed to be a major release
+
 ## 2.1.0
 * Make the lib null safe
 

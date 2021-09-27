@@ -1,3 +1,6 @@
+## 2.1.0
+* Make the lib null safe
+
 ## 2.0.0
 * Add multi-instance support for receiving events:
     * Add initializeWithReceiverInstanciated

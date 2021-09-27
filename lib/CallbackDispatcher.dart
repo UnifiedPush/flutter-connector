@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush/Constants.dart';
 import 'unifiedpush.dart';
 
@@ -14,9 +15,13 @@ void callbackDispatcher() {
     debugPrint("callbackDispatcher: MethodCallHandler");
     final arg = call.arguments;
 
+    if (!UnifiedPush.initialized) {
+      UnifiedPush.prefs = await SharedPreferences.getInstance();
+      debugPrint("callbackDispatcher: new Preferences");
+    }
+
     var rawHandle;
     debugPrint("callbackDispatcher: call.method: ${call.method}");
-    //TODO make args there
     switch (call.method) {
       case CALLBACK_EVENT_NEW_ENDPOINT:
         {

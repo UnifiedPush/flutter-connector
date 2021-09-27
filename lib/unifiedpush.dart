@@ -24,6 +24,7 @@ class UnifiedPush {
   static MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
 
   static late SharedPreferences prefs;
+  static bool initialized = false;
   static final _msg = <Message>[];
 
   static void Function(String endpoint)? _onNewEndpointNoInstance =
@@ -62,7 +63,7 @@ class UnifiedPush {
       void Function(dynamic args) callbackOnUnregistered, //need to be static
       void Function(dynamic args) callbackOnMessage //need to be static
       ) async {
-    UnifiedPush.prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
     _onNewEndpointNoInstance = onNewEndpoint;
     _onRegistrationFailedNoInstance = onRegistrationFailed;
@@ -134,6 +135,7 @@ class UnifiedPush {
 
     await _channel.invokeMethod(
         PLUGIN_EVENT_INITIALIZE_CALLBACK, <dynamic>[callback?.toRawHandle()]);
+    initialized = true;
     debugPrint("initialization finished");
   }
 

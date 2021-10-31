@@ -242,7 +242,7 @@ class UnifiedPush {
                   ],
                 );
               });
-          break;
+          return;
         case 1:
           await saveDistributor(dists[0]);
           break;

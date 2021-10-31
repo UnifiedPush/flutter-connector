@@ -4,9 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/services.dart';
 
-
-
-//TODO reduce the number of constants
+//TODO remove unused consts
 const PLUGIN_EVENT_INITIALIZE_CALLBACK = "initializeCallback";
 const PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG = "registerAppWithDialog";
 const PLUGIN_EVENT_GET_DISTRIBUTORS = "getDistributors";
@@ -24,9 +22,6 @@ const CALLBACK_DISPATCHER_HANDLE_KEY = "callback_dispatch_handler";
 const CALLBACK_CHANNEL = "org.unifiedpush.flutter.connector.CALLBACK_CHANNEL";
 
 const SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache";
-
-
-
 
 class UnifiedPushMethodChannel extends UnifiedPushPlatform {
   //static UnifiedPushMethodChannel instance = UnifiedPushMethodChannel();
@@ -62,13 +57,14 @@ class UnifiedPushMethodChannel extends UnifiedPushPlatform {
   }
 
   @override
-  Future<void> initCallback(Function() callbackDispatcher) async {
+  Future<void> initCallback(Function()? callbackDispatcher) async {
     _channel.setMethodCallHandler(onMethodCall);
 
-    final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
-
-    await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_CALLBACK, <dynamic>[callback?.toRawHandle()]);
+    if (callbackDispatcher != null) {
+      final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
+      await _channel.invokeMethod(
+          PLUGIN_EVENT_INITIALIZE_CALLBACK, <dynamic>[callback?.toRawHandle()]);
+    }
   }
 
   @override

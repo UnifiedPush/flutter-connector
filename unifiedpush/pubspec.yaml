@@ -15,6 +15,7 @@ dependencies:
   flutter_local_notifications: ^6.0.0
   unifiedpush_platform_interface:
     path: ../unifiedpush_platform_interface
+  url_launcher: ^6.0.0
 
 dev_dependencies:
   flutter_test:

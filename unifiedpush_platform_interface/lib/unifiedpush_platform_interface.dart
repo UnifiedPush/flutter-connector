@@ -1,7 +1,5 @@
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'dart:async';
 
@@ -22,8 +20,8 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
 
   /// Platform-specific plugins should set this with their own platform-specific
   /// class that extends [UnifiedPushPlatform] when they register themselves.
-  // TODO(amirh): Extract common platform interface logic.
   // https://github.com/flutter/flutter/issues/43368
+  // ???
   static set instance(UnifiedPushPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
@@ -62,9 +60,6 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
       void Function(String instance) onRegistrationRefused,
       void Function(String instance) onUnregistered,
       void Function(String message, String instance) onMessage,
-      void Function(dynamic args) callbackOnNewEndpoint, //need to be static
-      void Function(dynamic args) callbackOnUnregistered, //need to be static
-      void Function(dynamic args) callbackOnMessage, //need to be static
       {String? dbusId})  {
     this.onNewEndpoint = onNewEndpoint;
     this.onRegistrationFailed = onRegistrationFailed;
@@ -74,39 +69,8 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     //this.dbusId = dbusId;
   }
 
-  Future<void> initCallback(Function() callbackDispatcher) async {
+  Future<void> initCallback(Function()? callbackDispatcher) async {
     throw UnimplementedError('initCallback() has not been implemented.');
-  }
-
-  Future<void> initializeWithReceiver({
-    void Function(String endpoint)? onNewEndpoint,
-    void Function()? onRegistrationFailed,
-    void Function()? onRegistrationRefused,
-    void Function()? onUnregistered,
-    void Function(String message)? onMessage,
-    String? dbusId,
-  }) async {
-    assert(dbusId != null);
-    // this.dbusId = dbusId;
-
-    // this.onNewEndpoint = onNewEndpoint;
-    // this.onRegistrationFailed = onRegistrationFailed;
-    // this.onRegistrationRefused = onRegistrationRefused;
-    // this.onUnregistered = onUnregistered;
-    // this.onMessage = (String message) {
-    //   if (onMessage != null) {
-    //     onMessage(message);
-    //   } else {
-    //     //_msg.add(message);
-    //   }
-    // };
-
-    // if (onMessage != null) {
-    //   //_msg.forEach(_onMessage);
-    //   //_msg.clear();
-    // }
-    // debugPrint((await getDistributors()).toString());
-    // await processReceive();
   }
 
   @protected

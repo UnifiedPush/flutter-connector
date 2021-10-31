@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Constants.dart';
 import 'CallbackDispatcher.dart';
@@ -208,11 +209,30 @@ class UnifiedPush {
   static Future<void> unregister({String instance = ""}) =>
       UnifiedPushPlatform.instance.tryUnregister(instance);
 
-  static Future<void> registerAppWithDialog({String instance = ""}) async {
-    //TODO
+  static Future<void> registerAppWithDialog(BuildContext context,
+      {String instance = ""}) async {
     //await _channel        .invokeMethod(PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG, [instance]);
-    await saveDistributor((await getDistributors())[0]);
-    registerApp();
+    final dists = await getDistributors();
+    final picked = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+              title: const Text('Select push distributor'),
+              children: dists
+                  .map<Widget>(
+                    (String o) => SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context, o);
+                      },
+                      child: Text(o),
+                    ),
+                  )
+                  .toList());
+        });
+    if (picked != null) {
+      await saveDistributor(picked);
+       registerApp();
+    }
   }
 
   static Future<List<String>> getDistributors() async =>

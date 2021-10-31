@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "name": "Flutter",
+      "type": "dart",
+      "request": "launch",
+      "program": "example/lib/main.dart",
+      "env": {
+        //"UNIFIEDPUSH_DBUS_BACKGROUND_ACTIVATION": "true"
+      }
+    }
+  ]
+}

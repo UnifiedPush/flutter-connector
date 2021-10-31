@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.0.5
   flutter_local_notifications: ^6.0.0
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface
 
 dev_dependencies:
   flutter_test:

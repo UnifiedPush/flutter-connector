@@ -42,5 +42,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.UnifiedPush:android-connector:1.2.2'
+    implementation 'com.github.UnifiedPush:android-connector:1.2.3'
 }

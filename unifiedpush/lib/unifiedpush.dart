@@ -218,26 +218,21 @@ class UnifiedPush {
 
   static Future<void> registerAppWithDialog(BuildContext context,
       {String instance = ""}) async {
-
     if ((await getDistributor()).isEmpty) {
       var distributors = await getDistributors();
 
       switch (distributors.length) {
-
         case 0:
-          await showDialog(
-              context: context,
-              builder: noDistributorDialog);
+          await showDialog(context: context, builder: noDistributorDialog);
           return;
 
         case 1:
-          await saveDistributor(distributors.values.single);
+          await saveDistributor(distributors.keys.single);
           break;
 
         default:
           final picked = await showDialog<String>(
-              context: context,
-              builder: pickDistributorDialog(distributors) );
+              context: context, builder: pickDistributorDialog(distributors));
 
           if (picked != null) await saveDistributor(picked);
 

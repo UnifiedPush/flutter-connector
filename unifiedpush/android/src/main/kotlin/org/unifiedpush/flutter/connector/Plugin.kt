@@ -3,6 +3,7 @@ package org.unifiedpush.flutter.connector
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.content.pm.PackageManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -52,7 +53,17 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         private fun getDistributors(context: Context,
                                     result: Result?){
             val distributors = up.getDistributors(context)
-            result?.success(distributors)
+            val distributorsArray = distributors.toTypedArray()
+            val distributorsNameMap = distributorsArray.map { it to
+                    try {
+                        val ai = context.packageManager.getApplicationInfo(it, 0)
+                        context.packageManager.getApplicationLabel(ai)
+                    } catch (e: PackageManager.NameNotFoundException) {
+                        it
+                    } as String
+                }.toMap()
+
+            result?.success(distributorsNameMap)
         }
 
         @JvmStatic

@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/.*": true,
+        "**/*iml": true,
+        "**/build": true
+    }
+}

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'dart:async';
@@ -11,7 +10,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static  UnifiedPushPlatform _instance = UnifiedPushMethodChannel();
+  static UnifiedPushPlatform _instance = UnifiedPushMethodChannel();
 
   /// The default instance of [UnifiedPushPlatform] to use.
   ///
@@ -94,7 +93,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     throw UnimplementedError('setDistributor()) has not been implemented.');
   }
 
-  Future<List<String>> getDistributors() {
+  Future<Map<String, String>> getDistributors() {
     throw UnimplementedError('getDistributors() has not been implemented.');
   }
 }

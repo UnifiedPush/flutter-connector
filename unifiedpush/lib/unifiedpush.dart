@@ -244,7 +244,7 @@ class UnifiedPush {
               });
           return;
         case 1:
-          await saveDistributor(dists[0]);
+          await saveDistributor(dists.values.single);
           break;
         default:
           final picked = await showDialog<String>(
@@ -252,13 +252,13 @@ class UnifiedPush {
               builder: (BuildContext context) {
                 return SimpleDialog(
                     title: const Text('Select push distributor'),
-                    children: dists
+                    children: dists.entries
                         .map<Widget>(
-                          (String o) => SimpleDialogOption(
+                          (m) => SimpleDialogOption(
                             onPressed: () {
-                              Navigator.pop(context, o);
+                              Navigator.pop(context, m.key);
                             },
-                            child: Text(o),
+                            child: Text(m.value),
                           ),
                         )
                         .toList());
@@ -272,7 +272,9 @@ class UnifiedPush {
     registerApp();
   }
 
-  static Future<List<String>> getDistributors() async =>
+  // getDistributors returns a map of the distributor's unique platform id to human readable name
+  // the former should be used in the call to saveDistributor to register the app
+  static Future<Map<String, String>> getDistributors() async =>
       UnifiedPushPlatform.instance.getDistributors();
 
   static Future<String> getDistributor() async =>

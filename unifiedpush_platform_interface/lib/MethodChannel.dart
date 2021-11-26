@@ -68,9 +68,10 @@ class UnifiedPushMethodChannel extends UnifiedPushPlatform {
   }
 
   @override
-  Future<List<String>> getDistributors() async {
-    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS))
-        .cast<String>();
+  Future<Map<String, String>> getDistributors() async {
+    return (await _channel
+            .invokeMapMethod<String, String>(PLUGIN_EVENT_GET_DISTRIBUTORS)) ??
+        Map<String, String>(); //return empty if null response
   }
 
   @override

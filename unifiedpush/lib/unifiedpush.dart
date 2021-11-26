@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'CallbackDispatcher.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
-import 'package:url_launcher/url_launcher.dart' show launch;
+
+import 'dialogs.dart';
 
 const PREF_ON_NEW_ENDPOINT = "unifiedpush/method:onNewEnpoint";
 const PREF_ON_REGISTRATION_REFUSED = "unifiedpush/method:onRegistrationRefused";
@@ -68,7 +69,7 @@ class UnifiedPush {
     _onUnregisteredNoInstance = onUnregistered;
     _onMessageNoInstance = onMessage;
 
-    UnifiedPushPlatform.instance.initializeWithCallback(
+    UnifiedPushPlatform.instance.initialize(
       _onNewEndpoint ?? (_, _1) {},
       _onRegistrationFailed ?? (_) {},
       _onRegistrationRefused ?? (_) {},
@@ -99,7 +100,7 @@ class UnifiedPush {
     _onUnregistered = onUnregistered;
     _onMessage = onMessage;
 
-    UnifiedPushPlatform.instance.initializeWithCallback(
+    UnifiedPushPlatform.instance.initialize(
       _onNewEndpoint ?? (_, _1) {},
       _onRegistrationFailed ?? (_) {},
       _onRegistrationRefused ?? (_) {},
@@ -163,7 +164,7 @@ class UnifiedPush {
       _msg.clear();
     }
 
-    UnifiedPushPlatform.instance.initializeWithCallback(
+    UnifiedPushPlatform.instance.initialize(
       _onNewEndpoint ?? (_, _1) {},
       _onRegistrationFailed ?? (_) {},
       _onRegistrationRefused ?? (_) {},
@@ -200,7 +201,7 @@ class UnifiedPush {
       _msg.clear();
     }
 
-    UnifiedPushPlatform.instance.initializeWithCallback(
+    UnifiedPushPlatform.instance.initialize(
       _onNewEndpoint ?? (_, _1) {},
       _onRegistrationFailed ?? (_) {},
       _onRegistrationRefused ?? (_) {},
@@ -217,58 +218,33 @@ class UnifiedPush {
 
   static Future<void> registerAppWithDialog(BuildContext context,
       {String instance = ""}) async {
+
     if ((await getDistributor()).isEmpty) {
-      var dists = await getDistributors();
-      switch (dists.length) {
+      var distributors = await getDistributors();
+
+      switch (distributors.length) {
+
         case 0:
           await showDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Push Notifications'),
-                  content: SingleChildScrollView(
-                      child: SelectableText(
-                          "You need to install a distributor for push notifications to work.\nYou can find more information at: https://unifiedpush.org/users/intro/")),
-                  actions: [
-                    TextButton(
-                      child: const Text('More Info'),
-                      onPressed: () =>
-                          launch('https://unifiedpush.org/users/intro/'),
-                    ),
-                    TextButton(
-                      child: const Text('Close'),
-                      onPressed: Navigator.of(context).pop,
-                    ),
-                  ],
-                );
-              });
+              builder: noDistributorDialog);
           return;
+
         case 1:
-          await saveDistributor(dists.values.single);
+          await saveDistributor(distributors.values.single);
           break;
+
         default:
           final picked = await showDialog<String>(
               context: context,
-              builder: (BuildContext context) {
-                return SimpleDialog(
-                    title: const Text('Select push distributor'),
-                    children: dists.entries
-                        .map<Widget>(
-                          (m) => SimpleDialogOption(
-                            onPressed: () {
-                              Navigator.pop(context, m.key);
-                            },
-                            child: Text(m.value),
-                          ),
-                        )
-                        .toList());
-              });
+              builder: pickDistributorDialog(distributors) );
 
           if (picked != null) await saveDistributor(picked);
 
           break;
       }
     }
+
     registerApp();
   }
 

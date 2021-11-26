@@ -44,7 +44,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     //empty in default impl because not required by all platforms
   }
 
-  void initializeWithCallback(
+  void initialize(
     void Function(String endpoint, String instance) onNewEndpoint,
     void Function(String instance) onRegistrationFailed,
     void Function(String instance) onRegistrationRefused,

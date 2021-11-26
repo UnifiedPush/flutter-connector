@@ -38,15 +38,6 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   @protected
   void Function(String message, String instance) onMessage =
       (String _, String _1) {};
-  //@protected
-  //String get dbusId {
-  //  return UnifiedPush.prefs.getString(PREF_DBUS_ID);
-  //}
-
-  //@protected
-  //set dbusId(String a) {
-  //  UnifiedPush.prefs.setString(PREF_DBUS_ID, a);
-  //}
 
 //needed for desktop platforms
   Future<void> bgCheck() async {
@@ -54,18 +45,17 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   }
 
   void initializeWithCallback(
-      void Function(String endpoint, String instance) onNewEndpoint,
-      void Function(String instance) onRegistrationFailed,
-      void Function(String instance) onRegistrationRefused,
-      void Function(String instance) onUnregistered,
-      void Function(String message, String instance) onMessage,
-      {String? dbusId})  {
+    void Function(String endpoint, String instance) onNewEndpoint,
+    void Function(String instance) onRegistrationFailed,
+    void Function(String instance) onRegistrationRefused,
+    void Function(String instance) onUnregistered,
+    void Function(String message, String instance) onMessage,
+  ) {
     this.onNewEndpoint = onNewEndpoint;
     this.onRegistrationFailed = onRegistrationFailed;
     this.onRegistrationRefused = onRegistrationRefused;
     this.onUnregistered = onUnregistered;
     this.onMessage = onMessage;
-    //this.dbusId = dbusId;
   }
 
   Future<void> initCallback(Function()? callbackDispatcher) async {

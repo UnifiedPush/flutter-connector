@@ -1,8 +1,8 @@
 name: unifiedpush_platform_interface
 description: A common platform interface for the unifiedpush plugin.
-repository:
-issue_tracker:
-version: 0.1.0
+repository: https://github.com/UnifiedPush/flutter-connector
+issue_tracker: https://github.com/UnifiedPush/flutter-connector/issues
+version: 1.0.0
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

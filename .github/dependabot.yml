@@ -1,12 +1,12 @@
 version: 2
 updates:
 - package-ecosystem: gradle
-  directory: "/android"
+  directory: "/unifiedpush/android"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
 - package-ecosystem: gradle
-  directory: "/example/android"
+  directory: "/unifiedpush/example/android"
   schedule:
     interval: daily
   open-pull-requests-limit: 10

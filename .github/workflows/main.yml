@@ -14,13 +14,13 @@ jobs:
           java-version: 11
       - uses: subosito/flutter-action@v1
       - run: |
+          cd unifiedpush/example
           flutter pub get
-          cd example
           flutter build apk
       - uses: actions/upload-artifact@v2
         with:
           name: example
-          path: example/build/app/outputs/flutter-apk/app-release.apk
+          path: unifiedpush/example/build/app/outputs/flutter-apk/app-release.apk
       - if: startsWith(github.ref, 'refs/tags/')
         run: |
           mkdir -p ~/.pub-cache 
@@ -34,7 +34,11 @@ jobs:
           }
           EOF
       - name: Check Publish Warnings
-        run: pub publish --dry-run
+        run: |
+          pub publish --dry-run -C unifiedpush
+          pub publish --dry-run -C unifiedpush_platform_interface
       - if: startsWith(github.ref, 'refs/tags/')
         name: Publish package
-        run: pub publish -f
+        run: |
+          pub publish -f -C unifiedpush
+          pub publish -f -C unifiedpush_platform_interface

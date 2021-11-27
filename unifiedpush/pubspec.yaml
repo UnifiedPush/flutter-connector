@@ -12,8 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.5
-  unifiedpush_platform_interface:
-    path: ../unifiedpush_platform_interface
+  unifiedpush_platform_interface: any
   url_launcher: ^6.0.0
 
 dev_dependencies:

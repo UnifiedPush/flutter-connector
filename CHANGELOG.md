@@ -1,3 +1,8 @@
+## 3.0.1
+* android-connector:1.2.3
+* Clean dependencies
+* Update dependencies
+
 ## 3.0.0
 * Make the lib null safe
 * It is supposed to be a major release

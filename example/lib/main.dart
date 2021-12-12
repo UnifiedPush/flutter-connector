@@ -92,7 +92,7 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  void notify() async => await http.post(endpoint,
+  void notify() async => await http.post(Uri.parse(endpoint),
       body: "title=${title.text}&message=${message.text}&priority=6");
 
   String myPickerFunc(List<String> distributors) {

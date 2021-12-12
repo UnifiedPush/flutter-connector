@@ -29,7 +29,7 @@ abstract class UPNotificationUtils {
     if (!_notificationInitialized) _initNotifications();
 
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
+        'UP-Example', 'UP-Example',
         playSound: false, importance: Importance.max, priority: Priority.high);
     print(priority);
     var platformChannelSpecifics =

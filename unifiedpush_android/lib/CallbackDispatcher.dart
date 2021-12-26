@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unifiedpush/Constants.dart';
-import 'unifiedpush.dart';
+import 'package:unifiedpush_android/unifiedpush_android.dart';
+
+import 'constants.dart';
 
 void callbackDispatcher() {
   const MethodChannel _backgroundChannel = MethodChannel(CALLBACK_CHANNEL);
@@ -14,27 +14,22 @@ void callbackDispatcher() {
     debugPrint("callbackDispatcher: MethodCallHandler");
     final arg = call.arguments;
 
-    if (!UnifiedPush.initialized) {
-      UnifiedPush.prefs = await SharedPreferences.getInstance();
-      debugPrint("callbackDispatcher: new Preferences");
-    }
-
     var rawHandle;
     debugPrint("callbackDispatcher: call.method: ${call.method}");
     switch (call.method) {
       case CALLBACK_EVENT_NEW_ENDPOINT:
         {
-          rawHandle = UnifiedPush.prefs.getInt(PREF_ON_NEW_ENDPOINT);
+          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_NEW_ENDPOINT);
           break;
         }
       case CALLBACK_EVENT_MESSAGE:
         {
-          rawHandle = UnifiedPush.prefs.getInt(PREF_ON_MESSAGE);
+          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_MESSAGE);
           break;
         }
       case CALLBACK_EVENT_UNREGISTERED:
         {
-          rawHandle = UnifiedPush.prefs.getInt(PREF_ON_UNREGISTERED);
+          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_UNREGISTERED);
           break;
         }
       default:

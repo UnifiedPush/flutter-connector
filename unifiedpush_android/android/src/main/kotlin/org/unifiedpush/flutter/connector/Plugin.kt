@@ -2,6 +2,8 @@ package org.unifiedpush.flutter.connector
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -10,7 +12,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import org.unifiedpush.android.connector.Registration
 
 class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
@@ -20,67 +21,44 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     companion object {
 
         var withCallbackChannel: MethodChannel? = null
-        private var up = Registration()
 
-        /**
-         * To:
-         * 1. ask for the distributor the user want to use
-         * 2. saveIt
-         * 3. register the end user application to the distributor
-         * You can use registerAppWithDialog()
-         */
-        @JvmStatic
-        private fun registerAppWithDialog(context: Context,
-                                          args: ArrayList<*>?,
-                                          result: Result?) {
-            val instance: String = (args?.get(0) ?: "") as String
-            if (instance.isEmpty()) {
-                up.registerAppWithDialog(context)
-            } else {
-                up.registerAppWithDialog(context, instance)
-            }
-            result?.success(null)
-        }
-
-        /**
-         * If you prefer doing it by yourself:
-         * 1. getDistributors() gives the distributors list
-         * 2. saveDistributor(distributor) saves the user's distributor
-         * 3. registerApp() register the end user application to the distributor
-         */
         @JvmStatic
         private fun getDistributors(context: Context,
                                     result: Result?){
-            val distributors = up.getDistributors(context)
+            val intent = Intent()
+            intent.action = ACTION_REGISTER
+            val distributors = context.packageManager.queryBroadcastReceivers(intent, 0).mapNotNull {
+                if (it.activityInfo.exported || it.activityInfo.packageName == context.packageName) {
+                    val packageName = it.activityInfo.packageName
+                    Log.d("UP-Registration", "Found distributor with package name $packageName")
+                    packageName
+                } else {
+                    null
+                }
+            }
+
             result?.success(distributors)
-        }
-
-        @JvmStatic
-        private fun getDistributor(context: Context,
-                                    result: Result?){
-            val distributor = up.getDistributor(context)
-            result?.success(distributor)
-        }
-
-        @JvmStatic
-        private fun saveDistributor(context: Context,
-                                    args: ArrayList<*>?,
-                                    result: Result?){
-            val distributor = args!![0] as String
-            up.saveDistributor(context,distributor)
-            result?.success(true)
         }
 
         @JvmStatic
         private fun registerApp(context: Context,
                                 args: ArrayList<*>?,
                                 result: Result?){
-            val instance: String = (args?.get(0) ?: "") as String
-            if (instance.isEmpty()) {
-                up.registerApp(context)
-            } else {
-                up.registerApp(context, instance)
-            }
+            val distributor = args!![0] as String
+            val token = args!![1] as String
+
+            val broadcastIntent = Intent()
+            broadcastIntent.`package` = distributor
+            broadcastIntent.action = ACTION_REGISTER
+            broadcastIntent.putExtra(EXTRA_TOKEN, token)
+            broadcastIntent.putExtra(EXTRA_APPLICATION, context.packageName)
+            context.sendBroadcast(broadcastIntent)
+
+            context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+            .edit()
+            .putString(token, distributor)
+            .apply()
+
             result?.success(true)
         }
 
@@ -88,23 +66,52 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         private fun unregister(context: Context,
                                args: ArrayList<*>?,
                                result: Result) {
-            val instance: String = (args?.get(0) ?: "") as String
-            if (instance.isEmpty()) {
-                up.unregisterApp(context)
-            } else {
-                up.unregisterApp(context, instance)
-            }
+            val distributor = args!![0] as String
+            val token = args!![1] as String
+
+            val broadcastIntent = Intent()
+            broadcastIntent.`package` = distributor
+            broadcastIntent.action = ACTION_UNREGISTER
+            broadcastIntent.putExtra(EXTRA_TOKEN, token)
+            context.sendBroadcast(broadcastIntent)
+
+            context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+            .edit()
+            .remove(token)
+            .apply()
+
             result.success(true)
         }
 
         @JvmStatic
-        private fun initializeCallback(context: Context, args: ArrayList<*>?, result: Result) {
+        private fun initializeBackgroundCallback(context: Context, args: ArrayList<*>?, result: Result) {
             val callbackHandle = args?.get(0) as? Long ?: 0
             context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
                     .edit()
                     .putLong(CALLBACK_DISPATCHER_HANDLE_KEY, callbackHandle)
                     .apply()
             result.success(true)
+        }
+
+        private fun getAllNativeSharedPrefs(context: Context,
+                               args: ArrayList<*>?,
+                               result: Result) {
+            val prefs = context.getSharedPreferences("UP-lib", Context.MODE_PRIVATE)
+            val allPrefs = prefs?.all
+
+            if (allPrefs != null) {
+                val sanitizedAllPrefs = mutableMapOf<String, Any?>()
+                for ((k, v) in allPrefs) {
+                    if (v is Collection<*>) {
+                        val l = mutableListOf<Any?>()
+                        l.addAll(v)
+                        sanitizedAllPrefs.put(k, l)
+                    } else {
+                        sanitizedAllPrefs.put(k, v)
+                    }
+                }
+                result.success(sanitizedAllPrefs)
+            }
         }
 
         fun isWithCallback(context: Context): Boolean {
@@ -154,14 +161,13 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: Result) {
         Log.d("Plugin","Method: ${call.method}")
         val args = call.arguments<ArrayList<*>>()
+        // TODO mContext vs mActivity as context ?
         when(call.method) {
-            PLUGIN_EVENT_INITIALIZE_CALLBACK -> initializeCallback(mContext!!, args, result)
-            PLUGIN_EVENT_REGISTER_APP_WITH_DIALOG -> registerAppWithDialog(mActivity!!, args, result)
+            PLUGIN_EVENT_INITIALIZE_BG_CALLBACK -> initializeBackgroundCallback(mContext!!, args, result)
             PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
-            PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
-            PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
+            PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS -> getAllNativeSharedPrefs(mActivity!!, args, result)
             else -> result.notImplemented()
         }
     }

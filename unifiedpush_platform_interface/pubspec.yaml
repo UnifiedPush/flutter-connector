@@ -1,0 +1,15 @@
+name: unifiedpush_platform_interface
+description: UnifiedPush platform interface
+version: 1.0.0
+homepage: "https://unifiedpush.org/developers/flutter"
+documentation: "https://unifiedpush.org/developers/flutter"
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.0
+

@@ -1,0 +1,29 @@
+name: unifiedpush
+description: Push notifications with the provider chosen by the user.
+version: 4.0.0
+homepage: "https://unifiedpush.org/developers/flutter"
+documentation: "https://unifiedpush.org/developers/flutter"
+publish_to: none
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.0.11
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface
+  unifiedpush_android:
+    path: ../unifiedpush_android
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: unifiedpush_android

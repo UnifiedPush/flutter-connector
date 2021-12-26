@@ -1,0 +1,31 @@
+name: unifiedpush_android
+description: Android implementation of UnifiedPush plugin.
+version: 1.0.0
+homepage: "https://unifiedpush.org/developers/flutter"
+documentation: "https://unifiedpush.org/developers/flutter"
+publish_to: none
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.0.11
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  plugin:
+    implements: unifiedpush
+    platforms:
+      android:
+        package: org.unifiedpush.flutter.connector
+        pluginClass: Plugin
+        dartPluginClass: UnifiedPushAndroid

@@ -24,16 +24,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UnifiedPush.initializeWithCallback(
-        onNewEndpoint,
-        onRegistrationFailed,
-        onRegistrationRefused,
-        onUnregistered,
-        UPNotificationUtils.basicOnNotification,
-        bgNewEndpoint, // called when new endpoint in background , need to be static
-        bgUnregistered, // called when unregistered in background , need to be static
-        bgOnMessage // called when receiving a message in background , need to be static
-        );
+    UnifiedPush.initializeWithReceiver(
+      onNewEndpoint: onNewEndpoint, // takes (String endpoint) in args
+      onRegistrationFailed: onRegistrationFailed, // takes no arg
+      onRegistrationRefused: onRegistrationRefused, // takes no arg
+      onUnregistered: onUnregistered, // takes no arg
+      onMessage: UPNotificationUtils.basicOnNotification, // takes (String message) in args
+    );
     super.initState();
   }
 
@@ -58,21 +55,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       print("unregistered");
     });
-  }
-
-  static bgOnMessage(dynamic args) {
-    print(args["message"]);
-    UPNotificationUtils.basicOnNotification(args["message"]);
-  }
-
-  static bgNewEndpoint(dynamic args) {
-    print("BG: New endpoint: ${args["endpoint"]}");
-    //TODO
-  }
-
-  static bgUnregistered(dynamic args) {
-    print("BG: Unregistered");
-    //TODO
   }
 
   @override
@@ -157,7 +139,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Single Instance - Callback'),
+          title: const Text('Single Instance - Receiver'),
         ),
         body: Column(
           children: [

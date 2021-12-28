@@ -19,7 +19,7 @@ lib/generated_plugin_registrant.dart
 # Regenerating the pubspec.lock file lets you test your package against the latest compatible versions of its dependencies.
 # See https://dart.dev/guides/libraries/private-files#pubspeclock
 pubspec.lock
-!example/pubspec.lock
+!example*/pubspec.lock
 
 # Android related
 .gradle

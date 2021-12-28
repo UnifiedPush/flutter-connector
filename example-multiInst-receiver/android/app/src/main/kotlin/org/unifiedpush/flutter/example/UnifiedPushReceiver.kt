@@ -4,7 +4,7 @@ import android.content.Context
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import org.unifiedpush.flutter.connector.UnifiedPushHandler
-import org.unifiedpush.android.connector.MessagingReceiver
+import org.unifiedpush.flutter.connector.MessagingReceiver
 
 val receiverHandler = object : UnifiedPushHandler() {
     override fun getEngine(context: Context): FlutterEngine {

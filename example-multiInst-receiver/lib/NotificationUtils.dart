@@ -23,6 +23,7 @@ abstract class UPNotificationUtils {
 
   static Future<bool> basicOnNotification(String payload, String _instance)
   async {
+    debugPrint("instance " + _instance);
     if (_instance != instance) {
       return false;
     }

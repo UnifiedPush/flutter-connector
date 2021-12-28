@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   static bgOnMessage(dynamic args) {
-    print(args["message"]);
+    print("BG: Message: ${args["message"]}");
     UPNotificationUtils.basicOnNotification(args["message"]);
   }
 

@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
     if (args["instance"] != instance) {
       return;
     }
-    print(args["message"]);
+    print("BG: Message: ${args["message"]}");
     UPNotificationUtils.basicOnNotification(args["message"], args["instance"]);
   }
 

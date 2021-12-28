@@ -38,8 +38,6 @@ open class MessagingReceiver(private val handler: MessagingReceiverHandler) : Br
             }
             ACTION_UNREGISTERED -> {
                 this@MessagingReceiver.handler.onUnregistered(context, token)
-                // TODO check
-                // up.safeRemoveDistributor(context)
             }
             ACTION_MESSAGE -> {
                 val message = intent.getStringExtra(EXTRA_MESSAGE)!!

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
 import 'constants.dart';
+import 'dialogs.dart';
 
 String generateRandomToken() {
   final len = 32;
@@ -39,6 +41,7 @@ class UnifiedPush {
   }
 
   static String? _preferredDistributor;
+  static List<String>? _availDistributors;
 
   /// INIT: 1.A With Callback, Default Instance
   static Future<void> initializeWithCallback(
@@ -183,8 +186,23 @@ class UnifiedPush {
     UnifiedPushPlatform.instance.unregister(await getToken(instance));
   }
 
-  static Future<void> registerAppWithDialog([String instance = "default"]) async {
-    // TODO implements dialog selection
+  static Future<void> registerAppWithDialog(BuildContext context, [String instance = "default"]) async {
+    var distributor = getDistributor();
+    if (distributor == "") {
+      final distributors = await getDistributors();
+      if (distributors.isEmpty) {
+        await showDialog(context: context, builder: noDistributorDialog());
+      } else {
+        final picked = await showDialog<String>(
+          context: context,
+          builder: pickDistributorDialog(distributors),
+        );
+        if (picked != null) {
+          await saveDistributor(picked);
+        }
+      }
+    }
+
     await registerApp(instance = instance);
   }
 
@@ -193,24 +211,28 @@ class UnifiedPush {
   }
 
   static Future<List<String>> getDistributors() async {
-    return UnifiedPushPlatform.instance.getDistributors();
+    if (_availDistributors == null) {
+      _availDistributors = await UnifiedPushPlatform.instance.getDistributors();
+    }
+    return _availDistributors??List.empty();
   }
 
   static Future<String> getDistributor() async {
     if (_preferredDistributor != null) {
       return _preferredDistributor!;
     }
+    // Check the prefs
     final prefs = await getSharedPreferences();
     _preferredDistributor = prefs?.getString("UP-lib_distributor");
     if (_preferredDistributor != null) {
       return _preferredDistributor!;
     }
-
+    // If there is only one avail just use it
     final distributors = await getDistributors();
-    if (distributors.isNotEmpty) {
-      _preferredDistributor = distributors.first;
-      return _preferredDistributor!;
+    if (distributors.length == 1) {
+      saveDistributor(distributors.first);
     }
+
     return "";
   }
 

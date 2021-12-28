@@ -116,7 +116,7 @@ class HomePage extends StatelessWidget {
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
-            UnifiedPush.registerAppWithDialog();
+            UnifiedPush.registerAppWithDialog(context);
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib

@@ -66,21 +66,25 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         private fun unregister(context: Context,
                                args: ArrayList<*>?,
                                result: Result) {
-            val distributor = args!![0] as String
             val token = args!![1] as String
+            val distributor = context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).getString(token, null)
 
-            val broadcastIntent = Intent()
-            broadcastIntent.`package` = distributor
-            broadcastIntent.action = ACTION_UNREGISTER
-            broadcastIntent.putExtra(EXTRA_TOKEN, token)
-            context.sendBroadcast(broadcastIntent)
+            if(distributor != null) {
+                val broadcastIntent = Intent()
+                broadcastIntent.`package` = distributor
+                broadcastIntent.action = ACTION_UNREGISTER
+                broadcastIntent.putExtra(EXTRA_TOKEN, token)
+                context.sendBroadcast(broadcastIntent)
 
-            context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-            .edit()
-            .remove(token)
-            .apply()
+                context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                .edit()
+                .remove(token)
+                .apply()
 
-            result.success(true)
+                result.success(true)
+            } else {
+                result.error(127, "Cant' unregister, no distributor mapped for this token")
+            }
         }
 
         @JvmStatic
@@ -100,6 +104,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             val allPrefs = prefs?.all
 
             if (allPrefs != null) {
+                // MethodCall.Result only supports List and not Set
                 val sanitizedAllPrefs = mutableMapOf<String, Any?>()
                 for ((k, v) in allPrefs) {
                     if (v is Collection<*>) {

@@ -39,7 +39,6 @@ class UnifiedPush {
   }
 
   static String? _preferredDistributor;
-  static Map<String, String> tokenToInstance = Map();
 
   /// INIT: 1.A With Callback, Default Instance
   static Future<void> initializeWithCallback(
@@ -172,11 +171,11 @@ class UnifiedPush {
     void Function(String message, String instance)? onMessage,
   }) async {
     await UnifiedPushPlatform.instance.initializeCallback(
-      onNewEndpoint: (String t, String e) => onNewEndpoint?.call(e, tokenToInstance[t]??UNKNOWN_INSTANCE),
-      onRegistrationFailed: (String t, String? m) => onRegistrationFailed?.call(tokenToInstance[t]??UNKNOWN_INSTANCE),
-      onRegistrationRefused: (String t, String? m) => onRegistrationRefused?.call(tokenToInstance[t]??UNKNOWN_INSTANCE),
-      onUnregistered: (String t) => onUnregistered?.call(tokenToInstance[t]??UNKNOWN_INSTANCE),
-      onMessage: (String t, String m) => onMessage?.call(m, tokenToInstance[t]??UNKNOWN_INSTANCE),
+      onNewEndpoint: (String t, String e) async => onNewEndpoint?.call(e, (await getInstance(t))??UNKNOWN_INSTANCE),
+      onRegistrationFailed: (String t, String? m) async => onRegistrationFailed?.call((await getInstance(t))??UNKNOWN_INSTANCE),
+      onRegistrationRefused: (String t, String? m) async => onRegistrationRefused?.call((await getInstance(t))??UNKNOWN_INSTANCE),
+      onUnregistered: (String t) async => onUnregistered?.call((await getInstance(t))??UNKNOWN_INSTANCE),
+      onMessage: (String t, String m) async => onMessage?.call(m, (await getInstance(t))??UNKNOWN_INSTANCE),
     );
   }
 
@@ -230,7 +229,6 @@ class UnifiedPush {
       token = generateRandomToken();
       prefs?.setString(prefKey, token);
     }
-    tokenToInstance[token] = instance;
 
     return token;
   }

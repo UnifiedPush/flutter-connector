@@ -14,6 +14,6 @@ const CALLBACK_CHANNEL = "org.unifiedpush.flutter.connector.CALLBACK_CHANNEL";
 
 const SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache";
 
-const PREF_ON_NEW_ENDPOINT = "unifiedpush/method:onNewEnpoint";
-const PREF_ON_UNREGISTERED = "unifiedpush/method:onUnregistered";
-const PREF_ON_MESSAGE = "unifiedpush/method:onMessage";
+const PREF_ON_NEW_ENDPOINT = "unifiedpush-android/method:onNewEnpoint";
+const PREF_ON_UNREGISTERED = "unifiedpush-android/method:onUnregistered";
+const PREF_ON_MESSAGE = "unifiedpush-android/method:onMessage";

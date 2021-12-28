@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/rendering.dart';
+import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
+
+import 'constants.dart';
 
 String generateRandomToken() {
   final len = 32;
@@ -80,11 +82,68 @@ class UnifiedPush {
       onUnregistered: onUnregistered,
       onMessage: onMessage,
     );
+    final prefs = await getSharedPreferences();
+    prefs?.setInt(
+        PREF_ON_NEW_ENDPOINT_ADAPTER,
+        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)?.toRawHandle() ??
+            0);
+    prefs?.setInt(
+        PREF_ON_UNREGISTERED_ADAPTER,
+        PluginUtilities.getCallbackHandle(callbackOnUnregistered)?.toRawHandle() ??
+            0);
+    prefs?.setInt(
+        PREF_ON_MESSAGE_ADAPTER,
+        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle() ??
+            0);
     await UnifiedPushPlatform.instance.initializeBackgroundCallback(
-      staticOnNewEndpoint: callbackOnNewEndpoint,
-      staticOnUnregistered: callbackOnUnregistered,
-      staticOnMessage: callbackOnMessage
+      staticOnNewEndpoint: onNewEndpointAdapter,
+      staticOnUnregistered: onUnregisteredAdapter,
+      staticOnMessage: onMessageAdapter
     );
+  }
+
+  static onNewEndpointAdapter(dynamic args) async {
+    final callback = await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
+    final instance = await getInstance(args["token"]);
+    callback?.call({
+      "instance" : instance,
+      "endpoint" : args["endpoint"],
+    });
+  }
+
+    static onUnregisteredAdapter(dynamic args) async {
+    final callback = await getCallbackFromPrefHandle(PREF_ON_UNREGISTERED_ADAPTER);
+    final instance = await getInstance(args["token"]);
+    callback?.call({"instance" : instance});
+  }
+
+  static onMessageAdapter(dynamic args) async {
+    final callback = await getCallbackFromPrefHandle(PREF_ON_MESSAGE_ADAPTER);
+    final instance = await getInstance(args["token"]);
+    callback?.call({
+      "instance" : instance,
+      "message" : args["message"],
+    });
+  }
+
+  static Future<String?> getInstance(String token) async {
+    final prefs = await getSharedPreferences();
+    if (prefs != null) {
+      for (String p in prefs.getKeys()) {
+        final v = prefs.get(p);
+        if (v == token) {
+          return p.replaceFirst("/UP-lib_token", "");
+        }
+      }
+    }
+  }
+
+  static Future<Function?> getCallbackFromPrefHandle(String prefKey) async {
+    final prefs = await getSharedPreferences();
+    final rawHandle = prefs?.getInt(prefKey);
+    if (rawHandle != null && rawHandle != 0) {
+      return PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(rawHandle));
+    }
   }
 
   /// INIT: 2.A With Receiver, Default Instance

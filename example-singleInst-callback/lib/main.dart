@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'NotificationUtils.dart';
 
-/// Instance
-/// Option 1: Single instance
 Future<void> main() async {
   runApp(MyApp());
   EasyLoading.instance.userInteractions = false;
@@ -159,7 +157,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Single Instance - Callback'),
         ),
         body: Column(
           children: [

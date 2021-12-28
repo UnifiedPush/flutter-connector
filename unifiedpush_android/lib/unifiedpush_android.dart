@@ -16,7 +16,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   }
   
   static SharedPreferences? _prefs;
-  static get prefs async {
+  static Future<SharedPreferences?> getSharedPreferences() async {
     if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
@@ -71,22 +71,23 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     void Function(dynamic args)? staticOnUnregistered,
     void Function(dynamic args)? staticOnMessage,
   }) async {
+    final prefs = await getSharedPreferences();
     if (staticOnNewEndpoint != null) {
-      prefs.setInt(
+      prefs?.setInt(
           PREF_ON_NEW_ENDPOINT,
           PluginUtilities.getCallbackHandle(staticOnNewEndpoint)
                   ?.toRawHandle() ??
               0);
     }
     if (staticOnUnregistered != null) {
-      prefs.setInt(
+      prefs?.setInt(
           PREF_ON_UNREGISTERED,
           PluginUtilities.getCallbackHandle(staticOnUnregistered)
                   ?.toRawHandle() ??
               0);
     }
     if (staticOnMessage != null) {
-      prefs.setInt(
+      prefs?.setInt(
           PREF_ON_MESSAGE,
           PluginUtilities.getCallbackHandle(staticOnMessage)?.toRawHandle() ??
               0);

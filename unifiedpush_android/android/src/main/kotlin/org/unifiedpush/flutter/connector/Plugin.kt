@@ -83,7 +83,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
                 result.success(true)
             } else {
-                result.error(127, "Cant' unregister, no distributor mapped for this token")
+                result.error("NO_DISTRIBUTOR_FOR_TOKEN", "Cant' unregister, no distributor mapped for this token", null)
             }
         }
 

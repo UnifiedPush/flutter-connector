@@ -16,20 +16,21 @@ void callbackDispatcher() {
 
     var rawHandle;
     debugPrint("callbackDispatcher: call.method: ${call.method}");
+    final prefs = await UnifiedPushAndroid.getSharedPreferences();
     switch (call.method) {
       case CALLBACK_EVENT_NEW_ENDPOINT:
         {
-          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_NEW_ENDPOINT);
+          rawHandle = prefs?.getInt(PREF_ON_NEW_ENDPOINT);
           break;
         }
       case CALLBACK_EVENT_MESSAGE:
         {
-          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_MESSAGE);
+          rawHandle = prefs?.getInt(PREF_ON_MESSAGE);
           break;
         }
       case CALLBACK_EVENT_UNREGISTERED:
         {
-          rawHandle = UnifiedPushAndroid.prefs.getInt(PREF_ON_UNREGISTERED);
+          rawHandle = prefs?.getInt(PREF_ON_UNREGISTERED);
           break;
         }
       default:

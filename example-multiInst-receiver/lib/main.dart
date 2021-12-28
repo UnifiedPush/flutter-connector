@@ -26,7 +26,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UnifiedPush.initializeWithReceiverInstanciated(
+    UnifiedPush.initializeWithReceiverInstantiated(
       onNewEndpoint: onNewEndpoint, // takes (String endpoint, String instance) in args
       onRegistrationFailed: onRegistrationFailed, // takes (String instance)
       onRegistrationRefused: onRegistrationRefused, // takes (String

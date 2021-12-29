@@ -49,7 +49,7 @@ open class MessagingReceiver(private val handler: MessagingReceiverHandler) : Br
     }
 
     private fun acknowledgeMessage(context: Context, token: String, id: String) {
-        val distributor = context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE).getString(token, null)
+        val distributor = context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE).getString(token, null)
 
         if (distributor != null) {
             val broadcastIntent = Intent()

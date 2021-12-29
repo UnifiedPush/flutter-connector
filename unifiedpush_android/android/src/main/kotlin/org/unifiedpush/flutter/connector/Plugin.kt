@@ -54,7 +54,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             broadcastIntent.putExtra(EXTRA_APPLICATION, context.packageName)
             context.sendBroadcast(broadcastIntent)
 
-            context.getSharedPreferences(TOKENS_MAP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+            context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
             .edit()
             .putString(token, distributor)
             .apply()
@@ -67,7 +67,8 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                                args: ArrayList<*>?,
                                result: Result) {
             val token = args!![1] as String
-            val distributor = context.getSharedPreferences(PREF_TOKENS_MAP, Context.MODE_PRIVATE).getString(token, null)
+            val distributor = context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
+                .getString(token, null)
 
             if(distributor != null) {
                 val broadcastIntent = Intent()
@@ -76,7 +77,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                 broadcastIntent.putExtra(EXTRA_TOKEN, token)
                 context.sendBroadcast(broadcastIntent)
 
-                context.getSharedPreferences(PREF_TOKENS_MAP, Context.MODE_PRIVATE)
+                context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
                 .edit()
                 .remove(token)
                 .apply()

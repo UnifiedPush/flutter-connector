@@ -12,7 +12,7 @@ const val CALLBACK_CHANNEL = "org.unifiedpush.flutter.connector.CALLBACK_CHANNEL
 
 const val SHARED_PREFERENCES_KEY = "flutter-connector_plugin_cache"
 
-const val TOKENS_MAP_SHARED_PREFERENCES_KEY = "flutter-connector_tokens_map"
+const val PREF_TOKENS_MAP = "unifiedpush_tokens_map"
 
 const val ACTION_NEW_ENDPOINT = "org.unifiedpush.android.connector.NEW_ENDPOINT"
 const val ACTION_REGISTRATION_FAILED = "org.unifiedpush.android.connector.REGISTRATION_FAILED"

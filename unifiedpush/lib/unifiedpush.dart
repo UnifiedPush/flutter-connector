@@ -10,11 +10,9 @@ import 'dialogs.dart';
 
 String generateRandomToken() {
   final len = 32;
-  final r = Random();
+  final r = Random.secure();
   return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
 }
-
-final UNKNOWN_INSTANCE = "UNKNOWN_INSTANCE";
 
 class UnifiedPush {
   static SharedPreferences? _prefs;
@@ -22,7 +20,7 @@ class UnifiedPush {
   static Future<SharedPreferences?> getSharedPreferences() async {
     if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
-      var migrated = _prefs?.getBool("migrated");
+      var migrated = _prefs?.getBool("unifiedpush/migrated");
       if (migrated == null || !migrated) {
         final nativePrefs = await UnifiedPushPlatform.instance.getAllNativeSharedPrefs();
         if (nativePrefs != null) {
@@ -34,7 +32,7 @@ class UnifiedPush {
             }
           });
         }
-        _prefs?.setBool("migrated", true);
+        _prefs?.setBool("unifiedpush/migrated", true);
       }
     }
     return _prefs;
@@ -182,11 +180,11 @@ class UnifiedPush {
     );
   }
 
-  static Future<void> unregister([String instance = "default"]) async {
+  static Future<void> unregister([String instance = DEFAULT_INSTANCE]) async {
     UnifiedPushPlatform.instance.unregister(await getToken(instance));
   }
 
-  static Future<void> registerAppWithDialog(BuildContext context, [String instance = "default"]) async {
+  static Future<void> registerAppWithDialog(BuildContext context, [String instance = DEFAULT_INSTANCE]) async {
     var distributor = getDistributor();
     if (distributor == "") {
       final distributors = await getDistributors();
@@ -206,7 +204,7 @@ class UnifiedPush {
     await registerApp(instance = instance);
   }
 
-  static Future<void> registerApp([String instance = "default"]) async {
+  static Future<void> registerApp([String instance = DEFAULT_INSTANCE]) async {
     UnifiedPushPlatform.instance.registerApp(await getDistributor(), await getToken(instance));
   }
 

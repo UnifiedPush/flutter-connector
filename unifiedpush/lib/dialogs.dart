@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 noDistributorDialog(){
   return (BuildContext context) {
-    AlertDialog(
+    return AlertDialog(
       title: Text('Push Notifications'),
       content: SingleChildScrollView(
           child: SelectableText(

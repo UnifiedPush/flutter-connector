@@ -117,20 +117,26 @@ class UnifiedPush {
     );
   }
 
-  static Future<void> registerAppWithDialog(BuildContext context, [String instance = DEFAULT_INSTANCE]) async {
+  static Future<void> registerAppWithDialog(BuildContext context,
+      [String instance = DEFAULT_INSTANCE]) async {
     var distributor = await getDistributor();
+    String? picked;
+
     if (distributor == "") {
       final distributors = await getDistributors();
       if (distributors.isEmpty) {
-        await showDialog(context: context, builder: noDistributorDialog());
+        return showDialog(context: context, builder: noDistributorDialog());
+      } else if (distributors.length == 1) {
+        picked = distributors.single;
       } else {
-        final picked = await showDialog<String>(
+        picked = await showDialog<String>(
           context: context,
           builder: pickDistributorDialog(distributors),
         );
-        if (picked != null) {
-          await saveDistributor(picked);
-        }
+      }
+
+      if (picked != null) {
+        await saveDistributor(picked);
       }
     }
 

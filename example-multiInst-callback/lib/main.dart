@@ -26,10 +26,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UnifiedPush.initializeWithCallbackInstantiated(
+    UnifiedPush.initializeWithCallback(
         onNewEndpoint,
         onRegistrationFailed,
-        onRegistrationRefused,
         onUnregistered,
         UPNotificationUtils.basicOnNotification,
         bgNewEndpoint, // called when new endpoint in background , need to be static
@@ -48,10 +47,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       print(endpoint);
     });
-  }
-
-  void onRegistrationRefused(String _instance) {
-    //TODO
   }
 
   void onRegistrationFailed(String _instance) {
@@ -138,11 +133,15 @@ class HomePage extends StatelessWidget {
              * Registration
              * Option 2: Do your own function to pick the distrib
              */
+
             /*
             if (await UnifiedPush.getDistributor() != "") {
               UnifiedPush.registerApp(instance);
             } else {
               final distributors = await UnifiedPush.getDistributors();
+              if (distributors.length == 0) {
+                return;
+              }
               final distributor = myPickerFunc(distributors);
               UnifiedPush.saveDistributor(distributor);
               UnifiedPush.registerApp(instance);

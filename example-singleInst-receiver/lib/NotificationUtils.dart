@@ -19,7 +19,7 @@ abstract class UPNotificationUtils {
     return decoded;
   }
 
-  static Future<bool> basicOnNotification(String payload) async {
+  static Future<bool> basicOnNotification(String payload, String _) async {
     debugPrint("onNotification");
     Map<String, String> message = decodeMessageContentsUri(payload);
     String title = message['title'] ?? "UP - Example";

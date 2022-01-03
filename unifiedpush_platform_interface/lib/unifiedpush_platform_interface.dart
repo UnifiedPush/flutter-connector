@@ -25,14 +25,25 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     throw UnimplementedError('getDistributors has not been implemented.');
   }
 
-  /// Register the app to a specified distributor with a specified token
+  /// Returns the qualified identifier of the distributor used.
+  Future<String> getDistributor() {
+    throw UnimplementedError('getDistributor has not been implemented.');
+  }
+
+  /// Save the distributor to be used.
+  Future<void> saveDistributor(String distributor) {
+    throw UnimplementedError('saveDistributor has not been implemented.');
+  }
+
+  /// Register the app to the saved distributor with a specified token
+  /// identified with the instance parameter
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
-  Future<void> registerApp(String distributor, String token) {
+  Future<void> registerApp(String instance) {
     throw UnimplementedError('registerApp has not been implemented.');
   }
-  
-  Future<void> unregister(String token) {
+
+  Future<void> unregister(String instance) {
     throw UnimplementedError('unregister has not been implemented.');
   }
 
@@ -42,11 +53,10 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   /// This needs to be called BEFORE registerApp so onNewEndpoint get called
   /// and you get the info in your app, or this will be lost.
   Future<void> initializeCallback({
-    void Function(String token, String endpoint)? onNewEndpoint,
-    void Function(String token, String? message)? onRegistrationFailed,
-    void Function(String token, String? message)? onRegistrationRefused,
-    void Function(String token)? onUnregistered,
-    void Function(String token, String message)? onMessage,
+    void Function(String endpoint, String instance)? onNewEndpoint,
+    void Function(String instance)? onRegistrationFailed,
+    void Function(String instance)? onUnregistered,
+    void Function(String message, String instance)? onMessage,
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
   }

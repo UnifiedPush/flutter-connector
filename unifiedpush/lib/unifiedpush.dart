@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
 import 'constants.dart';
 import 'dialogs.dart';
-
-String generateRandomToken() {
-  final len = 32;
-  final r = Random.secure();
-  return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
-}
 
 class UnifiedPush {
   static SharedPreferences? _prefs;
@@ -38,47 +31,22 @@ class UnifiedPush {
     return _prefs;
   }
 
-  static String? _preferredDistributor;
-  static List<String>? _availDistributors;
+  static String _preferredDistributor = "";
+  static List<String> _availDistributors = [];
 
   /// INIT: 1.A With Callback, Default Instance
   static Future<void> initializeWithCallback(
-      void Function(String endpoint) onNewEndpoint,
-      void Function() onRegistrationFailed,
-      void Function() onRegistrationRefused,
-      void Function() onUnregistered,
-      void Function(String message) onMessage,
-      void Function(dynamic args) callbackOnNewEndpoint, //need to be static
-      void Function(dynamic args) callbackOnUnregistered, //need to be static
-      void Function(dynamic args) callbackOnMessage //need to be static
-      ) async {
-    await initializeWithCallbackInstantiated(
-      (String e, String i) => onNewEndpoint.call(e),
-      (String i) => onRegistrationFailed.call(),
-      (String i) => onRegistrationRefused.call(),
-      (String i) => onUnregistered.call(),
-      (String m, String i) => onMessage.call(m),
-      callbackOnNewEndpoint,
-      callbackOnUnregistered,
-      callbackOnMessage
-    );
-  }
-
-  /// INIT: 1.B With Callback, Multi Instance
-  static Future<void> initializeWithCallbackInstantiated(
       void Function(String endpoint, String instance) onNewEndpoint,
       void Function(String instance) onRegistrationFailed,
-      void Function(String instance) onRegistrationRefused,
       void Function(String instance) onUnregistered,
       void Function(String message, String instance) onMessage,
       void Function(dynamic args) callbackOnNewEndpoint, //need to be static
       void Function(dynamic args) callbackOnUnregistered, //need to be static
       void Function(dynamic args) callbackOnMessage //need to be static
       ) async {
-    await initializeWithReceiverInstantiated(
+    await initializeWithReceiver(
       onNewEndpoint: onNewEndpoint,
       onRegistrationFailed: onRegistrationFailed,
-      onRegistrationRefused: onRegistrationRefused,
       onUnregistered: onUnregistered,
       onMessage: onMessage,
     );
@@ -104,7 +72,7 @@ class UnifiedPush {
 
   static onNewEndpointAdapter(dynamic args) async {
     final callback = await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
-    final instance = await getInstance(args["token"]);
+    final instance = args["instance"];
     callback?.call({
       "instance" : instance,
       "endpoint" : args["endpoint"],
@@ -113,29 +81,17 @@ class UnifiedPush {
 
     static onUnregisteredAdapter(dynamic args) async {
     final callback = await getCallbackFromPrefHandle(PREF_ON_UNREGISTERED_ADAPTER);
-    final instance = await getInstance(args["token"]);
+    final instance = args["instance"];
     callback?.call({"instance" : instance});
   }
 
   static onMessageAdapter(dynamic args) async {
     final callback = await getCallbackFromPrefHandle(PREF_ON_MESSAGE_ADAPTER);
-    final instance = await getInstance(args["token"]);
+    final instance = args["instance"];
     callback?.call({
       "instance" : instance,
       "message" : args["message"],
     });
-  }
-
-  static Future<String?> getInstance(String token) async {
-    final prefs = await getSharedPreferences();
-    if (prefs != null) {
-      for (String p in prefs.getKeys()) {
-        final v = prefs.get(p);
-        if (v == token) {
-          return p.replaceFirst("/UP-lib_token", "");
-        }
-      }
-    }
   }
 
   static Future<Function?> getCallbackFromPrefHandle(String prefKey) async {
@@ -148,44 +104,21 @@ class UnifiedPush {
 
   /// INIT: 2.A With Receiver, Default Instance
   static Future<void> initializeWithReceiver({
-    void Function(String endpoint)? onNewEndpoint,
-    void Function()? onRegistrationFailed,
-    void Function()? onRegistrationRefused,
-    void Function()? onUnregistered,
-    void Function(String message)? onMessage,
-  }) async {
-    await initializeWithReceiverInstantiated(
-      onNewEndpoint: (String e, String i) => onNewEndpoint?.call(e),
-      onRegistrationFailed: (String i) => onRegistrationFailed?.call(),
-      onRegistrationRefused: (String i) => onRegistrationRefused?.call(),
-      onUnregistered: (String i) => onUnregistered?.call(),
-      onMessage: (String m, String i) => onMessage?.call(m),
-    );
-  }
-
-  /// INIT: 2.B With Receiver, Multi Instance
-  static Future<void> initializeWithReceiverInstantiated({
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
-    void Function(String instance)? onRegistrationRefused,
     void Function(String instance)? onUnregistered,
     void Function(String message, String instance)? onMessage,
   }) async {
     await UnifiedPushPlatform.instance.initializeCallback(
-      onNewEndpoint: (String t, String e) async => onNewEndpoint?.call(e, (await getInstance(t))??UNKNOWN_INSTANCE),
-      onRegistrationFailed: (String t, String? m) async => onRegistrationFailed?.call((await getInstance(t))??UNKNOWN_INSTANCE),
-      onRegistrationRefused: (String t, String? m) async => onRegistrationRefused?.call((await getInstance(t))??UNKNOWN_INSTANCE),
-      onUnregistered: (String t) async => onUnregistered?.call((await getInstance(t))??UNKNOWN_INSTANCE),
-      onMessage: (String t, String m) async => onMessage?.call(m, (await getInstance(t))??UNKNOWN_INSTANCE),
+      onNewEndpoint: (String e, String i) async => onNewEndpoint?.call(e, i),
+      onRegistrationFailed: (String i) async => onRegistrationFailed?.call(i),
+      onUnregistered: (String i) async => onUnregistered?.call(i),
+      onMessage: (String m, String i) async => onMessage?.call(m, i)
     );
   }
 
-  static Future<void> unregister([String instance = DEFAULT_INSTANCE]) async {
-    UnifiedPushPlatform.instance.unregister(await getToken(instance));
-  }
-
   static Future<void> registerAppWithDialog(BuildContext context, [String instance = DEFAULT_INSTANCE]) async {
-    var distributor = getDistributor();
+    var distributor = await getDistributor();
     if (distributor == "") {
       final distributors = await getDistributors();
       if (distributors.isEmpty) {
@@ -205,51 +138,29 @@ class UnifiedPush {
   }
 
   static Future<void> registerApp([String instance = DEFAULT_INSTANCE]) async {
-    UnifiedPushPlatform.instance.registerApp(await getDistributor(), await getToken(instance));
+    UnifiedPushPlatform.instance.registerApp(instance);
+  }
+
+  static Future<void> unregister([String instance = DEFAULT_INSTANCE]) async {
+    UnifiedPushPlatform.instance.unregister(instance);
   }
 
   static Future<List<String>> getDistributors() async {
-    if (_availDistributors == null) {
+    if (_availDistributors.isEmpty) {
       _availDistributors = await UnifiedPushPlatform.instance.getDistributors();
     }
-    return _availDistributors??List.empty();
+    return _availDistributors;
   }
 
   static Future<String> getDistributor() async {
-    if (_preferredDistributor != null) {
-      return _preferredDistributor!;
+    if (_preferredDistributor.isEmpty) {
+      _preferredDistributor = await UnifiedPushPlatform.instance.getDistributor();
     }
-    // Check the prefs
-    final prefs = await getSharedPreferences();
-    _preferredDistributor = prefs?.getString("UP-lib_distributor");
-    if (_preferredDistributor != null) {
-      return _preferredDistributor!;
-    }
-    // If there is only one avail just use it
-    final distributors = await getDistributors();
-    if (distributors.length == 1) {
-      saveDistributor(distributors.first);
-    }
-
-    return "";
+    return _preferredDistributor;
   }
 
   static Future<void> saveDistributor(String distributor) async {
     _preferredDistributor = distributor;
-    (await getSharedPreferences())?.setString("UP-lib_distributor", distributor);
-  }
-
-  static Future<String> getToken(String instance) async {
-    final prefs = await getSharedPreferences();
-    final prefKey = instance + "/UP-lib_token";
-
-    var token = prefs?.getString(prefKey);
-
-    if (token == null) {
-      token = generateRandomToken();
-      prefs?.setString(prefKey, token);
-    }
-
-    return token;
+    UnifiedPushPlatform.instance.saveDistributor(distributor);
   }
 }

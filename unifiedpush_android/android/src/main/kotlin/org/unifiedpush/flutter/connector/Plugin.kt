@@ -12,6 +12,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.unifiedpush.android.connector.Registration
 
 class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
@@ -21,44 +22,42 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     companion object {
 
         var withCallbackChannel: MethodChannel? = null
+        private var up = Registration()
 
         @JvmStatic
         private fun getDistributors(context: Context,
                                     result: Result?){
-            val intent = Intent()
-            intent.action = ACTION_REGISTER
-            val distributors = context.packageManager.queryBroadcastReceivers(intent, 0).mapNotNull {
-                if (it.activityInfo.exported || it.activityInfo.packageName == context.packageName) {
-                    val packageName = it.activityInfo.packageName
-                    Log.d("UP-Registration", "Found distributor with package name $packageName")
-                    packageName
-                } else {
-                    null
-                }
-            }
-
+            val distributors = up.getDistributors(context)
             result?.success(distributors)
+        }
+
+        @JvmStatic
+        private fun getDistributor(context: Context,
+                                   result: Result?) {
+            val distributor = up.getDistributor(context)
+            result?.success(distributor)
+        }
+
+        @JvmStatic
+        private fun saveDistributor(context: Context,
+                                    args: ArrayList<*>?,
+                                    result: Result?) {
+            val distributor = args!![0] as String
+            up.saveDistributor(context, distributor)
+            result?.success(true)
         }
 
         @JvmStatic
         private fun registerApp(context: Context,
                                 args: ArrayList<*>?,
-                                result: Result?){
-            val distributor = args!![0] as String
-            val token = args!![1] as String
-
-            val broadcastIntent = Intent()
-            broadcastIntent.`package` = distributor
-            broadcastIntent.action = ACTION_REGISTER
-            broadcastIntent.putExtra(EXTRA_TOKEN, token)
-            broadcastIntent.putExtra(EXTRA_APPLICATION, context.packageName)
-            context.sendBroadcast(broadcastIntent)
-
-            context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
-            .edit()
-            .putString(token, distributor)
-            .apply()
-
+                                result: Result?) {
+            val instance: String = (args?.get(0) ?: "") as String
+            Log.d("Plugin", "registerApp: instance=$instance")
+            if (instance.isEmpty()) {
+                up.registerApp(context)
+            } else {
+                up.registerApp(context, instance)
+            }
             result?.success(true)
         }
 
@@ -66,26 +65,13 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         private fun unregister(context: Context,
                                args: ArrayList<*>?,
                                result: Result) {
-            val token = args!![1] as String
-            val distributor = context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
-                .getString(token, null)
-
-            if(distributor != null) {
-                val broadcastIntent = Intent()
-                broadcastIntent.`package` = distributor
-                broadcastIntent.action = ACTION_UNREGISTER
-                broadcastIntent.putExtra(EXTRA_TOKEN, token)
-                context.sendBroadcast(broadcastIntent)
-
-                context.getSharedPreferences(PREF_TOKEN_DISTRIB_MAP, Context.MODE_PRIVATE)
-                .edit()
-                .remove(token)
-                .apply()
-
-                result.success(true)
+            val instance: String = (args?.get(0) ?: "") as String
+            if (instance.isEmpty()) {
+                up.unregisterApp(context)
             } else {
-                result.error("NO_DISTRIBUTOR_FOR_TOKEN", "Cant' unregister, no distributor mapped for this token", null)
+                up.unregisterApp(context, instance)
             }
+            result.success(true)
         }
 
         @JvmStatic
@@ -171,6 +157,8 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         when(call.method) {
             PLUGIN_EVENT_INITIALIZE_BG_CALLBACK -> initializeBackgroundCallback(mContext!!, args, result)
             PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
+            PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
+            PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
             PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS -> getAllNativeSharedPrefs(mActivity!!, args, result)

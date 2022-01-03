@@ -26,10 +26,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UnifiedPush.initializeWithReceiverInstantiated(
+    UnifiedPush.initializeWithReceiver(
       onNewEndpoint: onNewEndpoint, // takes (String endpoint, String instance) in args
       onRegistrationFailed: onRegistrationFailed, // takes (String instance)
-      onRegistrationRefused: onRegistrationRefused, // takes (String
       onUnregistered: onUnregistered, // takes (String instance)
       onMessage: UPNotificationUtils.basicOnNotification, // takes (String message, String instance) in args
     );
@@ -45,10 +44,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       print(endpoint);
     });
-  }
-
-  void onRegistrationRefused(String _instance) {
-    //TODO
   }
 
   void onRegistrationFailed(String _instance) {
@@ -116,6 +111,9 @@ class HomePage extends StatelessWidget {
               UnifiedPush.registerApp(instance);
             } else {
               final distributors = await UnifiedPush.getDistributors();
+              if (distributors.length == 0) {
+                return;
+              }
               final distributor = myPickerFunc(distributors);
               UnifiedPush.saveDistributor(distributor);
               UnifiedPush.registerApp(instance);

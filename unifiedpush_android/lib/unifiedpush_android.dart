@@ -25,11 +25,10 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
   static const MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
 
-  static void Function(String token, String endpoint)? _onNewEndpoint = (String _, String e) {};
-  static void Function(String token, String? message)? _onRegistrationRefused = (String _, String? r) {};
-  static void Function(String token, String? message)? _onRegistrationFailed = (String _, String? r) {};
-  static void Function(String token)? _onUnregistered = (String _) {};
-  static void Function(String token, String message)? _onMessage = (String _, String m) {};
+  static void Function(String endpoint, String instance)? _onNewEndpoint = (String e, String i) {};
+  static void Function(String instance)? _onRegistrationFailed = (String i) {};
+  static void Function(String instance)? _onUnregistered = (String i) {};
+  static void Function(String message, String instance)? _onMessage = (String m, String i) {};
 
   @override
   Future<List<String>> getDistributors() async {
@@ -38,30 +37,40 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   }
 
   @override
-  Future<void> registerApp(String distributor, String token) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP, [distributor, token]);
+  Future<String> getDistributor() async {
+    return await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTOR);
+  }
+
+  @override
+  Future<void> saveDistributor(String distributor) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, [distributor]);
+  }
+
+  @override
+  Future<void> registerApp(String instance) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP, [instance]);
   }
   
   @override
-  Future<void> unregister(String token) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [token]);
+  Future<void> unregister(String instance) async {
+    await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [instance]);
   }
 
   @override
   Future<void> initializeCallback({
-    void Function(String token, String endpoint)? onNewEndpoint,
-    void Function(String token, String? message)? onRegistrationFailed,
-    void Function(String token, String? message)? onRegistrationRefused,
-    void Function(String token)? onUnregistered,
-    void Function(String token, String message)? onMessage,
+    void Function(String endpoint, String instance)? onNewEndpoint,
+    void Function(String instance)? onRegistrationFailed,
+    void Function(String instance)? onUnregistered,
+    void Function(String message, String instance)? onMessage,
   }) async {
     _onNewEndpoint = onNewEndpoint;
     _onRegistrationFailed = onRegistrationFailed;
-    _onRegistrationRefused = onRegistrationRefused;
     _onUnregistered = onUnregistered;
     _onMessage = onMessage;
 
     _channel.setMethodCallHandler(onMethodCall);
+    await _channel.invokeMethod(
+        PLUGIN_EVENT_INITIALIZE_BG_CALLBACK, [0]);
     debugPrint("initializeCallback finished");
   }
 
@@ -112,22 +121,19 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   static Future<void> onMethodCall(MethodCall call) async {
     // type inference will work here avoiding an explicit cast
     debugPrint(call.method);
-    final token = call.arguments["token"] as String;
+    final instance = call.arguments["instance"] as String;
     switch (call.method) {
       case "onNewEndpoint":
-        _onNewEndpoint?.call(token, call.arguments["endpoint"]);
-        break;
-      case "onRegistrationRefused":
-        _onRegistrationRefused?.call(token, call.arguments["message"]);
+        _onNewEndpoint?.call(call.arguments["endpoint"], instance);
         break;
       case "onRegistrationFailed":
-        _onRegistrationFailed?.call(token, call.arguments["message"]);
+        _onRegistrationFailed?.call(instance);
         break;
       case "onUnregistered":
-        _onUnregistered?.call(token);
+        _onUnregistered?.call(instance);
         break;
       case "onMessage":
-        _onMessage?.call(token, call.arguments["message"]);
+        _onMessage?.call(call.arguments["message"], instance);
         break;
     }
   }

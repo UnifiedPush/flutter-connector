@@ -3,10 +3,10 @@ package org.unifiedpush.flutter.example
 import android.content.Context
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
-import org.unifiedpush.flutter.connector.UnifiedPushHandler
-import org.unifiedpush.flutter.connector.MessagingReceiver
+import org.unifiedpush.flutter.connector.EngineHandler
+import org.unifiedpush.flutter.connector.NoCallbackReceiver
 
-val receiverHandler = object : UnifiedPushHandler() {
+val engineHandler = object : EngineHandler {
     override fun getEngine(context: Context): FlutterEngine {
         return provideEngine(context)
     }
@@ -24,4 +24,4 @@ val receiverHandler = object : UnifiedPushHandler() {
     }
 }
 
-class UnifiedPushReceiver : MessagingReceiver(receiverHandler)
+class UnifiedPushReceiver : NoCallbackReceiver(engineHandler)

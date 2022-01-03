@@ -27,7 +27,6 @@ class _MyAppState extends State<MyApp> {
     UnifiedPush.initializeWithCallback(
         onNewEndpoint,
         onRegistrationFailed,
-        onRegistrationRefused,
         onUnregistered,
         UPNotificationUtils.basicOnNotification,
         bgNewEndpoint, // called when new endpoint in background , need to be static
@@ -37,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  void onNewEndpoint(String _endpoint) {
+  void onNewEndpoint(String _endpoint, String _instance) {
     registered = true;
     endpoint = _endpoint;
     setState(() {
@@ -45,15 +44,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void onRegistrationRefused() {
+  void onRegistrationFailed(String _instance) {
     //TODO
   }
 
-  void onRegistrationFailed() {
-    //TODO
-  }
-
-  void onUnregistered() {
+  void onUnregistered(String _instance) {
     registered = false;
     setState(() {
       print("unregistered");
@@ -62,7 +57,7 @@ class _MyAppState extends State<MyApp> {
 
   static bgOnMessage(dynamic args) {
     print("BG: Message: ${args["message"]}");
-    UPNotificationUtils.basicOnNotification(args["message"]);
+    UPNotificationUtils.basicOnNotification(args["message"], args["instance"]);
   }
 
   static bgNewEndpoint(dynamic args) {
@@ -126,6 +121,9 @@ class HomePage extends StatelessWidget {
               UnifiedPush.registerApp();
             } else {
               final distributors = await UnifiedPush.getDistributors();
+              if (distributors.length == 0) {
+                return;
+              }
               final distributor = myPickerFunc(distributors);
               UnifiedPush.saveDistributor(distributor);
               UnifiedPush.registerApp();

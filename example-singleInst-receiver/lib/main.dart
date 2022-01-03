@@ -25,16 +25,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     UnifiedPush.initializeWithReceiver(
-      onNewEndpoint: onNewEndpoint, // takes (String endpoint) in args
-      onRegistrationFailed: onRegistrationFailed, // takes no arg
-      onRegistrationRefused: onRegistrationRefused, // takes no arg
-      onUnregistered: onUnregistered, // takes no arg
-      onMessage: UPNotificationUtils.basicOnNotification, // takes (String message) in args
+      onNewEndpoint: onNewEndpoint, // takes (String endpoint, String instance) in args
+      onRegistrationFailed: onRegistrationFailed, // takes (String instance)
+      onUnregistered: onUnregistered, // takes (String instance)
+      onMessage: UPNotificationUtils.basicOnNotification, // takes (String message, String instance) in args
     );
     super.initState();
   }
 
-  void onNewEndpoint(String _endpoint) {
+  void onNewEndpoint(String _endpoint, String _instance) {
     registered = true;
     endpoint = _endpoint;
     setState(() {
@@ -42,15 +41,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void onRegistrationRefused() {
+  void onRegistrationFailed(String _instance) {
     //TODO
   }
 
-  void onRegistrationFailed() {
-    //TODO
-  }
-
-  void onUnregistered() {
+  void onUnregistered(String _instance) {
     registered = false;
     setState(() {
       print("unregistered");
@@ -108,6 +103,9 @@ class HomePage extends StatelessWidget {
               UnifiedPush.registerApp();
             } else {
               final distributors = await UnifiedPush.getDistributors();
+              if (distributors.length == 0) {
+                return;
+              }
               final distributor = myPickerFunc(distributors);
               UnifiedPush.saveDistributor(distributor);
               UnifiedPush.registerApp();

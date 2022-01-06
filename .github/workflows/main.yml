@@ -38,8 +38,3 @@ jobs:
             "expiration": ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
           }
           EOF
-      - name: Check Publish Warnings
-        run: pub publish --dry-run
-      - if: startsWith(github.ref, 'refs/tags/')
-        name: Publish package
-        run: pub publish -f

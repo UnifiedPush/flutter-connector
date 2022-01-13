@@ -12,10 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
-  unifiedpush_platform_interface:
-    path: ../unifiedpush_platform_interface
-  unifiedpush_android:
-    path: ../unifiedpush_android
+  unifiedpush_platform_interface: ^1.0.0
+  unifiedpush_android: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +24,9 @@ flutter:
     platforms:
       android:
         default_package: unifiedpush_android
+
+dependency_overrides:
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface
+  unifiedpush_android:
+    path: ../unifiedpush_android

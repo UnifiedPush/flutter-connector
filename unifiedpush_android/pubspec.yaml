@@ -12,8 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
-  unifiedpush_platform_interface:
-    path: ../unifiedpush_platform_interface
+  unifiedpush_platform_interface: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +27,7 @@ flutter:
         package: org.unifiedpush.flutter.connector
         pluginClass: Plugin
         dartPluginClass: UnifiedPushAndroid
+
+dependency_overrides:
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface

@@ -28,6 +28,6 @@ flutter:
         pluginClass: Plugin
         dartPluginClass: UnifiedPushAndroid
 
-dependency_overrides:
-  unifiedpush_platform_interface:
-    path: ../unifiedpush_platform_interface
+#todev#dependency_overrides:
+#todev#  unifiedpush_platform_interface:
+#todev#    path: ../unifiedpush_platform_interface

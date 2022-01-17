@@ -25,8 +25,8 @@ flutter:
       android:
         default_package: unifiedpush_android
 
-dependency_overrides:
-  unifiedpush_platform_interface:
-    path: ../unifiedpush_platform_interface
-  unifiedpush_android:
-    path: ../unifiedpush_android
+#todev#dependency_overrides:
+#todev#  unifiedpush_platform_interface:
+#todev#    path: ../unifiedpush_platform_interface
+#todev#  unifiedpush_android:
+#todev#    path: ../unifiedpush_android

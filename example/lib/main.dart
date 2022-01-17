@@ -13,6 +13,8 @@ Future<void> main() async {
 
 UnifiedPush unifiedPush;
 
+var instance = "myInstance";
+
 var endpoint = "";
 var registered = false;
 
@@ -24,19 +26,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    UnifiedPush.initializeWithCallback(
-        onNewEndpoint,
-        onRegistrationFailed,
-        onUnregistered,
-        UPNotificationUtils.basicOnNotification,
-        bgNewEndpoint, // called when new endpoint in background , need to be static
-        bgUnregistered, // called when unregistered in background , need to be static
-        bgOnMessage // called when receiving a message in background , need to be static
-        );
+    UnifiedPush.initializeWithReceiver(
+      onNewEndpoint: onNewEndpoint, // takes (String endpoint, String instance) in args
+      onRegistrationFailed: onRegistrationFailed, // takes (String instance)
+      onUnregistered: onUnregistered, // takes (String instance)
+      onMessage: UPNotificationUtils.basicOnNotification, // takes (String message, String instance) in args
+    );
     super.initState();
   }
 
   void onNewEndpoint(String _endpoint, String _instance) {
+    if (_instance != instance) {
+      return;
+    }
     registered = true;
     endpoint = _endpoint;
     setState(() {
@@ -49,25 +51,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onUnregistered(String _instance) {
+    if (_instance != instance) {
+      return;
+    }
     registered = false;
     setState(() {
       print("unregistered");
     });
-  }
-
-  static bgOnMessage(dynamic args) {
-    print("BG: Message: ${args["message"]}");
-    UPNotificationUtils.basicOnNotification(args["message"], args["instance"]);
-  }
-
-  static bgNewEndpoint(dynamic args) {
-    print("BG: New endpoint: ${args["endpoint"]}");
-    //TODO
-  }
-
-  static bgUnregistered(dynamic args) {
-    print("BG: Unregistered");
-    //TODO
   }
 
   @override
@@ -104,21 +94,21 @@ class HomePage extends StatelessWidget {
         child: Text(registered ? 'Unregister' : "Register"),
         onPressed: () async {
           if (registered) {
-            UnifiedPush.unregister();
+            UnifiedPush.unregister(instance);
           } else {
             /**
              * Registration
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
-            UnifiedPush.registerAppWithDialog(context);
+            UnifiedPush.registerAppWithDialog(context, instance);
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib
              */
             /*
             if (await UnifiedPush.getDistributor() != "") {
-              UnifiedPush.registerApp();
+              UnifiedPush.registerApp(instance);
             } else {
               final distributors = await UnifiedPush.getDistributors();
               if (distributors.length == 0) {
@@ -126,7 +116,7 @@ class HomePage extends StatelessWidget {
               }
               final distributor = myPickerFunc(distributors);
               UnifiedPush.saveDistributor(distributor);
-              UnifiedPush.registerApp();
+              UnifiedPush.registerApp(instance);
             }
             */
           }
@@ -155,7 +145,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Single Instance - Callback'),
+          title: const Text('Unifiedpush Example'),
         ),
         body: Column(
           children: [

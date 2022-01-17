@@ -351,14 +351,14 @@ packages:
     source: path
     version: "4.0.0"
   unifiedpush_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../unifiedpush_android"
       relative: true
     source: path
     version: "1.0.0"
   unifiedpush_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       path: "../unifiedpush_platform_interface"
       relative: true
@@ -393,5 +393,5 @@ packages:
     source: hosted
     version: "5.3.1"
 sdks:
-  dart: ">=2.15.0 <3.0.0"
+  dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.5.0"

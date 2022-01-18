@@ -4,20 +4,23 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.PowerManager
 import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
-import org.unifiedpush.android.connector.*
 
-interface EngineHandler {
-    fun getEngine(context: Context): FlutterEngine
-}
-
-open class NoCallbackReceiver(private val engineHandler: EngineHandler
-) : BroadcastReceiver() {
+/**
+ * This receiver has to be declared on the application side
+ * and getEngine has to be overriden to get the FlutterEngine
+ */
+open class UnifiedPushReceiver : BroadcastReceiver() {
     private val handler = Handler()
 
+    open fun getEngine(context: Context): FlutterEngine? {
+        return null
+    }
+
     private fun getPlugin(context: Context?): Plugin {
-        val registry = engineHandler.getEngine(context!!).plugins
+        val registry = getEngine(context!!)!!.plugins
         var plugin = registry.get(Plugin::class.java) as? Plugin
         if (plugin == null) {
             plugin = Plugin()
@@ -60,40 +63,32 @@ open class NoCallbackReceiver(private val engineHandler: EngineHandler
         }
     }
 
-    // This will be removed when getInstance will be opened
-    // https://github.com/UnifiedPush/android-connector/issues/41
-    private fun getInstance(context: Context, token: String): String? {
-        val prefs = context.getSharedPreferences(PREF_MASTER, Context.MODE_PRIVATE)
-        val instances = prefs.getStringSet(PREF_MASTER_INSTANCE, null)?: emptySet<String>().toMutableSet()
-        instances.forEach {
-            if (prefs.getString("$it/$PREF_MASTER_TOKEN","").equals(token)) {
-                return it
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val wakeLock = (context!!.getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG).apply {
+                acquire(60000L /*1min*/)
             }
         }
-        return null
-    }
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        val token = intent!!.getStringExtra(EXTRA_TOKEN)
-        val instance = token?.let { getInstance(context!!, it) }
-            ?: return
+        val instance = intent!!.getStringExtra(INT_EXTRA_INSTANCE)
         when (intent.action) {
-            ACTION_NEW_ENDPOINT -> {
-                val endpoint = intent.getStringExtra(EXTRA_ENDPOINT)!!
+            INT_ACTION_NEW_ENDPOINT -> {
+                val endpoint = intent.getStringExtra(INT_EXTRA_ENDPOINT)!!
                 onNewEndpoint(context, endpoint, instance)
             }
-            ACTION_REGISTRATION_FAILED -> {
+            INT_ACTION_REGISTRATION_FAILED -> {
                 onRegistrationFailed(context, instance)
             }
-            ACTION_REGISTRATION_REFUSED -> {
-                onRegistrationFailed(context, instance)
-            }
-            ACTION_UNREGISTERED -> {
+            INT_ACTION_UNREGISTERED -> {
                 onUnregistered(context, instance)
             }
-            ACTION_MESSAGE -> {
-                val message = intent.getStringExtra(EXTRA_MESSAGE)!!
+            INT_ACTION_MESSAGE -> {
+                val message = intent.getStringExtra(INT_EXTRA_MESSAGE)!!
                 onMessage(context, message, instance)
+            }
+        }
+        wakeLock?.let {
+            if (it.isHeld) {
+                it.release()
             }
         }
     }

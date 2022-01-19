@@ -1,4 +1,3 @@
-const PLUGIN_EVENT_INITIALIZE_BG_CALLBACK = "initializeBackgroundCallback";
 const PLUGIN_EVENT_GET_DISTRIBUTORS = "getDistributors";
 const PLUGIN_EVENT_GET_DISTRIBUTOR = "getDistributor";
 const PLUGIN_EVENT_SAVE_DISTRIBUTOR = "saveDistributor";

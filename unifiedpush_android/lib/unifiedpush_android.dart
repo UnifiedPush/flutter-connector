@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
-import 'CallbackDispatcher.dart';
 import 'constants.dart';
-
 
 class UnifiedPushAndroid extends UnifiedPushPlatform {
   static void registerWith() {
@@ -69,48 +66,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     _onMessage = onMessage;
 
     _channel.setMethodCallHandler(onMethodCall);
-    await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_BG_CALLBACK, [0]);
     debugPrint("initializeCallback finished");
-  }
-
-  @override
-  Future<void> initializeBackgroundCallback({
-    void Function(dynamic args)? staticOnNewEndpoint,
-    void Function(dynamic args)? staticOnUnregistered,
-    void Function(dynamic args)? staticOnMessage,
-  }) async {
-    final prefs = await getSharedPreferences();
-    if (staticOnNewEndpoint != null) {
-      prefs?.setInt(
-          PREF_ON_NEW_ENDPOINT,
-          PluginUtilities.getCallbackHandle(staticOnNewEndpoint)
-                  ?.toRawHandle() ??
-              0);
-    }
-    if (staticOnUnregistered != null) {
-      prefs?.setInt(
-          PREF_ON_UNREGISTERED,
-          PluginUtilities.getCallbackHandle(staticOnUnregistered)
-                  ?.toRawHandle() ??
-              0);
-    }
-    if (staticOnMessage != null) {
-      prefs?.setInt(
-          PREF_ON_MESSAGE,
-          PluginUtilities.getCallbackHandle(staticOnMessage)?.toRawHandle() ??
-              0);
-    }
-
-    var callbackRawHandle = null;
-    if (staticOnNewEndpoint != null || staticOnUnregistered != null || staticOnMessage != null) {
-      final callback = PluginUtilities.getCallbackHandle(callbackDispatcher);
-      callbackRawHandle = callback?.toRawHandle();
-    }
-
-    await _channel.invokeMethod(
-        PLUGIN_EVENT_INITIALIZE_BG_CALLBACK, <dynamic>[callbackRawHandle]);
-    debugPrint("initializeBackgroundCallback finished");
   }
 
   @override

@@ -5,7 +5,9 @@ import android.content.Intent
 import org.unifiedpush.android.connector.MessagingReceiver
 
 /***
- * Handler used when there is a callback
+ * MessagingReceiver from android-connector
+ * Broadcasting to the application UnifiedPushReceiver
+ * with actions INT_ACTION_{MESSAGE,NEW_ENDPOINT,...}
  */
 
 class InternalReceiver : MessagingReceiver() {

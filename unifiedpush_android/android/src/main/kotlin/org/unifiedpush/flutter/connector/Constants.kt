@@ -1,6 +1,5 @@
 package org.unifiedpush.flutter.connector
 
-const val PLUGIN_EVENT_INITIALIZE_BG_CALLBACK = "initializeBackgroundCallback"
 const val PLUGIN_EVENT_GET_DISTRIBUTORS = "getDistributors"
 const val PLUGIN_EVENT_GET_DISTRIBUTOR = "getDistributor"
 const val PLUGIN_EVENT_SAVE_DISTRIBUTOR = "saveDistributor"

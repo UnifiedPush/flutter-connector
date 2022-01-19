@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-
 /// The interface that implementations of unifiedpush must implement.
 abstract class UnifiedPushPlatform extends PlatformInterface {
   UnifiedPushPlatform() : super(token: _token);
@@ -59,17 +58,6 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     void Function(String message, String instance)? onMessage,
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
-  }
-
-  /// Register static callbacks that can be called in background
-  /// when the app is killed. This is not needed if you are using
-  /// a receiver instead.
-  Future<void> initializeBackgroundCallback({
-    void Function(dynamic args)? staticOnNewEndpoint, //need to be static
-    void Function(dynamic args)? staticOnUnregistered, //need to be static
-    void Function(dynamic args)? staticOnMessage, //need to be static
-  }) {
-    throw UnimplementedError('initializeBackgroundCallback has not been implemented.');
   }
 
   /// Do not implement, it is there only to provide a migration path

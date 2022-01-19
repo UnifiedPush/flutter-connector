@@ -34,42 +34,6 @@ class UnifiedPush {
   static String _preferredDistributor = "";
   static List<String> _availDistributors = [];
 
-  /// INIT: 1.A With Callback, Default Instance
-  static Future<void> initializeWithCallback(
-      void Function(String endpoint, String instance) onNewEndpoint,
-      void Function(String instance) onRegistrationFailed,
-      void Function(String instance) onUnregistered,
-      void Function(String message, String instance) onMessage,
-      void Function(dynamic args) callbackOnNewEndpoint, //need to be static
-      void Function(dynamic args) callbackOnUnregistered, //need to be static
-      void Function(dynamic args) callbackOnMessage //need to be static
-      ) async {
-    await initializeWithReceiver(
-      onNewEndpoint: onNewEndpoint,
-      onRegistrationFailed: onRegistrationFailed,
-      onUnregistered: onUnregistered,
-      onMessage: onMessage,
-    );
-    final prefs = await getSharedPreferences();
-    prefs?.setInt(
-        PREF_ON_NEW_ENDPOINT_ADAPTER,
-        PluginUtilities.getCallbackHandle(callbackOnNewEndpoint)?.toRawHandle() ??
-            0);
-    prefs?.setInt(
-        PREF_ON_UNREGISTERED_ADAPTER,
-        PluginUtilities.getCallbackHandle(callbackOnUnregistered)?.toRawHandle() ??
-            0);
-    prefs?.setInt(
-        PREF_ON_MESSAGE_ADAPTER,
-        PluginUtilities.getCallbackHandle(callbackOnMessage)?.toRawHandle() ??
-            0);
-    await UnifiedPushPlatform.instance.initializeBackgroundCallback(
-      staticOnNewEndpoint: onNewEndpointAdapter,
-      staticOnUnregistered: onUnregisteredAdapter,
-      staticOnMessage: onMessageAdapter
-    );
-  }
-
   static onNewEndpointAdapter(dynamic args) async {
     final callback = await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
     final instance = args["instance"];
@@ -102,8 +66,7 @@ class UnifiedPush {
     }
   }
 
-  /// INIT: 2.A With Receiver, Default Instance
-  static Future<void> initializeWithReceiver({
+  static Future<void> initialize({
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,

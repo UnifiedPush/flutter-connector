@@ -17,9 +17,6 @@
           </intent-filter>
       </receiver>
 
-      <service android:name=".CallbackService"
-          android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
-
   </application>
 
 

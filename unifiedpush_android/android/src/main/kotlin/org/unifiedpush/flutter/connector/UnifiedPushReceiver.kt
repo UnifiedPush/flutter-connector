@@ -34,7 +34,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         val data = mapOf("instance" to instance,
             "message" to message)
         handler.post {
-            getPlugin(context).withReceiverChannel?.invokeMethod("onMessage",  data)
+            getPlugin(context).pluginChannel?.invokeMethod("onMessage",  data)
         }
     }
 
@@ -43,7 +43,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         val data = mapOf("instance" to instance,
             "endpoint" to endpoint)
         handler.post {
-            getPlugin(context).withReceiverChannel?.invokeMethod("onNewEndpoint", data)
+            getPlugin(context).pluginChannel?.invokeMethod("onNewEndpoint", data)
         }
     }
 
@@ -51,7 +51,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         Log.d("Receiver","OnRegistrationFailed")
         val data = mapOf("instance" to instance)
         handler.post {
-            getPlugin(context).withReceiverChannel?.invokeMethod("onRegistrationFailed", data)
+            getPlugin(context).pluginChannel?.invokeMethod("onRegistrationFailed", data)
         }
     }
 
@@ -59,7 +59,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         Log.d("Receiver","OnUnregistered")
         val data = mapOf("instance" to instance)
         handler.post {
-            getPlugin(context).withReceiverChannel?.invokeMethod("onUnregistered", data)
+            getPlugin(context).pluginChannel?.invokeMethod("onUnregistered", data)
         }
     }
 

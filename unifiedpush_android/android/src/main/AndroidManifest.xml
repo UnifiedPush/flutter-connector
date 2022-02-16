@@ -7,7 +7,7 @@
 
   <application>
 
-      <receiver android:exported="true"  android:enabled="true"  android:name=".InternalReceiver">
+      <receiver android:exported="true"  android:enabled="true"  android:name=".ExternalReceiver">
           <intent-filter>
               <action android:name="org.unifiedpush.android.connector.MESSAGE"/>
               <action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>

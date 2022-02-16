@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,13 +71,13 @@ class UnifiedPush {
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
-    void Function(String message, String instance)? onMessage,
+    void Function(Uint8List message, String instance)? onMessage,
   }) async {
     await UnifiedPushPlatform.instance.initializeCallback(
       onNewEndpoint: (String e, String i) async => onNewEndpoint?.call(e, i),
       onRegistrationFailed: (String i) async => onRegistrationFailed?.call(i),
       onUnregistered: (String i) async => onUnregistered?.call(i),
-      onMessage: (String m, String i) async => onMessage?.call(m, i)
+      onMessage: (Uint8List m, String i) async => onMessage?.call(m, i)
     );
   }
 

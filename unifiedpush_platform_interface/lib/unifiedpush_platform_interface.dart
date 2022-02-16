@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -55,7 +56,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
-    void Function(String message, String instance)? onMessage,
+    void Function(Uint8List message, String instance)? onMessage,
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
   }

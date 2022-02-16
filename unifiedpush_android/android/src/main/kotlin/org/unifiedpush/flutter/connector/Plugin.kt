@@ -2,8 +2,6 @@ package org.unifiedpush.flutter.connector
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -12,7 +10,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import org.unifiedpush.android.connector.Registration
+import org.unifiedpush.android.connector.UnifiedPush
+
+private const val TAG = "Plugin"
 
 class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
@@ -20,7 +20,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     var pluginChannel: MethodChannel? = null
 
     companion object {
-        private var up = Registration()
+        private var up = UnifiedPush
 
         @JvmStatic
         private fun getDistributors(context: Context,
@@ -50,7 +50,7 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                                 args: ArrayList<*>?,
                                 result: Result?) {
             val instance: String = (args?.get(0) ?: "") as String
-            Log.d("Plugin", "registerApp: instance=$instance")
+            Log.d(TAG,  "registerApp: instance=$instance")
             if (instance.isEmpty()) {
                 up.registerApp(context)
             } else {
@@ -96,40 +96,40 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        Log.d("Plugin", "onAttachedToEngine")
+        Log.d(TAG, "onAttachedToEngine")
         mContext = binding.applicationContext
         pluginChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL)
         pluginChannel?.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        Log.d("Plugin", "onDetachedFromEngine")
+        Log.d(TAG, "onDetachedFromEngine")
         pluginChannel?.setMethodCallHandler(null)
         mContext = null
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        Log.d("Plugin", "onAttachedToActivity")
+        Log.d(TAG, "onAttachedToActivity")
         mActivity = binding.activity
     }
 
     override fun onDetachedFromActivity() {
-        Log.d("Plugin", "onDetachedFromActivity")
+        Log.d(TAG, "onDetachedFromActivity")
         mActivity = null
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        Log.d("Plugin", "onDetachedFromActivityForConfigChanges")
+        Log.d(TAG, "onDetachedFromActivityForConfigChanges")
         mActivity = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        Log.d("Plugin", "onReattachedToActivityForConfigChanges")
+        Log.d(TAG, "onReattachedToActivityForConfigChanges")
         mActivity = binding.activity
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        Log.d("Plugin","Method: ${call.method}")
+        Log.d(TAG, "Method: ${call.method}")
         val args = call.arguments<ArrayList<*>>()
         // TODO mContext vs mActivity as context ?
         when(call.method) {

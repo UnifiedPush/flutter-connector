@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -21,13 +24,14 @@ abstract class UPNotificationUtils {
     return decoded;
   }
 
-  static Future<bool> basicOnNotification(String payload, String _instance)
+  static Future<bool> basicOnNotification(Uint8List _message, String _instance)
   async {
     debugPrint("instance " + _instance);
     if (_instance != instance) {
       return false;
     }
     debugPrint("onNotification");
+    var payload = utf8.decode(_message);
     Map<String, String> message = decodeMessageContentsUri(payload);
     String title = message['title'] ?? "UP-Example";
     String body = message['message'] ?? "Could not get the content";

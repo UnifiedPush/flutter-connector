@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +27,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   static void Function(String endpoint, String instance)? _onNewEndpoint = (String e, String i) {};
   static void Function(String instance)? _onRegistrationFailed = (String i) {};
   static void Function(String instance)? _onUnregistered = (String i) {};
-  static void Function(String message, String instance)? _onMessage = (String m, String i) {};
+  static void Function(Uint8List message, String instance)? _onMessage = (Uint8List m, String i) {};
 
   @override
   Future<List<String>> getDistributors() async {
@@ -58,7 +60,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
-    void Function(String message, String instance)? onMessage,
+    void Function(Uint8List message, String instance)? onMessage,
   }) async {
     _onNewEndpoint = onNewEndpoint;
     _onRegistrationFailed = onRegistrationFailed;

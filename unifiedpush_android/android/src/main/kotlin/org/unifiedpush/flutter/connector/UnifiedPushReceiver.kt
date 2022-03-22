@@ -7,6 +7,8 @@ import android.os.Handler
 import android.os.PowerManager
 import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.dart.DartExecutor
+import io.flutter.plugin.common.MethodChannel
 
 /**
  * This receiver has to be declared on the application side
@@ -17,9 +19,17 @@ private const val TAG = "UnifiedPushReceiver"
 
 open class UnifiedPushReceiver : BroadcastReceiver() {
     private val handler = Handler()
+    private var pluginChannel : MethodChannel? = null
 
     open fun getEngine(context: Context): FlutterEngine? {
-        return null
+        val engine = FlutterEngine(context)
+        engine.getLocalizationPlugin().sendLocalesToFlutter(
+            context.getResources().getConfiguration()
+        )
+        engine.getDartExecutor().executeDartEntrypoint(
+            DartExecutor.DartEntrypoint.createDefault()
+        )
+        return engine
     }
 
     private fun getPlugin(context: Context): Plugin {
@@ -32,37 +42,37 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         return plugin;
     }
 
-    private fun onMessage(context: Context, message: ByteArray, instance: String) {
+    private fun onMessage(message: ByteArray, instance: String) {
         Log.d(TAG, "OnMessage")
         val data = mapOf("instance" to instance,
             "message" to message)
         handler.post {
-            getPlugin(context).pluginChannel?.invokeMethod("onMessage",  data)
+            pluginChannel?.invokeMethod("onMessage",  data)
         }
     }
 
-    private fun onNewEndpoint(context: Context, endpoint: String, instance: String) {
+    private fun onNewEndpoint(endpoint: String, instance: String) {
         Log.d(TAG, "OnNewEndpoint")
         val data = mapOf("instance" to instance,
             "endpoint" to endpoint)
         handler.post {
-            getPlugin(context).pluginChannel?.invokeMethod("onNewEndpoint", data)
+            pluginChannel?.invokeMethod("onNewEndpoint", data)
         }
     }
 
-    private fun onRegistrationFailed(context: Context, instance: String) {
+    private fun onRegistrationFailed(instance: String) {
         Log.d(TAG, "OnRegistrationFailed")
         val data = mapOf("instance" to instance)
         handler.post {
-            getPlugin(context).pluginChannel?.invokeMethod("onRegistrationFailed", data)
+            pluginChannel?.invokeMethod("onRegistrationFailed", data)
         }
     }
 
-    private fun onUnregistered(context: Context, instance: String) {
+    private fun onUnregistered(instance: String) {
         Log.d(TAG, "OnUnregistered")
         val data = mapOf("instance" to instance)
         handler.post {
-            getPlugin(context).pluginChannel?.invokeMethod("onUnregistered", data)
+            pluginChannel?.invokeMethod("onUnregistered", data)
         }
     }
 
@@ -72,21 +82,22 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
                 acquire(60000L /*1min*/)
             }
         }
+        pluginChannel = Plugin.pluginChannel ?: getPlugin(context).getChannel()
         val instance = intent.getStringExtra(INT_EXTRA_INSTANCE)
         when (intent.action) {
             INT_ACTION_NEW_ENDPOINT -> {
                 val endpoint = intent.getStringExtra(INT_EXTRA_ENDPOINT)!!
-                onNewEndpoint(context, endpoint, instance)
+                onNewEndpoint(endpoint, instance)
             }
             INT_ACTION_REGISTRATION_FAILED -> {
-                onRegistrationFailed(context, instance)
+                onRegistrationFailed(instance)
             }
             INT_ACTION_UNREGISTERED -> {
-                onUnregistered(context, instance)
+                onUnregistered(instance)
             }
             INT_ACTION_MESSAGE -> {
                 val message = intent.getByteArrayExtra(INT_EXTRA_MESSAGE)!!
-                onMessage(context, message, instance)
+                onMessage(message, instance)
             }
         }
         wakeLock?.let {

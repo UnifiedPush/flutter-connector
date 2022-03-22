@@ -17,9 +17,9 @@ private const val TAG = "Plugin"
 class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
     private var mActivity : Activity? = null
-    var pluginChannel: MethodChannel? = null
 
     companion object {
+        var pluginChannel: MethodChannel? = null
         private var up = UnifiedPush
 
         @JvmStatic
@@ -93,6 +93,10 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                 result.success(sanitizedAllPrefs)
             }
         }
+    }
+
+    fun getChannel(): MethodChannel? {
+        return pluginChannel
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {

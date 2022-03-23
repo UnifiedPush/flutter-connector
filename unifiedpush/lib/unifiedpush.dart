@@ -1,73 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
 import 'constants.dart';
 import 'dialogs.dart';
 
 class UnifiedPush {
-  static SharedPreferences? _prefs;
-
-  static Future<SharedPreferences?> getSharedPreferences() async {
-    if (_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-      var migrated = _prefs?.getBool("unifiedpush/migrated");
-      if (migrated == null || !migrated) {
-        final nativePrefs =
-            await UnifiedPushPlatform.instance.getAllNativeSharedPrefs();
-        if (nativePrefs != null) {
-          nativePrefs.forEach((key, value) {
-            if (value is String) {
-              _prefs?.setString(key, value);
-            } else if (value is Iterable) {
-              _prefs?.setStringList(key, List.from(value));
-            }
-          });
-        }
-        _prefs?.setBool("unifiedpush/migrated", true);
-      }
-    }
-    return _prefs;
-  }
-
-  static onNewEndpointAdapter(dynamic args) async {
-    final callback =
-        await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
-    final instance = args["instance"];
-    callback?.call({
-      "instance": instance,
-      "endpoint": args["endpoint"],
-    });
-  }
-
-  static onUnregisteredAdapter(dynamic args) async {
-    final callback =
-        await getCallbackFromPrefHandle(PREF_ON_UNREGISTERED_ADAPTER);
-    final instance = args["instance"];
-    callback?.call({"instance": instance});
-  }
-
-  static onMessageAdapter(dynamic args) async {
-    final callback = await getCallbackFromPrefHandle(PREF_ON_MESSAGE_ADAPTER);
-    final instance = args["instance"];
-    callback?.call({
-      "instance": instance,
-      "message": args["message"],
-    });
-  }
-
-  static Future<Function?> getCallbackFromPrefHandle(String prefKey) async {
-    final prefs = await getSharedPreferences();
-    final rawHandle = prefs?.getInt(prefKey);
-    if (rawHandle != null && rawHandle != 0) {
-      return PluginUtilities.getCallbackFromHandle(
-          CallbackHandle.fromRawHandle(rawHandle));
-    }
-  }
-
   static Future<void> initialize({
     void Function(String endpoint, String instance)? onNewEndpoint,
     void Function(String instance)? onRegistrationFailed,

@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
 import 'constants.dart';
@@ -12,14 +11,6 @@ import 'constants.dart';
 class UnifiedPushAndroid extends UnifiedPushPlatform {
   static void registerWith() {
     UnifiedPushPlatform.instance = UnifiedPushAndroid();
-  }
-
-  static SharedPreferences? _prefs;
-  static Future<SharedPreferences?> getSharedPreferences() async {
-    if (_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
-    return _prefs;
   }
 
   static const MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
@@ -74,12 +65,6 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
     _channel.setMethodCallHandler(onMethodCall);
     debugPrint("initializeCallback finished");
-  }
-
-  @override
-  Future<Map<String, dynamic>> getAllNativeSharedPrefs() async {
-    return Map<String, dynamic>.from(
-        await _channel.invokeMethod(PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS));
   }
 
   static Future<void> onMethodCall(MethodCall call) async {

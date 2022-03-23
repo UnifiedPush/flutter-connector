@@ -60,13 +60,6 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
   }
-
-  /// Do not implement, it is there only to provide a migration path
-  /// from old Android native code, and will be removed at some point.
-  @deprecated
-  Future<Map<String, dynamic>?> getAllNativeSharedPrefs() async {
-    return null;
-  }
 }
 
 class DefaultUnifiedPush extends UnifiedPushPlatform {}

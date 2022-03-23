@@ -78,30 +78,6 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         }
 
         @JvmStatic
-        private fun getAllNativeSharedPrefs(
-            context: Context,
-            result: Result
-        ) {
-            val prefs = context.getSharedPreferences("UP-lib", Context.MODE_PRIVATE)
-            val allPrefs = prefs?.all
-
-            if (allPrefs != null) {
-                // MethodCall.Result only supports List and not Set
-                val sanitizedAllPrefs = mutableMapOf<String, Any?>()
-                for ((k, v) in allPrefs) {
-                    if (v is Collection<*>) {
-                        val l = mutableListOf<Any?>()
-                        l.addAll(v)
-                        sanitizedAllPrefs[k] = l
-                    } else {
-                        sanitizedAllPrefs[k] = v
-                    }
-                }
-                result.success(sanitizedAllPrefs)
-            }
-        }
-
-        @JvmStatic
         private fun parseFeatures(arg: String?): ArrayList<String> {
             val jsonArray = JSONArray(arg ?: "[]")
             val knownFeatures = arrayOf(up.FEATURE_BYTES_MESSAGE)
@@ -163,7 +139,6 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
-            PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS -> getAllNativeSharedPrefs(mActivity!!, result)
             else -> result.notImplemented()
         }
     }

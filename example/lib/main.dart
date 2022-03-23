@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -27,10 +28,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     UnifiedPush.initialize(
-      onNewEndpoint: onNewEndpoint, // takes (String endpoint, String instance) in args
+      onNewEndpoint:
+          onNewEndpoint, // takes (String endpoint, String instance) in args
       onRegistrationFailed: onRegistrationFailed, // takes (String instance)
       onUnregistered: onUnregistered, // takes (String instance)
-      onMessage: UPNotificationUtils.basicOnNotification, // takes (String message, String instance) in args
+      onMessage: UPNotificationUtils
+          .basicOnNotification, // takes (String message, String instance) in args
     );
     super.initState();
   }
@@ -101,7 +104,8 @@ class HomePage extends StatelessWidget {
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
-            UnifiedPush.registerAppWithDialog(context, instance);
+            UnifiedPush.registerAppWithDialog(
+                context, instance, [FEATURE_ANDROID_BYTES_MESSAGE]);
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib

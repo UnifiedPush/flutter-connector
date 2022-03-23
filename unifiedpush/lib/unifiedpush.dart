@@ -16,7 +16,8 @@ class UnifiedPush {
       _prefs = await SharedPreferences.getInstance();
       var migrated = _prefs?.getBool("unifiedpush/migrated");
       if (migrated == null || !migrated) {
-        final nativePrefs = await UnifiedPushPlatform.instance.getAllNativeSharedPrefs();
+        final nativePrefs =
+            await UnifiedPushPlatform.instance.getAllNativeSharedPrefs();
         if (nativePrefs != null) {
           nativePrefs.forEach((key, value) {
             if (value is String) {
@@ -32,30 +33,29 @@ class UnifiedPush {
     return _prefs;
   }
 
-  static String _preferredDistributor = "";
-  static List<String> _availDistributors = [];
-
   static onNewEndpointAdapter(dynamic args) async {
-    final callback = await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
+    final callback =
+        await getCallbackFromPrefHandle(PREF_ON_NEW_ENDPOINT_ADAPTER);
     final instance = args["instance"];
     callback?.call({
-      "instance" : instance,
-      "endpoint" : args["endpoint"],
+      "instance": instance,
+      "endpoint": args["endpoint"],
     });
   }
 
-    static onUnregisteredAdapter(dynamic args) async {
-    final callback = await getCallbackFromPrefHandle(PREF_ON_UNREGISTERED_ADAPTER);
+  static onUnregisteredAdapter(dynamic args) async {
+    final callback =
+        await getCallbackFromPrefHandle(PREF_ON_UNREGISTERED_ADAPTER);
     final instance = args["instance"];
-    callback?.call({"instance" : instance});
+    callback?.call({"instance": instance});
   }
 
   static onMessageAdapter(dynamic args) async {
     final callback = await getCallbackFromPrefHandle(PREF_ON_MESSAGE_ADAPTER);
     final instance = args["instance"];
     callback?.call({
-      "instance" : instance,
-      "message" : args["message"],
+      "instance": instance,
+      "message": args["message"],
     });
   }
 
@@ -63,7 +63,8 @@ class UnifiedPush {
     final prefs = await getSharedPreferences();
     final rawHandle = prefs?.getInt(prefKey);
     if (rawHandle != null && rawHandle != 0) {
-      return PluginUtilities.getCallbackFromHandle(CallbackHandle.fromRawHandle(rawHandle));
+      return PluginUtilities.getCallbackFromHandle(
+          CallbackHandle.fromRawHandle(rawHandle));
     }
   }
 
@@ -74,20 +75,20 @@ class UnifiedPush {
     void Function(Uint8List message, String instance)? onMessage,
   }) async {
     await UnifiedPushPlatform.instance.initializeCallback(
-      onNewEndpoint: (String e, String i) async => onNewEndpoint?.call(e, i),
-      onRegistrationFailed: (String i) async => onRegistrationFailed?.call(i),
-      onUnregistered: (String i) async => onUnregistered?.call(i),
-      onMessage: (Uint8List m, String i) async => onMessage?.call(m, i)
-    );
+        onNewEndpoint: (String e, String i) async => onNewEndpoint?.call(e, i),
+        onRegistrationFailed: (String i) async => onRegistrationFailed?.call(i),
+        onUnregistered: (String i) async => onUnregistered?.call(i),
+        onMessage: (Uint8List m, String i) async => onMessage?.call(m, i));
   }
 
   static Future<void> registerAppWithDialog(BuildContext context,
-      [String instance = DEFAULT_INSTANCE]) async {
+      [String instance = DEFAULT_INSTANCE,
+      List<String>? features = null]) async {
     var distributor = await getDistributor();
     String? picked;
 
     if (distributor == "") {
-      final distributors = await getDistributors();
+      final distributors = await getDistributors(features = features);
       if (distributors.isEmpty) {
         return showDialog(context: context, builder: noDistributorDialog());
       } else if (distributors.length == 1) {
@@ -104,33 +105,29 @@ class UnifiedPush {
       }
     }
 
-    await registerApp(instance = instance);
+    await registerApp(instance = instance, features = features);
   }
 
-  static Future<void> registerApp([String instance = DEFAULT_INSTANCE]) async {
-    UnifiedPushPlatform.instance.registerApp(instance);
+  static Future<void> registerApp(
+      [String instance = DEFAULT_INSTANCE,
+      List<String>? features = null]) async {
+    UnifiedPushPlatform.instance.registerApp(instance, features ?? []);
   }
 
   static Future<void> unregister([String instance = DEFAULT_INSTANCE]) async {
     UnifiedPushPlatform.instance.unregister(instance);
   }
 
-  static Future<List<String>> getDistributors() async {
-    if (_availDistributors.isEmpty) {
-      _availDistributors = await UnifiedPushPlatform.instance.getDistributors();
-    }
-    return _availDistributors;
+  static Future<List<String>> getDistributors(
+      [List<String>? features = null]) async {
+    return await UnifiedPushPlatform.instance.getDistributors(features ?? []);
   }
 
   static Future<String> getDistributor() async {
-    if (_preferredDistributor.isEmpty) {
-      _preferredDistributor = await UnifiedPushPlatform.instance.getDistributor();
-    }
-    return _preferredDistributor;
+    return await UnifiedPushPlatform.instance.getDistributor();
   }
 
   static Future<void> saveDistributor(String distributor) async {
-    _preferredDistributor = distributor;
     UnifiedPushPlatform.instance.saveDistributor(distributor);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-noDistributorDialog(){
+noDistributorDialog() {
   return (BuildContext context) {
     return AlertDialog(
       title: Text('Push Notifications'),

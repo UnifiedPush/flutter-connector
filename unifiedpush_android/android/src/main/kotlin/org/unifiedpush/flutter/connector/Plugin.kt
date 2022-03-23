@@ -10,6 +10,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONArray
 import org.unifiedpush.android.connector.UnifiedPush
 
 private const val TAG = "Plugin"
@@ -24,8 +25,10 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun getDistributors(context: Context,
+                                    args: ArrayList<String>?,
                                     result: Result?){
-            val distributors = up.getDistributors(context)
+            val features = parseFeatures(args?.get(0))
+            val distributors = up.getDistributors(context, features = features)
             result?.success(distributors)
         }
 
@@ -38,33 +41,35 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
         @JvmStatic
         private fun saveDistributor(context: Context,
-                                    args: ArrayList<*>?,
+                                    args: ArrayList<String>?,
                                     result: Result?) {
-            val distributor = args!![0] as String
+            val distributor = args!![0]
             up.saveDistributor(context, distributor)
             result?.success(true)
         }
 
         @JvmStatic
         private fun registerApp(context: Context,
-                                args: ArrayList<*>?,
+                                args: ArrayList<String>?,
                                 result: Result?) {
-            val instance: String = (args?.get(0) ?: "") as String
-            Log.d(TAG,  "registerApp: instance=$instance")
-            if (instance.isEmpty()) {
-                up.registerApp(context)
+            val instance = args?.get(0)
+            val features = parseFeatures(args?.get(1))
+            Log.d(TAG, "registerApp: instance=$instance")
+            if (instance.isNullOrBlank()) {
+                up.registerApp(context, features = features)
             } else {
-                up.registerApp(context, instance)
+                up.registerApp(context, instance, features = features)
             }
             result?.success(true)
         }
 
         @JvmStatic
         private fun unregister(context: Context,
-                               args: ArrayList<*>?,
+                               args: ArrayList<String>?,
                                result: Result) {
-            val instance: String = (args?.get(0) ?: "") as String
-            if (instance.isEmpty()) {
+            val instance = args?.get(0)
+            Log.d(TAG, "unregisterApp: instance=$instance")
+            if (instance.isNullOrEmpty()) {
                 up.unregisterApp(context)
             } else {
                 up.unregisterApp(context, instance)
@@ -72,9 +77,11 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
             result.success(true)
         }
 
-        private fun getAllNativeSharedPrefs(context: Context,
-                               args: ArrayList<*>?,
-                               result: Result) {
+        @JvmStatic
+        private fun getAllNativeSharedPrefs(
+            context: Context,
+            result: Result
+        ) {
             val prefs = context.getSharedPreferences("UP-lib", Context.MODE_PRIVATE)
             val allPrefs = prefs?.all
 
@@ -85,13 +92,27 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
                     if (v is Collection<*>) {
                         val l = mutableListOf<Any?>()
                         l.addAll(v)
-                        sanitizedAllPrefs.put(k, l)
+                        sanitizedAllPrefs[k] = l
                     } else {
-                        sanitizedAllPrefs.put(k, v)
+                        sanitizedAllPrefs[k] = v
                     }
                 }
                 result.success(sanitizedAllPrefs)
             }
+        }
+
+        @JvmStatic
+        private fun parseFeatures(arg: String?): ArrayList<String> {
+            val jsonArray = JSONArray(arg ?: "[]")
+            val knownFeatures = arrayOf(up.FEATURE_BYTES_MESSAGE)
+            return (0 until jsonArray.length()).mapNotNull {
+                val feature = jsonArray.getString(it)
+                if (knownFeatures.contains(feature)) {
+                    feature
+                } else {
+                    null
+                }
+            } as ArrayList<String>
         }
     }
 
@@ -134,15 +155,15 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         Log.d(TAG, "Method: ${call.method}")
-        val args = call.arguments<ArrayList<*>>()
+        val args = call.arguments<ArrayList<String>>()
         // TODO mContext vs mActivity as context ?
         when(call.method) {
-            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, result)
+            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, args, result)
             PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
-            PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS -> getAllNativeSharedPrefs(mActivity!!, args, result)
+            PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS -> getAllNativeSharedPrefs(mActivity!!, result)
             else -> result.notImplemented()
         }
     }

@@ -24,8 +24,8 @@ abstract class UPNotificationUtils {
     return decoded;
   }
 
-  static Future<bool> basicOnNotification(Uint8List _message, String _instance)
-  async {
+  static Future<bool> basicOnNotification(
+      Uint8List _message, String _instance) async {
     debugPrint("instance " + _instance);
     if (_instance != instance) {
       return false;

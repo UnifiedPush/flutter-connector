@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -13,7 +13,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   static void registerWith() {
     UnifiedPushPlatform.instance = UnifiedPushAndroid();
   }
-  
+
   static SharedPreferences? _prefs;
   static Future<SharedPreferences?> getSharedPreferences() async {
     if (_prefs == null) {
@@ -24,14 +24,17 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
   static const MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
 
-  static void Function(String endpoint, String instance)? _onNewEndpoint = (String e, String i) {};
+  static void Function(String endpoint, String instance)? _onNewEndpoint =
+      (String e, String i) {};
   static void Function(String instance)? _onRegistrationFailed = (String i) {};
   static void Function(String instance)? _onUnregistered = (String i) {};
-  static void Function(Uint8List message, String instance)? _onMessage = (Uint8List m, String i) {};
+  static void Function(Uint8List message, String instance)? _onMessage =
+      (Uint8List m, String i) {};
 
   @override
-  Future<List<String>> getDistributors() async {
-    return (await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTORS))
+  Future<List<String>> getDistributors(List<String> features) async {
+    return (await _channel.invokeMethod(
+            PLUGIN_EVENT_GET_DISTRIBUTORS, [jsonEncode(features)]))
         .cast<String>();
   }
 
@@ -46,12 +49,14 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   }
 
   @override
-  Future<void> registerApp(String instance) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_REGISTER_APP, [instance]);
+  Future<void> registerApp(String instance, List<String> features) async {
+    await _channel.invokeMethod(
+        PLUGIN_EVENT_REGISTER_APP, [instance, jsonEncode(features)]);
   }
-  
+
   @override
   Future<void> unregister(String instance) async {
+    _onUnregistered?.call(instance);
     await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [instance]);
   }
 
@@ -73,7 +78,8 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
   @override
   Future<Map<String, dynamic>> getAllNativeSharedPrefs() async {
-    return Map<String, dynamic>.from(await _channel.invokeMethod(PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS));
+    return Map<String, dynamic>.from(
+        await _channel.invokeMethod(PLUGIN_EVENT_GET_ALL_NATIVE_SHARED_PREFS));
   }
 
   static Future<void> onMethodCall(MethodCall call) async {

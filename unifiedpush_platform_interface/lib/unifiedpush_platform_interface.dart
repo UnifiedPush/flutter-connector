@@ -21,7 +21,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   }
 
   /// Returns the qualified identifier of all available distributors on the system.
-  Future<List<String>> getDistributors() {
+  Future<List<String>> getDistributors(List<String> features) {
     throw UnimplementedError('getDistributors has not been implemented.');
   }
 
@@ -39,7 +39,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   /// identified with the instance parameter
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
-  Future<void> registerApp(String instance) {
+  Future<void> registerApp(String instance, List<String> features) {
     throw UnimplementedError('registerApp has not been implemented.');
   }
 

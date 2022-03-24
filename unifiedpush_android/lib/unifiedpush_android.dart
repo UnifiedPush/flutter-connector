@@ -68,8 +68,6 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   }
 
   static Future<void> onMethodCall(MethodCall call) async {
-    // type inference will work here avoiding an explicit cast
-    debugPrint(call.method);
     final instance = call.arguments["instance"] as String;
     switch (call.method) {
       case "onNewEndpoint":

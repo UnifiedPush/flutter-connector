@@ -23,10 +23,10 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
 
     open fun getEngine(context: Context): FlutterEngine? {
         val engine = FlutterEngine(context)
-        engine.getLocalizationPlugin().sendLocalesToFlutter(
-            context.getResources().getConfiguration()
+        engine.localizationPlugin.sendLocalesToFlutter(
+            context.resources.configuration
         )
-        engine.getDartExecutor().executeDartEntrypoint(
+        engine.dartExecutor.executeDartEntrypoint(
             DartExecutor.DartEntrypoint.createDefault()
         )
         return engine
@@ -83,7 +83,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
             }
         }
         pluginChannel = Plugin.pluginChannel ?: getPlugin(context).getChannel()
-        val instance = intent.getStringExtra(INT_EXTRA_INSTANCE)
+        val instance = intent.getStringExtra(INT_EXTRA_INSTANCE)!!
         when (intent.action) {
             INT_ACTION_NEW_ENDPOINT -> {
                 val endpoint = intent.getStringExtra(INT_EXTRA_ENDPOINT)!!

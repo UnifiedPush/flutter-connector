@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 noDistributorDialog() {
   return (BuildContext context) {
     return AlertDialog(
-      title: Text('Push Notifications'),
-      content: SingleChildScrollView(
+      title: const Text('Push Notifications'),
+      content: const SingleChildScrollView(
           child: SelectableText(
               "You need to install a distributor for push notifications to work.\nYou can find more information at: https://unifiedpush.org/users/intro/")),
       actions: [

@@ -16,11 +16,13 @@ abstract class UPNotificationUtils {
   static Map<String, String> decodeMessageContentsUri(String message) {
     List<String> uri = Uri.decodeComponent(message).split("&");
     Map<String, String> decoded = {};
-    uri.forEach((String i) {
+    for (var i in uri) {
       try {
         decoded[i.split("=")[0]] = i.split("=")[1];
-      } on Exception {}
-    });
+      } on Exception {
+        debugPrint("Couldn't decode " + i);
+      }
+    }
     return decoded;
   }
 
@@ -35,16 +37,14 @@ abstract class UPNotificationUtils {
     Map<String, String> message = decodeMessageContentsUri(payload);
     String title = message['title'] ?? "UP-Example";
     String body = message['message'] ?? "Could not get the content";
-    int priority = int.parse(message['priority'] ?? "5");
-    print(title);
+    debugPrint(title);
     if (!_notificationInitialized) _initNotifications();
 
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'UP-Example', 'UP-Example',
         playSound: false, importance: Importance.max, priority: Priority.high);
-    print(priority);
     var platformChannelSpecifics =
-        new NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
     await _flutterLocalNotificationsPlugin.show(
       DateTime.now().microsecondsSinceEpoch % 100000000,
       title,
@@ -60,7 +60,7 @@ abstract class UPNotificationUtils {
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('notification_icon');
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
     );

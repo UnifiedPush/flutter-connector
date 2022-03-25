@@ -5,10 +5,10 @@ import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'NotificationUtils.dart';
+import 'notification_utils.dart';
 
 Future<void> main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
   EasyLoading.instance.userInteractions = false;
 }
 
@@ -20,6 +20,8 @@ var endpoint = "";
 var registered = false;
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -45,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     registered = true;
     endpoint = _endpoint;
     setState(() {
-      print(endpoint);
+      debugPrint(endpoint);
     });
   }
 
@@ -59,7 +61,7 @@ class _MyAppState extends State<MyApp> {
     }
     registered = false;
     setState(() {
-      print("unregistered");
+      debugPrint("unregistered");
     });
   }
 
@@ -78,13 +80,15 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
+  HomePage({Key key}) : super(key: key);
+
   void notify() async => await http.post(Uri.parse(endpoint),
       body: "title=${title.text}&message=${message.text}&priority=6");
 
   String myPickerFunc(List<String> distributors) {
     // Do not do a random func, this is an example.
     // You should do a context menu/dialog here
-    Random rand = new Random();
+    Random rand = Random();
     final max = distributors.length;
     final index = rand.nextInt(max);
     return distributors[index];
@@ -105,7 +109,7 @@ class HomePage extends StatelessWidget {
              *            which uses a dialog
              */
             UnifiedPush.registerAppWithDialog(
-                context, instance, [FEATURE_ANDROID_BYTES_MESSAGE]);
+                context, instance, [featureAndroidBytesMessage]);
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib
@@ -129,20 +133,20 @@ class HomePage extends StatelessWidget {
     ];
 
     if (registered) {
-      row.add(ElevatedButton(child: Text("Notify"), onPressed: notify));
+      row.add(ElevatedButton(child: const Text("Notify"), onPressed: notify));
       row.add(
         TextField(
           controller: title,
-          decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+          decoration: const InputDecoration(
+              border: OutlineInputBorder(),
               hintText: 'Enter a search term'),
         ),
       );
 
       row.add(TextField(
         controller: message,
-        decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+        decoration: const InputDecoration(
+            border: OutlineInputBorder(),
             hintText: 'Enter a search term'),
       ));
     }

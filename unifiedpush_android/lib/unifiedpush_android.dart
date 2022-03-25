@@ -13,7 +13,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     UnifiedPushPlatform.instance = UnifiedPushAndroid();
   }
 
-  static const MethodChannel _channel = MethodChannel(PLUGIN_CHANNEL);
+  static const MethodChannel _channel = MethodChannel(pluginChannel);
 
   static void Function(String endpoint, String instance)? _onNewEndpoint =
       (String e, String i) {};
@@ -25,30 +25,30 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   @override
   Future<List<String>> getDistributors(List<String> features) async {
     return (await _channel.invokeMethod(
-            PLUGIN_EVENT_GET_DISTRIBUTORS, [jsonEncode(features)]))
+            pluginEventGetDistributors, [jsonEncode(features)]))
         .cast<String>();
   }
 
   @override
   Future<String> getDistributor() async {
-    return await _channel.invokeMethod(PLUGIN_EVENT_GET_DISTRIBUTOR);
+    return await _channel.invokeMethod(pluginEventGetDistributor);
   }
 
   @override
   Future<void> saveDistributor(String distributor) async {
-    await _channel.invokeMethod(PLUGIN_EVENT_SAVE_DISTRIBUTOR, [distributor]);
+    await _channel.invokeMethod(pluginEventSaveDistributor, [distributor]);
   }
 
   @override
   Future<void> registerApp(String instance, List<String> features) async {
     await _channel.invokeMethod(
-        PLUGIN_EVENT_REGISTER_APP, [instance, jsonEncode(features)]);
+        pluginEventRegisterApplication, [instance, jsonEncode(features)]);
   }
 
   @override
   Future<void> unregister(String instance) async {
     _onUnregistered?.call(instance);
-    await _channel.invokeMethod(PLUGIN_EVENT_UNREGISTER, [instance]);
+    await _channel.invokeMethod(pluginEventUnregister, [instance]);
   }
 
   @override

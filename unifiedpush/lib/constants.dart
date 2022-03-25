@@ -1,4 +1,4 @@
-const DEFAULT_INSTANCE = "default";
+const defaultInstance = "default";
 
-const FEATURE_ANDROID_BYTES_MESSAGE =
+const featureAndroidBytesMessage =
     "org.unifiedpush.android.distributor.feature.BYTES_MESSAGE";

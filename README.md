@@ -10,5 +10,3 @@ Check out the documentation here:
 2. To have Firebase as a fallback, <https://unifiedpush.org/developers/embedded_fcm/>
 3. An [example app](tree/main/example) can be found here.
 
-## Credits
-* Architecture derived from https://github.com/bkonyi/FlutterGeofencing

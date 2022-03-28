@@ -1,3 +1,6 @@
+## 4.0.0
+* Use a platform interface
+
 ## 3.0.1
 * android-connector:1.2.3
 * Clean dependencies

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 
 import 'constants.dart';
@@ -20,15 +21,24 @@ class UnifiedPush {
         onMessage: (Uint8List m, String i) async => onMessage?.call(m, i));
   }
 
+  static const noDistribAck = "noDistributorAck";
+
   static Future<void> registerAppWithDialog(BuildContext context,
       [String instance = defaultInstance, List<String>? features]) async {
     var distributor = await getDistributor();
+    final prefs = await SharedPreferences.getInstance();
     String? picked;
 
     if (distributor == "") {
       final distributors = await getDistributors(features = features);
       if (distributors.isEmpty) {
-        return showDialog(context: context, builder: noDistributorDialog());
+        if (!(prefs.getBool(noDistribAck) ?? false)) {
+          return showDialog(
+              context: context,
+              builder: noDistributorDialog(onDismissed: () {
+                prefs.setBool(noDistribAck, true);
+              }));
+        }
       } else if (distributors.length == 1) {
         picked = distributors.single;
       } else {
@@ -44,6 +54,11 @@ class UnifiedPush {
     }
 
     await registerApp(instance = instance, features = features);
+  }
+
+  static Future<void> removeNoDistributorDialogACK() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(noDistribAck);
   }
 
   static Future<void> registerApp(

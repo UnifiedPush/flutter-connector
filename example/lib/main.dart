@@ -108,6 +108,7 @@ class HomePage extends StatelessWidget {
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
+            UnifiedPush.removeNoDistributorDialogACK();
             UnifiedPush.registerAppWithDialog(
                 context, instance, [featureAndroidBytesMessage]);
             /**
@@ -118,6 +119,7 @@ class HomePage extends StatelessWidget {
             if (await UnifiedPush.getDistributor() != "") {
               UnifiedPush.registerApp(instance);
             } else {
+              UnifiedPush.removeNoDistributorDialogACK();
               final distributors = await UnifiedPush.getDistributors();
               if (distributors.length == 0) {
                 return;

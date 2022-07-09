@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-noDistributorDialog() {
+noDistributorDialog({required Null Function() onDismissed}) {
   return (BuildContext context) {
     return AlertDialog(
       title: const Text('Push Notifications'),
@@ -8,6 +8,13 @@ noDistributorDialog() {
           child: SelectableText(
               "You need to install a distributor for push notifications to work.\nYou can find more information at: https://unifiedpush.org/users/intro/")),
       actions: [
+        TextButton(
+          child: const Text('Dismiss'),
+          onPressed: () {
+            onDismissed();
+            Navigator.of(context).pop();
+          },
+        ),
         TextButton(
           child: const Text('Close'),
           onPressed: Navigator.of(context).pop,

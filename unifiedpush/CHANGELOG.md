@@ -1,3 +1,8 @@
+## 4.0.1
+* Bump unifiedpush_android to 1.0.1
+* Add option to dismiss dialog when there is no distributors
+* Add removeNoDistributorDialogACK() to show the dialog again
+
 ## 4.0.0
 * Use a platform interface
 

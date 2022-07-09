@@ -24,8 +24,8 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
   @override
   Future<List<String>> getDistributors(List<String> features) async {
-    return (await _channel.invokeMethod(
-            pluginEventGetDistributors, [jsonEncode(features)]))
+    return (await _channel
+            .invokeMethod(pluginEventGetDistributors, [jsonEncode(features)]))
         .cast<String>();
   }
 

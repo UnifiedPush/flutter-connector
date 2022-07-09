@@ -138,16 +138,14 @@ class HomePage extends StatelessWidget {
         TextField(
           controller: title,
           decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter a search term'),
+              border: OutlineInputBorder(), hintText: 'Enter a search term'),
         ),
       );
 
       row.add(TextField(
         controller: message,
         decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter a search term'),
+            border: OutlineInputBorder(), hintText: 'Enter a search term'),
       ));
     }
 

@@ -21,8 +21,7 @@ class UnifiedPush {
   }
 
   static Future<void> registerAppWithDialog(BuildContext context,
-      [String instance = defaultInstance,
-      List<String>? features]) async {
+      [String instance = defaultInstance, List<String>? features]) async {
     var distributor = await getDistributor();
     String? picked;
 
@@ -48,8 +47,7 @@ class UnifiedPush {
   }
 
   static Future<void> registerApp(
-      [String instance = defaultInstance,
-      List<String>? features]) async {
+      [String instance = defaultInstance, List<String>? features]) async {
     UnifiedPushPlatform.instance.registerApp(instance, features ?? []);
   }
 
@@ -57,8 +55,7 @@ class UnifiedPush {
     UnifiedPushPlatform.instance.unregister(instance);
   }
 
-  static Future<List<String>> getDistributors(
-      [List<String>? features]) async {
+  static Future<List<String>> getDistributors([List<String>? features]) async {
     return await UnifiedPushPlatform.instance.getDistributors(features ?? []);
   }
 

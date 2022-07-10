@@ -3,6 +3,8 @@ description: Push notifications with the provider chosen by the user.
 version: 4.0.1
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
+repository: https://github.com/UnifiedPush/flutter-connector
+issue_tracker: https://github.com/UnifiedPush/flutter-connector/issues
 
 environment:
   sdk: ">=2.15.0 <3.0.0"

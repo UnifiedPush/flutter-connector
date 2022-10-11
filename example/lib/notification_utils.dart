@@ -65,11 +65,6 @@ abstract class UPNotificationUtils {
       android: initializationSettingsAndroid,
     );
     _notificationInitialized = await _flutterLocalNotificationsPlugin
-        .initialize(initializationSettings,
-            onSelectNotification: (String payload) async {
-      if (payload != null) {
-        debugPrint('notification payload: $payload');
-      }
-    });
+        .initialize(initializationSettings);
   }
 }

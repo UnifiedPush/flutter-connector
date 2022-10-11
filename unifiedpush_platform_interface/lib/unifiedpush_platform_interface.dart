@@ -26,7 +26,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   }
 
   /// Returns the qualified identifier of the distributor used.
-  Future<String> getDistributor() {
+  Future<String?> getDistributor() {
     throw UnimplementedError('getDistributor has not been implemented.');
   }
 

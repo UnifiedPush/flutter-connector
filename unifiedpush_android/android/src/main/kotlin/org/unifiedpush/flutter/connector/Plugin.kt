@@ -36,7 +36,11 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         private fun getDistributor(context: Context,
                                    result: Result?) {
             val distributor = up.getDistributor(context)
-            result?.success(distributor)
+            if (distributor.isEmpty()) {
+                result?.success(null)
+            } else {
+                result?.success(distributor)
+            }
         }
 
         @JvmStatic

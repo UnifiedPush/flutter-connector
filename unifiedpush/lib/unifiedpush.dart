@@ -29,7 +29,7 @@ class UnifiedPush {
     final prefs = await SharedPreferences.getInstance();
     String? picked;
 
-    if (distributor == "") {
+    if (distributor == null) {
       final distributors = await getDistributors(features = features);
       if (distributors.isEmpty) {
         if (!(prefs.getBool(noDistribAck) ?? false)) {
@@ -74,7 +74,7 @@ class UnifiedPush {
     return await UnifiedPushPlatform.instance.getDistributors(features ?? []);
   }
 
-  static Future<String> getDistributor() async {
+  static Future<String?> getDistributor() async {
     return await UnifiedPushPlatform.instance.getDistributor();
   }
 

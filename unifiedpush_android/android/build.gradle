@@ -39,6 +39,6 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.github.UnifiedPush:android-connector:2.1.0"
+    implementation "com.github.UnifiedPush:android-connector:2.1.1"
     //implementation files("../../../flutter/bin/cache/artifacts/engine/android-x64/flutter.jar")
 }

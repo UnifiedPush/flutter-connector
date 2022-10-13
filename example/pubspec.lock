@@ -367,23 +367,23 @@ packages:
   unifiedpush:
     dependency: "direct main"
     description:
-      name: unifiedpush
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.1"
+      path: "../unifiedpush"
+      relative: true
+    source: path
+    version: "4.0.2"
   unifiedpush_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: unifiedpush_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
+      path: "../unifiedpush_android"
+      relative: true
+    source: path
+    version: "1.1.0"
   unifiedpush_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: unifiedpush_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../unifiedpush_platform_interface"
+      relative: true
+    source: path
     version: "1.0.0"
   vector_math:
     dependency: transitive

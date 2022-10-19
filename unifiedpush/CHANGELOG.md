@@ -1,3 +1,6 @@
+## 4.0.2
+* Bump unifiedpush_android to 1.1.0
+
 ## 4.0.1
 * Bump unifiedpush_android to 1.0.1
 * Add option to dismiss dialog when there is no distributors

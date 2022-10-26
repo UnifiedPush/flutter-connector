@@ -1,11 +1,8 @@
 package org.unifiedpush.flutter.connector
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -15,9 +12,8 @@ import org.unifiedpush.android.connector.UnifiedPush
 
 private const val TAG = "Plugin"
 
-class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
+class Plugin : FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
-    private var mActivity : Activity? = null
 
     companion object {
         var pluginChannel: MethodChannel? = null
@@ -109,36 +105,15 @@ class Plugin : ActivityAware, FlutterPlugin, MethodCallHandler {
         mContext = null
     }
 
-    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        Log.d(TAG, "onAttachedToActivity")
-        mActivity = binding.activity
-    }
-
-    override fun onDetachedFromActivity() {
-        Log.d(TAG, "onDetachedFromActivity")
-        mActivity = null
-    }
-
-    override fun onDetachedFromActivityForConfigChanges() {
-        Log.d(TAG, "onDetachedFromActivityForConfigChanges")
-        mActivity = null
-    }
-
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        Log.d(TAG, "onReattachedToActivityForConfigChanges")
-        mActivity = binding.activity
-    }
-
     override fun onMethodCall(call: MethodCall, result: Result) {
         Log.d(TAG, "Method: ${call.method}")
         val args = call.arguments<ArrayList<String>>()
-        // TODO mContext vs mActivity as context ?
         when(call.method) {
-            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mActivity!!, args, result)
-            PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mActivity!!, result)
-            PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mActivity!!, args, result)
-            PLUGIN_EVENT_REGISTER_APP -> registerApp(mActivity!!, args, result)
-            PLUGIN_EVENT_UNREGISTER -> unregister(mActivity!!, args, result)
+            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mContext!!, args, result)
+            PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mContext!!, result)
+            PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mContext!!, args, result)
+            PLUGIN_EVENT_REGISTER_APP -> registerApp(mContext!!, args, result)
+            PLUGIN_EVENT_UNREGISTER -> unregister(mContext!!, args, result)
             else -> result.notImplemented()
         }
     }

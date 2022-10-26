@@ -65,6 +65,6 @@ abstract class UPNotificationUtils {
       android: initializationSettingsAndroid,
     );
     _notificationInitialized = await _flutterLocalNotificationsPlugin
-        .initialize(initializationSettings);
+        .initialize(initializationSettings) ?? false;
   }
 }

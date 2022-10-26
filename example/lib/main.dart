@@ -12,15 +12,13 @@ Future<void> main() async {
   EasyLoading.instance.userInteractions = false;
 }
 
-UnifiedPush unifiedPush;
-
 var instance = "myInstance";
 
 var endpoint = "";
 var registered = false;
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -80,7 +78,7 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   void notify() async => await http.post(Uri.parse(endpoint),
       body: "title=${title.text}&message=${message.text}&priority=6");

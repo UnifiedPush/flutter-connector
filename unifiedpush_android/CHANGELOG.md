@@ -1,3 +1,6 @@
+## 1.1.1
+* Use mContext instead of mActivity
+
 ## 1.1.0
 * Bump android-connector to 2.1.1
 * Bump other depencies

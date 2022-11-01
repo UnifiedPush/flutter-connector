@@ -1,3 +1,6 @@
+## 4.0.3
+* Bump unifiedpush_android to 1.1.1
+
 ## 4.0.2
 * Bump unifiedpush_android to 1.1.0
 

@@ -102,6 +102,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         Log.d(TAG, "onDetachedFromEngine")
         pluginChannel?.setMethodCallHandler(null)
+        pluginChannel = null
         mContext = null
     }
 

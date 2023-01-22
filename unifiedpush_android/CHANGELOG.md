@@ -1,3 +1,6 @@
+## 1.1.2
+* unset pluginChannel in onDetachedFromEngine()
+
 ## 1.1.1
 * Use mContext instead of mActivity
 

@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +13,9 @@ Future<void> main() async {
   runApp(const MyApp());
   EasyLoading.instance.userInteractions = false;
 }
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 var instance = "myInstance";
 
@@ -35,7 +40,18 @@ class _MyAppState extends State<MyApp> {
       onMessage: UPNotificationUtils
           .basicOnNotification, // takes (String message, String instance) in args
     );
+    _isAndroidPermissionGranted();
     super.initState();
+  }
+
+  Future<void> _isAndroidPermissionGranted() async {
+    if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+
+      await androidImplementation?.requestPermission();
+    }
   }
 
   void onNewEndpoint(String _endpoint, String _instance) {

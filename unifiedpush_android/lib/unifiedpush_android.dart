@@ -47,6 +47,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
 
   @override
   Future<void> unregister(String instance) async {
+    _onUnregistered?.call(instance);
     await _channel.invokeMethod(pluginEventUnregister, [instance]);
   }
 

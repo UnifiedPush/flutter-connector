@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onRegistrationFailed(String _instance) {
-    //TODO
+    onUnregistered(_instance);
   }
 
   void onUnregistered(String _instance) {
@@ -79,10 +79,14 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {HomePage.routeName: (context) => HomePage()},
+      routes: {HomePage.routeName: (context) => HomePage(onPressed: refresh)},
       builder: EasyLoading.init(),
     );
   }
@@ -90,11 +94,12 @@ class _MyAppState extends State<MyApp> {
 
 class HomePage extends StatelessWidget {
   static const routeName = '/';
+  final VoidCallback onPressed;
 
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key, required this.onPressed}) : super(key: key);
 
   void notify() async => await http.post(Uri.parse(endpoint),
       body: "title=${title.text}&message=${message.text}&priority=6");
@@ -116,6 +121,8 @@ class HomePage extends StatelessWidget {
         onPressed: () async {
           if (registered) {
             UnifiedPush.unregister(instance);
+            registered = false;
+            onPressed();
           } else {
             /**
              * Registration

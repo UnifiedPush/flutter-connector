@@ -21,12 +21,19 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     private val handler = Handler()
     private var pluginChannel : MethodChannel? = null
 
+    companion object {
+        private var engine : FlutterEngine? = null
+    }
+
     open fun getEngine(context: Context): FlutterEngine? {
-        val engine = FlutterEngine(context)
-        engine.localizationPlugin.sendLocalesToFlutter(
+        if (engine != null) {
+            return engine;
+        }
+        engine = FlutterEngine(context)
+        engine!!.localizationPlugin.sendLocalesToFlutter(
             context.resources.configuration
         )
-        engine.dartExecutor.executeDartEntrypoint(
+        engine!!.dartExecutor.executeDartEntrypoint(
             DartExecutor.DartEntrypoint.createDefault()
         )
         return engine

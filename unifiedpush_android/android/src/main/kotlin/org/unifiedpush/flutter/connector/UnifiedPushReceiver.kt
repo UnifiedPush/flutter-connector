@@ -21,7 +21,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     private val handler = Handler()
     private var pluginChannel : MethodChannel? = null
 
-    open fun getEngine(context: Context): FlutterEngine? {
+    open fun getEngine(context: Context): FlutterEngine {
         val engine = FlutterEngine(context)
         engine.localizationPlugin.sendLocalesToFlutter(
             context.resources.configuration
@@ -33,7 +33,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     }
 
     private fun getPlugin(context: Context): Plugin {
-        val registry = getEngine(context)!!.plugins
+        val registry = getEngine(context).plugins
         var plugin = registry.get(Plugin::class.java) as? Plugin
         if (plugin == null) {
             plugin = Plugin()

@@ -30,7 +30,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   }
 
   @override
-  Future<String> getDistributor() async {
+  Future<String?> getDistributor() async {
     return await _channel.invokeMethod(pluginEventGetDistributor);
   }
 

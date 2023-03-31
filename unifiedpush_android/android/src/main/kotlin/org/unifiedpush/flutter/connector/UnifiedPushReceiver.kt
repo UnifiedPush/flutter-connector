@@ -25,7 +25,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
         private var engine : FlutterEngine? = null
     }
 
-    open fun getEngine(context: Context): FlutterEngine? {
+    open fun getEngine(context: Context): FlutterEngine {
         if (engine != null) {
             return engine;
         }
@@ -40,7 +40,7 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     }
 
     private fun getPlugin(context: Context): Plugin {
-        val registry = getEngine(context)!!.plugins
+        val registry = getEngine(context).plugins
         var plugin = registry.get(Plugin::class.java) as? Plugin
         if (plugin == null) {
             plugin = Plugin()

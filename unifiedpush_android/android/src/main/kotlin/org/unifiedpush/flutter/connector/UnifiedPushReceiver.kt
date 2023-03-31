@@ -26,17 +26,16 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     }
 
     open fun getEngine(context: Context): FlutterEngine {
-        if (engine != null) {
-            return engine;
+        engine?.let {
+            return it
         }
-        engine = FlutterEngine(context)
-        engine!!.localizationPlugin.sendLocalesToFlutter(
-            context.resources.configuration
-        )
-        engine!!.dartExecutor.executeDartEntrypoint(
+        return FlutterEngine(context).apply {
+            engine = this
+            localizationPlugin.sendLocalesToFlutter(
+                context.resources.configuration
+            )
             DartExecutor.DartEntrypoint.createDefault()
-        )
-        return engine
+        }
     }
 
     private fun getPlugin(context: Context): Plugin {

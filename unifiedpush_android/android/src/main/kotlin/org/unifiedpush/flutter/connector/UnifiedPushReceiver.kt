@@ -34,7 +34,9 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
             localizationPlugin.sendLocalesToFlutter(
                 context.resources.configuration
             )
-            DartExecutor.DartEntrypoint.createDefault()
+            dartExecutor.executeDartEntrypoint(
+                DartExecutor.DartEntrypoint.createDefault()
+            )
         }
     }
 

@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.11
-  unifiedpush_platform_interface: ^1.0.0
+  unifiedpush_platform_interface: ^2.0.0
   unifiedpush_android: ^1.1.1
 
 dev_dependencies:

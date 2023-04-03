@@ -1,3 +1,9 @@
+## 5.0.0
+* getDistributor returns nullable string
+* Android:
+    * Ensure only one FlutterEngine is created
+    * Do not explicitly call _onRegistered in unregisterApp
+
 ## 4.0.3
 * Bump unifiedpush_android to 1.1.1
 

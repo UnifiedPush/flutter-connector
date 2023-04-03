@@ -1,6 +1,6 @@
 name: unifiedpush
 description: Push notifications with the provider chosen by the user.
-version: 4.0.3
+version: 5.0.0
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
 repository: https://github.com/UnifiedPush/flutter-connector

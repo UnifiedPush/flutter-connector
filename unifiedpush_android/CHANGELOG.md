@@ -1,7 +1,8 @@
-## 2.0.0
+## 2.0.1
 * getDistributor returns nullable string
 * Ensure only one FlutterEngine is created
 * Do not explicitly call _onRegistered in unregisterApp
+* Fix getEngine
 
 ## 1.1.2
 * unset pluginChannel in onDetachedFromEngine()

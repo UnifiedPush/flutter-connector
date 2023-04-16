@@ -1,3 +1,6 @@
+## 2.1.0
+* Ensure the engine is intizialed only once
+
 ## 2.0.1
 * getDistributor returns nullable string
 * Ensure only one FlutterEngine is created

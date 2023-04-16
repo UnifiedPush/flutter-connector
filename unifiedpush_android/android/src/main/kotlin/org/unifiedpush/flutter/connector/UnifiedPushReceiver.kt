@@ -79,18 +79,24 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
-            rLock.lock()
-            if (!Plugin.isInit) {
-                Log.d(TAG, "Initializing")
-                initChannel = Channel()
-                handleIntent(context, intent)
-                initChannel?.receive()
-                initChannel?.cancel()
-                initChannel = null
+            // Locking if it is not yet initialized
+            if(!Plugin.isInit.get()) {
+                rLock.lock()
+                // If initialization has not been done on another thread
+                if (!Plugin.isInit.get()) {
+                    Log.d(TAG, "Initializing")
+                    initChannel = Channel()
+                    handleIntent(context, intent)
+                    initChannel?.receive()
+                    initChannel?.cancel()
+                    initChannel = null
+                } else {
+                    handleIntent(context, intent)
+                }
+                rLock.unlock()
             } else {
                 handleIntent(context, intent)
             }
-            rLock.unlock()
         }
     }
 

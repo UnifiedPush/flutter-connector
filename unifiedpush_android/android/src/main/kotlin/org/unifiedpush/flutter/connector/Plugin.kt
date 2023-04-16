@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import java.util.concurrent.atomic.AtomicBoolean
 import org.unifiedpush.android.connector.UnifiedPush as up
 
 private const val TAG = "Plugin"
@@ -93,7 +94,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
                 it.send(Any())
             }
         }
-        isInit = true
+        isInit.set(true)
     }
 
     fun getChannel(): MethodChannel? {
@@ -132,7 +133,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
     companion object {
         var pluginChannel: MethodChannel? = null
             private set
-        var isInit = false
+        var isInit = AtomicBoolean(false)
             private set
     }
 }

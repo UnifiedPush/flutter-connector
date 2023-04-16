@@ -62,6 +62,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     _onMessage = onMessage;
 
     _channel.setMethodCallHandler(onMethodCall);
+    await _channel.invokeMethod(pluginEventInitialized, []);
     debugPrint("initializeCallback finished");
   }
 

@@ -9,6 +9,9 @@ import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * This receiver has to be declared on the application side
@@ -21,16 +24,8 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     private val handler = Handler()
     private var pluginChannel : MethodChannel? = null
 
-    companion object {
-        private var engine : FlutterEngine? = null
-    }
-
     open fun getEngine(context: Context): FlutterEngine {
-        engine?.let {
-            return it
-        }
         return FlutterEngine(context).apply {
-            engine = this
             localizationPlugin.sendLocalesToFlutter(
                 context.resources.configuration
             )
@@ -42,12 +37,10 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
 
     private fun getPlugin(context: Context): Plugin {
         val registry = getEngine(context).plugins
-        var plugin = registry.get(Plugin::class.java) as? Plugin
-        if (plugin == null) {
-            plugin = Plugin()
-            registry.add(plugin)
-        }
-        return plugin;
+        return (registry.get(Plugin::class.java) as? Plugin)
+            ?: (Plugin().apply {
+              registry.add(this)
+            })
     }
 
     private fun onMessage(message: ByteArray, instance: String) {
@@ -85,12 +78,31 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+            rLock.lock()
+            if (!Plugin.isInit) {
+                Log.d(TAG, "Initializing")
+                initChannel = Channel()
+                handleIntent(context, intent)
+                initChannel?.receive()
+                initChannel?.cancel()
+                initChannel = null
+            } else {
+                handleIntent(context, intent)
+            }
+            rLock.unlock()
+        }
+    }
+
+    private suspend fun handleIntent(context: Context, intent: Intent) {
         val wakeLock = (context.getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG).apply {
                 acquire(60000L /*1min*/)
             }
         }
-        pluginChannel = Plugin.pluginChannel ?: getPlugin(context).getChannel()
+        withContext(Dispatchers.Main) {
+            pluginChannel = Plugin.pluginChannel ?: getPlugin(context).getChannel()
+        }
         val instance = intent.getStringExtra(INT_EXTRA_INSTANCE)!!
         when (intent.action) {
             INT_ACTION_NEW_ENDPOINT -> {
@@ -113,5 +125,10 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
                 it.release()
             }
         }
+    }
+
+    companion object {
+        private val rLock = ReentrantLock()
+        var initChannel: Channel<Any>? = null
     }
 }

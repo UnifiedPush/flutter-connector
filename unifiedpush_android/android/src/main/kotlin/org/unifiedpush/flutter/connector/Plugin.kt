@@ -88,13 +88,14 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         } as ArrayList<String>
     }
 
-    private fun onInitialized() {
+    private fun onInitialized(result: MethodChannel.Result) {
         UnifiedPushReceiver.initChannel?.let {
             CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
                 it.send(Any())
             }
         }
         isInit.set(true)
+        result.success(true)
     }
 
     fun getChannel(): MethodChannel? {
@@ -125,7 +126,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mContext!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mContext!!, args, result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mContext!!, args, result)
-            PLUGIN_EVENT_INITIALIZED -> onInitialized()
+            PLUGIN_EVENT_INITIALIZED -> onInitialized(result)
             else -> result.notImplemented()
         }
     }

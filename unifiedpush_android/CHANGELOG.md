@@ -1,3 +1,6 @@
+## 2.1.1
+* Fix initialized event
+
 ## 2.1.0
 * Ensure the engine is intizialed only once
 

@@ -1,3 +1,6 @@
+## 2.1.2
+* Fix crash when receiving 2+ notifications while starting in background
+
 ## 2.1.1
 * Fix initialized event
 

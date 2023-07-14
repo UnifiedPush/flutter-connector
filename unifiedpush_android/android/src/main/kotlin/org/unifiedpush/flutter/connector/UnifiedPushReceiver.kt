@@ -93,7 +93,9 @@ open class UnifiedPushReceiver : BroadcastReceiver() {
                 } else {
                     handleIntent(context, intent)
                 }
-                rLock.unlock()
+                if (rLock.isHeldByCurrentThread()) {
+                    rLock.unlock()
+                }
             } else {
                 handleIntent(context, intent)
             }

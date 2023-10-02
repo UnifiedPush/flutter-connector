@@ -1,6 +1,6 @@
 name: unifiedpush_android
 description: Android implementation of UnifiedPush plugin.
-version: 2.1.2
+version: 2.2.0
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
 

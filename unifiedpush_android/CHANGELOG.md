@@ -1,3 +1,8 @@
+## 2.2.0
+* Upgrade max sdk
+* Target sdk 34
+* Upgrade android-connector to 2.2.0
+
 ## 2.1.2
 * Fix crash when receiving 2+ notifications while starting in background
 

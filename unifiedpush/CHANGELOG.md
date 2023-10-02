@@ -1,3 +1,6 @@
+## 5.0.1
+* Upgrade max sdk
+
 ## 5.0.0
 * getDistributor returns nullable string
 * Android:

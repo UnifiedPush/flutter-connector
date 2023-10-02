@@ -32,10 +32,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-	checkReleaseBuilds false
-    }
 
     defaultConfig {
         applicationId "org.unifiedpush.flutter.example"
@@ -51,6 +47,11 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
+    }
+    namespace 'org.unifiedpush.flutter.example'
+    lint {
+        checkReleaseBuilds false
+        disable 'InvalidPackage'
     }
 }
 

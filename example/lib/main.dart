@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
 
-      await androidImplementation?.requestPermission().catchError(print);;
+      await androidImplementation?.requestNotificationsPermission().catchError(print);
     }
   }
 

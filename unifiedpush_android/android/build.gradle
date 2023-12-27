@@ -2,14 +2,14 @@ group 'org.unifiedpush.flutter.connector'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.9.10'
+    ext.kotlin_version = '1.9.22'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -30,6 +30,11 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+
+kotlin {
+    jvmToolchain(8)
+}
+
 android {
     compileSdk 34
 
@@ -44,7 +49,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.github.UnifiedPush:android-connector:2.2.0"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
     //implementation files("../../../flutter/bin/cache/artifacts/engine/android-x64/flutter.jar")

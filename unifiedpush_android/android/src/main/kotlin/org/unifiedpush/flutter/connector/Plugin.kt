@@ -29,12 +29,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
 
     private fun getDistributor(context: Context,
                                result: MethodChannel.Result) {
-        val distributor = up.getDistributor(context)
-        if (distributor.isEmpty()) {
-            result.success(null)
-        } else {
-            result.success(distributor)
-        }
+        result.success(up.getAckDistributor(context))
     }
 
     private fun saveDistributor(context: Context,

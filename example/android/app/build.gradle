@@ -30,7 +30,7 @@ kotlin {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         applicationId "org.unifiedpush.flutter.example"
         minSdk 16
-        targetSdk 33
+        targetSdk 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         // Required when setting minSdkVersion to 20 or lower

@@ -1,3 +1,6 @@
+## 2.2.1
+* Upgrade android-connector to 2.3.0
+
 ## 2.2.0
 * Upgrade max sdk
 * Target sdk 34

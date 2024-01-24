@@ -1,3 +1,7 @@
+## 2.2.2
+* Use kotlin 1.7.20
+* Upgrade android-connector to 2.4.0
+
 ## 2.2.1
 * Upgrade android-connector to 2.3.0
 

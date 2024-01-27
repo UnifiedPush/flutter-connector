@@ -1,3 +1,6 @@
+## 2.2.3
+* Fix upload of 2.2.2 on pub.dev
+
 ## 2.2.2
 * Use kotlin 1.7.20
 * Upgrade android-connector to 2.4.0

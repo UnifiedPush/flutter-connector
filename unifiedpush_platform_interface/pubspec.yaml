@@ -3,6 +3,7 @@ description: UnifiedPush platform interface
 version: 2.0.1
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
+repository: https://github.com/UnifiedPush/flutter-connector/tree/main/unifiedpush_platform_interface
 
 environment:
   sdk: ">=2.15.0 <4.0.0"

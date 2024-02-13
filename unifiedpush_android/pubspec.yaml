@@ -3,6 +3,7 @@ description: Android implementation of UnifiedPush plugin.
 version: 2.2.3
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
+repository: https://github.com/UnifiedPush/flutter-connector/tree/main/unifiedpush_android
 
 environment:
   sdk: ">=2.15.0 <4.0.0"

@@ -6,6 +6,7 @@ steps:
           branch: main
           event: [push, pull_request, manual]
         commands:
+          - git config --global --add safe.directory /home/mobiledevops/.flutter-sdk
           - ./dev.sh
           - cd ./unifiedpush_platform_interface
           - flutter pub get

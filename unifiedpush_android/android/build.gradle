@@ -2,14 +2,14 @@ group 'org.unifiedpush.flutter.connector'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext.kotlin_version = '2.0.10'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'com.android.tools.build:gradle:8.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -30,13 +30,19 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-
-kotlin {
-    jvmToolchain(8)
-}
-
 android {
     compileSdk 34
+
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        // languageVersion provides source compatibility with the specified version of Kotlin
+        languageVersion = '1.7'
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

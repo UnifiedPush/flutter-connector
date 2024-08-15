@@ -1,0 +1,31 @@
+steps:
+    check:
+        # https://github.com/MobileDevOps/flutter-sdk-image
+        image: mobiledevops/flutter-sdk-image:latest
+        when:
+          branch: main
+          event: [push, pull_request, manual]
+        commands:
+          - ./dev.sh
+          - cd ./unifiedpush_platform_interface
+          - flutter pub get
+          - cd ../unifiedpush
+          - flutter pub get
+          - cd ../unifiedpush_android
+          - flutter pub get
+          - cd ../example
+          - flutter build apk
+          - cd ..
+          - mv ./example/build/app/outputs/flutter-apk/app-release.apk flutter-example.apk
+
+    upload:
+        image: codeberg.org/s1m/woodpecker-upload:latest
+        when:
+            branch: main
+            event: [push, pull_request, manual]
+        settings:
+            token:
+                from_secret: codeberg_token
+            file:
+                - flutter-example.apk
+            package: true

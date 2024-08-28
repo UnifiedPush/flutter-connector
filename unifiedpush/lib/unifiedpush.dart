@@ -62,15 +62,17 @@ class UnifiedPush {
   }
 
   static Future<void> registerApp(
-      [String instance = defaultInstance, List<String>? features]) async {
-    UnifiedPushPlatform.instance.registerApp(instance, features ?? []);
+      [String instance = defaultInstance,
+      List<String>? features = const []]) async {
+    await UnifiedPushPlatform.instance.registerApp(instance, features ?? []);
   }
 
   static Future<void> unregister([String instance = defaultInstance]) async {
-    UnifiedPushPlatform.instance.unregister(instance);
+    await UnifiedPushPlatform.instance.unregister(instance);
   }
 
-  static Future<List<String>> getDistributors([List<String>? features]) async {
+  static Future<List<String>> getDistributors(
+      [List<String>? features = const []]) async {
     return await UnifiedPushPlatform.instance.getDistributors(features ?? []);
   }
 
@@ -79,6 +81,6 @@ class UnifiedPush {
   }
 
   static Future<void> saveDistributor(String distributor) async {
-    UnifiedPushPlatform.instance.saveDistributor(distributor);
+    await UnifiedPushPlatform.instance.saveDistributor(distributor);
   }
 }

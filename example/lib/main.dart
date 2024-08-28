@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:unifiedpush/constants.dart';
 import 'package:unifiedpush/unifiedpush.dart';
+import 'package:unifiedpush_ui/unifiedpush_ui.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'notification_utils.dart';
@@ -15,12 +15,35 @@ Future<void> main() async {
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 var instance = "myInstance";
 
 var endpoint = "";
 var registered = false;
+
+class UPFunctions extends UnifiedPushFunctions {
+  final List<String> features = [/*list of features*/];
+  @override
+  Future<String?> getDistributor() async {
+    return await UnifiedPush.getDistributor();
+  }
+
+  @override
+  Future<List<String>> getDistributors() async {
+    return await UnifiedPush.getDistributors(features);
+  }
+
+  @override
+  Future<void> registerApp(String instance) async {
+    await UnifiedPush.registerApp(instance, features);
+  }
+
+  @override
+  Future<void> saveDistributor(String distributor) async {
+    await UnifiedPush.saveDistributor(distributor);
+  }
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -47,10 +70,12 @@ class _MyAppState extends State<MyApp> {
   Future<void> _isAndroidPermissionGranted() async {
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-      flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
 
-      await androidImplementation?.requestNotificationsPermission().catchError(print);
+      await androidImplementation
+          ?.requestNotificationsPermission()
+          .catchError(print);
     }
   }
 
@@ -130,8 +155,9 @@ class HomePage extends StatelessWidget {
              *            which uses a dialog
              */
             UnifiedPush.removeNoDistributorDialogACK();
-            UnifiedPush.registerAppWithDialog(
-                context, instance, [featureAndroidBytesMessage]);
+
+            UnifiedPushUi(context, [instance], UPFunctions())
+                .registerAppWithDialog();
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib

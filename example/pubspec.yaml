@@ -15,6 +15,7 @@ dependencies:
   flutter_easyloading: ^3.0.3
   flutter_local_notifications: ^17.2.2
   unifiedpush: ^5.0.0
+  unifiedpush_ui: ^0.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -69,6 +70,8 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 #todev#dependency_overrides:
+#todev#  unifiedpush_ui:
+#todev#    path: ../unifiedpush_ui
 #todev#  unifiedpush:
 #todev#    path: ../unifiedpush
 #todev#  unifiedpush_platform_interface:

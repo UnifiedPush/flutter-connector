@@ -23,6 +23,7 @@ class UnifiedPush {
 
   static const noDistribAck = "noDistributorAck";
 
+  @Deprecated("Use UnifiedPushUI")
   static Future<void> registerAppWithDialog(BuildContext context,
       [String instance = defaultInstance, List<String>? features]) async {
     var distributor = await getDistributor();

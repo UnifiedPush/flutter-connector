@@ -1,3 +1,8 @@
+## 5.0.2
+* Add missing await for async tasks
+* Deprecate registerAppWithDialog, use unifiedpush_ui if needed
+* Update links to repository
+
 ## 5.0.1
 * Upgrade max sdk
 

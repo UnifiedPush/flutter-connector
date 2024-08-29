@@ -1,3 +1,8 @@
+## 2.3.0
+* Upgrade android-connector to 2.5.0
+* Get rid of toolchains
+* Update link to repository
+
 ## 2.2.3
 * Fix upload of 2.2.2 on pub.dev
 

@@ -1,3 +1,7 @@
+## 2.0.2
+* Add link to repository
+* Move depencency\_validator to dev\_dependencies
+
 ## 2.0.1
 * Upgrade max sdk
 

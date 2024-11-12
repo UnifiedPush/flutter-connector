@@ -34,9 +34,20 @@ abstract class UPNotificationUtils {
     }
     debugPrint("onNotification");
     var payload = utf8.decode(_message);
-    Map<String, String> message = decodeMessageContentsUri(payload);
-    String title = message['title'] ?? "UP-Example";
-    String body = message['message'] ?? "Could not get the content";
+
+    String title = 'UP-Example'; // Default title
+    String body = 'Could not get the content'; // Default body
+
+    try {
+      // Try to decode title and message (JSON)
+      Map<String, String> message = decodeMessageContentsUri(payload);
+      title = message['title'] ?? title;
+      body = message['message'] ?? body;
+    } catch (e) {
+      // If decoding fails, use plain payload as body
+      body = payload.isNotEmpty ? payload : 'Empty message';
+    }
+
     debugPrint(title);
     if (!_notificationInitialized) _initNotifications();
 
@@ -65,6 +76,7 @@ abstract class UPNotificationUtils {
       android: initializationSettingsAndroid,
     );
     _notificationInitialized = await _flutterLocalNotificationsPlugin
-        .initialize(initializationSettings) ?? false;
+            .initialize(initializationSettings) ??
+        false;
   }
 }

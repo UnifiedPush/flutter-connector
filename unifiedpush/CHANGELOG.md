@@ -1,3 +1,10 @@
+## 6.0.0
+* BREAKING: remove async gaps from `BuildContext`
+  * See README for migration
+* BREAKING: remove built-in provider storage
+  * See README for migration
+* Fix missing await statement for asynchronous tasks
+
 ## 5.0.2
 * Add missing await for async tasks
 * Deprecate registerAppWithDialog, use unifiedpush_ui if needed

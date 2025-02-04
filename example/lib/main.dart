@@ -126,8 +126,17 @@ class HomePage extends StatelessWidget {
 
   HomePage({Key? key, required this.onPressed}) : super(key: key);
 
-  void notify() async => await http.post(Uri.parse(endpoint),
-      body: "title=${title.text}&message=${message.text}&priority=6");
+  Future<void> notify() async {
+    final resp = await http.post(
+        Uri.parse(endpoint),
+        headers: {
+          "content-encoding": "aes128gcm",
+          "ttl": "5"
+        },
+        body: "title=${title.text}&message=${message.text}&priority=6"
+    );
+    debugPrint("resp: ${resp.statusCode}");
+  }
 
   String myPickerFunc(List<String> distributors) {
     // Do not do a random func, this is an example.

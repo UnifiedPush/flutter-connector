@@ -63,8 +63,12 @@ class _MyAppState extends State<MyApp> {
       onMessage: UPNotificationUtils
           .basicOnNotification, // takes (String message, String instance) in args
     );
-    _isAndroidPermissionGranted();
-    super.initState();
+    try {
+      _isAndroidPermissionGranted();
+    } on Exception catch(_) {
+      debugPrint("Exception while granting permissions");
+    }
+      super.initState();
   }
 
   Future<void> _isAndroidPermissionGranted() async {

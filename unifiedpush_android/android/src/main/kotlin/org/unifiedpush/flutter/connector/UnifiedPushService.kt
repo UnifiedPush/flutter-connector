@@ -34,6 +34,11 @@ import org.unifiedpush.flutter.connector.Plugin.Companion.dispatcher
  */
 open class UnifiedPushService: PushService() {
 
+    /**
+     * Returns [FlutterEngine] used when creating [Plugin]
+     * if it doesn't exist yet. Plugin is then added to its
+     * plugins registry
+     */
     open fun getEngine(context: Context): FlutterEngine {
         return FlutterEngine(context).apply {
             localizationPlugin.sendLocalesToFlutter(

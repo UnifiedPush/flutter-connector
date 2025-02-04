@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.unifiedpush.android.connector.UnifiedPush as up
 
+/**
+ * Plugin to interact with the flutter side
+ */
 class Plugin : FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
     private var job: Job? = null

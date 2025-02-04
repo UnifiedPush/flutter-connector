@@ -1,30 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-
-
   <uses-permission android:name="android.permission.INTERNET" />
-
   <application>
-        <receiver android:exported="false"  android:enabled="true"  android:name=".UnifiedPushReceiver">
+        <service android:name="org.unifiedpush.flutter.connector.UnifiedPushService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="org.unifiedpush.flutter.connector.MESSAGE"/>
-                <action android:name="org.unifiedpush.flutter.connector.UNREGISTERED"/>
-                <action android:name="org.unifiedpush.flutter.connector.NEW_ENDPOINT"/>
-                <action android:name="org.unifiedpush.flutter.connector.REGISTRATION_FAILED" />
+                <action android:name="org.unifiedpush.android.connector.PUSH_EVENT"/>
             </intent-filter>
-        </receiver>
-
-      <receiver android:exported="true"  android:enabled="true"  android:name=".ExternalReceiver">
-          <intent-filter>
-              <action android:name="org.unifiedpush.android.connector.MESSAGE"/>
-              <action android:name="org.unifiedpush.android.connector.UNREGISTERED"/>
-              <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT"/>
-              <action android:name="org.unifiedpush.android.connector.REGISTRATION_FAILED" />
-              <action android:name="org.unifiedpush.android.connector.REGISTRATION_REFUSED" />
-          </intent-filter>
-      </receiver>
+        </service>
   </application>
-
-
 </manifest>
 

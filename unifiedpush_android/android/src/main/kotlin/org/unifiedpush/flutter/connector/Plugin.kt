@@ -1,6 +1,8 @@
 package org.unifiedpush.flutter.connector
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -8,22 +10,34 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import java.util.concurrent.atomic.AtomicBoolean
 import org.unifiedpush.android.connector.UnifiedPush as up
-
-private const val TAG = "Plugin"
 
 class Plugin : FlutterPlugin, MethodCallHandler {
     private var mContext : Context? = null
+    private var job: Job? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var pluginChannel: MethodChannel? = null
+    // Allow up to 20 calls during initialization
+    val calls = MutableSharedFlow<Call>(replay = 20)
 
+    init {
+        instance = this
+    }
+
+    /**
+     * Get list of distributors
+     *
+     * argv1 = features (not used for android at this moment)
+     */
     private fun getDistributors(context: Context,
-                                args: ArrayList<String>?,
                                 result: MethodChannel.Result){
-        val features = parseFeatures(args?.get(0))
-        val distributors = up.getDistributors(context, features = features)
+        // We ignore features at this moment
+        // val features = parseFeatures(args?.get(0))
+        val distributors = up.getDistributors(context)
         result.success(distributors)
     }
 
@@ -43,16 +57,23 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         result.success(true)
     }
 
+    /**
+     * Register instance
+     * instance = argv1
+     * features = argv2 (not used for android at this moment)
+     * vapid = argv3 <= TODO
+     */
     private fun registerApp(context: Context,
                             args: ArrayList<String>?,
                             result: MethodChannel.Result) {
         val instance = args?.get(0)
-        val features = parseFeatures(args?.get(1))
+        // We ignore features at this moment
+        // val features = parseFeatures(args?.get(1))
         Log.d(TAG, "registerApp: instance=$instance")
         if (instance.isNullOrBlank()) {
-            up.registerApp(context, features = features)
+            up.register(context)
         } else {
-            up.registerApp(context, instance, features = features)
+            up.register(context, instance)
         }
         result.success(true)
     }
@@ -63,13 +84,15 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         val instance = args?.get(0)
         Log.d(TAG, "unregisterApp: instance=$instance")
         if (instance.isNullOrEmpty()) {
-            up.unregisterApp(context)
+            up.unregister(context)
         } else {
-            up.unregisterApp(context, instance)
+            up.unregister(context, instance)
         }
         result.success(true)
     }
 
+    /*
+    Parse Known features, at this moment we don't use any with android
     private fun parseFeatures(arg: String?): ArrayList<String> {
         val jsonArray = JSONArray(arg ?: "[]")
         val knownFeatures = arrayOf(up.FEATURE_BYTES_MESSAGE)
@@ -82,19 +105,21 @@ class Plugin : FlutterPlugin, MethodCallHandler {
             }
         } as ArrayList<String>
     }
+    */
 
     private fun onInitialized(result: MethodChannel.Result) {
-        UnifiedPushReceiver.initChannel?.let {
-            CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
-                it.send(Any())
+        // job = CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+        job = CoroutineScope(dispatcher).launch {
+            Log.d(TAG, "onInitialized, collecting calls")
+            calls.collect {
+                coroutineContext.ensureActive()
+                Log.d(TAG, "Calling ${it.method}")
+                mainHandler.post {
+                    pluginChannel?.invokeMethod(it.method, it.data)
+                }
             }
         }
-        isInit.set(true)
         result.success(true)
-    }
-
-    fun getChannel(): MethodChannel? {
-        return pluginChannel
     }
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -110,13 +135,14 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         pluginChannel?.setMethodCallHandler(null)
         pluginChannel = null
         mContext = null
+        job?.cancel()
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.d(TAG, "Method: ${call.method}")
         val args = call.arguments<ArrayList<String>>()
         when(call.method) {
-            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mContext!!, args, result)
+            PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mContext!!,result)
             PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mContext!!, result)
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mContext!!, args, result)
             PLUGIN_EVENT_REGISTER_APP -> registerApp(mContext!!, args, result)
@@ -127,9 +153,8 @@ class Plugin : FlutterPlugin, MethodCallHandler {
     }
 
     companion object {
-        var pluginChannel: MethodChannel? = null
-            private set
-        var isInit = AtomicBoolean(false)
-            private set
+        private const val TAG = "Plugin"
+        var instance : Plugin? = null
+        val dispatcher = Dispatchers.IO
     }
 }

@@ -1,3 +1,7 @@
+## 3.0.0-rc1
+**Breaking**:
+* Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages
+
 ## 2.0.2
 * Add link to repository
 * Move depencency\_validator to dev\_dependencies

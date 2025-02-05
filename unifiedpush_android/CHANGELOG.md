@@ -1,3 +1,6 @@
+## 3.0.0-rc1
+* Use new platform interface
+
 ## 2.3.0
 * Upgrade android-connector to 2.5.0
 * Get rid of toolchains

@@ -1,3 +1,7 @@
+## 6.0.0-rc1
+**Breaking**:
+* Use new platform interface: Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages
+
 ## 5.0.2
 * Add missing await for async tasks
 * Deprecate registerAppWithDialog, use unifiedpush_ui if needed

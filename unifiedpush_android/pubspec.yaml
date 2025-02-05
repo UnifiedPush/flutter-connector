@@ -18,7 +18,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0 # Keep 4+ to avoid increasing min SDK.
-  dependency_validator: ^5.0.2
+  dependency_validator: ^4.0.0 # Keep 4+ to avoid increasing min SDK.
 
 flutter:
   plugin:

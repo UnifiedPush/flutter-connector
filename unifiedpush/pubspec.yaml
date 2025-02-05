@@ -13,8 +13,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  unifiedpush_platform_interface: ^3.0.0
-  unifiedpush_android: ^3.0.0
+  unifiedpush_platform_interface: ^3.0.0-rc1
+  unifiedpush_android: ^3.0.0-rc1
 
 dev_dependencies:
   flutter_test:

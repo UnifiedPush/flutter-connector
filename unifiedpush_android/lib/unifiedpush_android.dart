@@ -70,6 +70,19 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
     debugPrint("initializeCallback finished");
   }
 
+  static FailedReason failedReasonFromString(String r) {
+    switch (r) {
+    case "NETWORK":
+      return FailedReason.network;
+    case "ACTION_REQUIRED":
+      return FailedReason.actionRequired;
+    case "VAPID_REQUIRED":
+      return FailedReason.vapidRequired;
+    default:
+      return FailedReason.internalError;
+    }
+  }
+
   static Future<void> onMethodCall(MethodCall call) async {
     final instance = call.arguments[pluginArgInstance] as String;
     switch (call.method) {
@@ -84,7 +97,8 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
         _onNewEndpoint?.call(PushEndpoint(url, pubKeySet), instance);
         break;
       case "onRegistrationFailed":
-        _onRegistrationFailed?.call(call.arguments[pluginArgReason], instance);
+        final reason = failedReasonFromString(call.arguments[pluginArgReason]);
+        _onRegistrationFailed?.call(reason, instance);
         break;
       case "onUnregistered":
         _onUnregistered?.call(instance);

@@ -1,7 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:unifiedpush_platform_interface/data/failed_reason.dart';
+import 'package:unifiedpush_platform_interface/data/push_endpoint.dart';
+import 'package:unifiedpush_platform_interface/data/push_message.dart';
 
 /// The interface that implementations of unifiedpush must implement.
 abstract class UnifiedPushPlatform extends PlatformInterface {
@@ -39,8 +41,14 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   /// identified with the instance parameter
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
-  Future<void> registerApp(String instance, List<String> features) {
+  Future<void> register(String instance, List<String> features) {
     throw UnimplementedError('registerApp has not been implemented.');
+  }
+
+  /// Deprecated: renamed [register]
+  @Deprecated("Renamed register")
+  Future<void> registerApp(String instance, List<String> features) {
+    return register(instance, features);
   }
 
   Future<void> unregister(String instance) {
@@ -53,10 +61,10 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   /// This needs to be called BEFORE registerApp so onNewEndpoint get called
   /// and you get the info in your app, or this will be lost.
   Future<void> initializeCallback({
-    void Function(String endpoint, String instance)? onNewEndpoint,
-    void Function(String instance)? onRegistrationFailed,
+    void Function(PushEndpoint endpoint, String instance)? onNewEndpoint,
+    void Function(FailedReason reason, String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
-    void Function(Uint8List message, String instance)? onMessage,
+    void Function(PushMessage message, String instance)? onMessage,
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
   }

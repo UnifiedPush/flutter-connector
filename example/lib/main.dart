@@ -19,7 +19,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 var instance = "myInstance";
 
-var endpoint = "";
+var endpoint = PushEndpoint("undefined", null);
 var registered = false;
 
 class UPFunctions extends UnifiedPushFunctions {
@@ -83,18 +83,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void onNewEndpoint(String _endpoint, String _instance) {
+  void onNewEndpoint(PushEndpoint _endpoint, String _instance) {
     if (_instance != instance) {
       return;
     }
     registered = true;
     endpoint = _endpoint;
     setState(() {
-      debugPrint(endpoint);
+      debugPrint("Endpoint: ${_endpoint.url}");
+      debugPrint("To test: https://unifiedpush.org/test_wp.html#endpoint=${_endpoint.url}&p256dh=${_endpoint.pubKeySet?.pubKey}&auth=${_endpoint.pubKeySet?.auth}");
     });
   }
 
-  void onRegistrationFailed(String _instance) {
+  void onRegistrationFailed(FailedReason reason, String _instance) {
     onUnregistered(_instance);
   }
 
@@ -132,7 +133,7 @@ class HomePage extends StatelessWidget {
 
   Future<void> notify() async {
     final resp = await http.post(
-        Uri.parse(endpoint),
+        Uri.parse(endpoint.url),
         headers: {
           "content-encoding": "aes128gcm",
           "ttl": "5"
@@ -167,8 +168,6 @@ class HomePage extends StatelessWidget {
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
-            UnifiedPush.removeNoDistributorDialogACK();
-
             UnifiedPushUi(context, [instance], UPFunctions())
                 .registerAppWithDialog();
             /**
@@ -195,19 +194,24 @@ class HomePage extends StatelessWidget {
     ];
 
     if (registered) {
-      row.add(ElevatedButton(child: const Text("Notify"), onPressed: notify));
+      row.add(SelectableText("Endpoint: ${endpoint.url}"));
+      final key = endpoint.pubKeySet;
+      if (key != null) {
+        row.add(SelectableText("P256dh: ${key.pubKey}"));
+        row.add(SelectableText("Auth: ${key.auth}"));
+      }
+      row.add(ElevatedButton(onPressed: notify, child: const Text("Notify")));
       row.add(
         TextField(
           controller: title,
           decoration: const InputDecoration(
-              border: OutlineInputBorder(), hintText: 'Enter a search term'),
+              border: OutlineInputBorder(), hintText: 'Enter a title'),
         ),
       );
-
       row.add(TextField(
         controller: message,
         decoration: const InputDecoration(
-            border: OutlineInputBorder(), hintText: 'Enter a search term'),
+            border: OutlineInputBorder(), hintText: 'Enter a body'),
       ));
     }
 
@@ -215,15 +219,10 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Unifiedpush Example'),
         ),
-        body: Column(
-          children: [
-            SelectableText("Endpoint: " + (registered ? endpoint : "empty")),
-            Center(
-              child: Column(
-                children: row,
-              ),
-            ),
-          ],
+        body: Center(
+          child: Column(
+            children: row,
+          ),
         ));
   }
 }

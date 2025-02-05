@@ -63,13 +63,13 @@ open class UnifiedPushService: PushService() {
     override fun onMessage(message: PushMessage, instance: String) {
         Log.d(TAG, "onMessage")
         val data = mapOf(
-            "instance" to instance,
-            "message" to message.content,
-            "decrypted" to message.decrypted,
+            PLUGIN_ARG_INSTANCE to instance,
+            PLUGIN_ARG_MESSAGE_CONTENT to message.content,
+            PLUGIN_ARG_MESSAGE_DECRYPTED to message.decrypted,
         )
         val calls = getPlugin(this).calls
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call("onMessage", data))
+            calls.emit(Call(PLUGIN_CALL_MESSAGE, data))
             coroutineContext.cancel()
         }
     }
@@ -77,14 +77,14 @@ open class UnifiedPushService: PushService() {
     override fun onNewEndpoint(endpoint: PushEndpoint, instance: String) {
         Log.d(TAG, "onNewEndpoint")
         val data = mapOf(
-            "instance" to instance,
-            "endpoint" to endpoint.url,
-            "pubKey" to endpoint.pubKeySet?.pubKey,
-            "auth" to endpoint.pubKeySet?.auth
+            PLUGIN_ARG_INSTANCE to instance,
+            PLUGIN_ARG_ENDPOINT_URL to endpoint.url,
+            PLUGIN_ARG_ENDPOINT_KEY_PUBKEY to endpoint.pubKeySet?.pubKey,
+            PLUGIN_ARG_ENDPOINT_KEY_AUTH to endpoint.pubKeySet?.auth
         )
         val calls = getPlugin(this).calls
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call("onNewEndpoint", data))
+            calls.emit(Call(PLUGIN_CALL_NEW_ENDPOINT, data))
             coroutineContext.cancel()
         }
     }
@@ -92,22 +92,22 @@ open class UnifiedPushService: PushService() {
     override fun onRegistrationFailed(reason: FailedReason, instance: String) {
         Log.d(TAG, "onRegistrationFailed")
         val data = mapOf(
-            "instance" to instance,
-            "reason" to reason.name
+            PLUGIN_ARG_INSTANCE to instance,
+            PLUGIN_ARG_REASON to reason.name
         )
         val calls = getPlugin(this).calls
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call("onRegistrationFailed", data))
+            calls.emit(Call(PLUGIN_CALL_REGISTRATION_FAILED, data))
             coroutineContext.cancel()
         }
     }
 
     override fun onUnregistered(instance: String) {
         Log.d(TAG, "onUnregistered")
-        val data = mapOf("instance" to instance)
+        val data = mapOf(PLUGIN_ARG_INSTANCE to instance)
         val calls = getPlugin(this).calls
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call("onUnregistered", data))
+            calls.emit(Call(PLUGIN_CALL_UNREGISTERED, data))
             coroutineContext.cancel()
         }
     }

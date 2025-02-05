@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:unifiedpush/unifiedpush.dart';
 
 import 'main.dart';
 
@@ -27,13 +28,13 @@ abstract class UPNotificationUtils {
   }
 
   static Future<bool> basicOnNotification(
-      Uint8List _message, String _instance) async {
+      PushMessage _message, String _instance) async {
     debugPrint("instance " + _instance);
     if (_instance != instance) {
       return false;
     }
     debugPrint("onNotification");
-    var payload = utf8.decode(_message);
+    var payload = utf8.decode(_message.content);
 
     String title = 'UP-Example'; // Default title
     String body = 'Could not get the content'; // Default body

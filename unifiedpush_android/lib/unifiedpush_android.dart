@@ -55,6 +55,13 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
         pluginEventRegisterApplication, [instance, jsonEncode(features)]);
   }
 
+  /// Try to use the saved distributor else, use the default distributor
+  /// of the system
+  @override
+  Future<bool> tryUseCurrentOrDefaultDistributor() async {
+    return await _channel.invokeMethod(pluginEventTryCurrentOrDefaultDistributor, []);
+  }
+
   /// Send an unregistration request for the instance to the saved distributor
   /// and remove the registration. Remove the distributor if this is the last
   /// instance registered.

@@ -45,6 +45,13 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     throw UnimplementedError('registerApp has not been implemented.');
   }
 
+  /// Try to use the saved distributor else, use the default distributor
+  /// of the system
+  Future<bool> tryUseCurrentOrDefaultDistributor() {
+    throw UnimplementedError('tryUseCurrentOrDefaultDistributor has not been '
+        'implemented.');
+  }
+
   /// Send an unregistration request for the instance to the saved distributor
   /// and remove the registration. Remove the distributor if this is the last
   /// instance registered.

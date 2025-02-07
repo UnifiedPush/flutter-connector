@@ -152,6 +152,17 @@ class HomePage extends StatelessWidget {
     return distributors[index];
   }
 
+  void registerWithDefault(UnifiedPushUi upDialogs) {
+    UnifiedPush.tryUseCurrentOrDefaultDistributor().then((success) {
+      debugPrint("Current or Default found=$success");
+      if (success) {
+        UnifiedPush.register(instance);
+      } else {
+        upDialogs.registerAppWithDialog();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> row = [
@@ -168,17 +179,18 @@ class HomePage extends StatelessWidget {
              * Option 1:  Use the default distributor picker
              *            which uses a dialog
              */
-            UnifiedPushUi(context, [instance], UPFunctions())
-                .registerAppWithDialog();
+            registerWithDefault(
+                UnifiedPushUi(context, [instance], UPFunctions())
+            );
+
             /**
              * Registration
              * Option 2: Do your own function to pick the distrib
              */
             /*
-            if (await UnifiedPush.getDistributor() != "") {
+            if (await UnifiedPush.tryUseCurrentOrDefaultDistributor()) {
               UnifiedPush.registerApp(instance);
             } else {
-              UnifiedPush.removeNoDistributorDialogACK();
               final distributors = await UnifiedPush.getDistributors();
               if (distributors.length == 0) {
                 return;

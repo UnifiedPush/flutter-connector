@@ -1,10 +1,14 @@
 package org.unifiedpush.flutter.connector
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -19,8 +23,9 @@ import org.unifiedpush.android.connector.UnifiedPush as up
 /**
  * Plugin to interact with the flutter side
  */
-class Plugin : FlutterPlugin, MethodCallHandler {
+class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private var mContext : Context? = null
+    private var activityContext: Activity? = null
     private var job: Job? = null
     private val mainHandler = Handler(Looper.getMainLooper())
     private var pluginChannel: MethodChannel? = null
@@ -66,9 +71,9 @@ class Plugin : FlutterPlugin, MethodCallHandler {
      * features = argv2 (not used for android at this moment)
      * vapid = argv3 <= TODO
      */
-    private fun registerApp(context: Context,
-                            args: ArrayList<String>?,
-                            result: MethodChannel.Result) {
+    private fun register(context: Context,
+                         args: ArrayList<String>?,
+                         result: MethodChannel.Result) {
         val instance = args?.get(0)
         // We ignore features at this moment
         // val features = parseFeatures(args?.get(1))
@@ -79,6 +84,16 @@ class Plugin : FlutterPlugin, MethodCallHandler {
             up.register(context, instance)
         }
         result.success(true)
+    }
+
+    private fun tryUseCurrentOrDefaultDistributor(result: MethodChannel.Result) {
+        activityContext?.let { context ->
+            up.tryUseCurrentOrDefaultDistributor(context) { success ->
+                result.success(success)
+            }
+        } ?: run {
+            result.success(false)
+        }
     }
 
     private fun unregister(context: Context,
@@ -125,7 +140,23 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         result.success(true)
     }
 
-    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activityContext = binding.activity
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        activityContext = null
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        activityContext = binding.activity
+    }
+
+    override fun onDetachedFromActivity() {
+        activityContext = null
+    }
+
+    override fun onAttachedToEngine(binding: FlutterPluginBinding) {
         Log.d(TAG, "onAttachedToEngine")
         mContext = binding.applicationContext
         pluginChannel = MethodChannel(binding.binaryMessenger, PLUGIN_CHANNEL).apply {
@@ -133,7 +164,7 @@ class Plugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPluginBinding) {
         Log.d(TAG, "onDetachedFromEngine")
         pluginChannel?.setMethodCallHandler(null)
         pluginChannel = null
@@ -148,7 +179,8 @@ class Plugin : FlutterPlugin, MethodCallHandler {
             PLUGIN_EVENT_GET_DISTRIBUTORS -> getDistributors(mContext!!,result)
             PLUGIN_EVENT_GET_DISTRIBUTOR -> getDistributor(mContext!!, result)
             PLUGIN_EVENT_SAVE_DISTRIBUTOR -> saveDistributor(mContext!!, args, result)
-            PLUGIN_EVENT_REGISTER_APP -> registerApp(mContext!!, args, result)
+            PLUGIN_EVENT_REGISTER_APP -> register(mContext!!, args, result)
+            PLUGIN_EVENT_TRY_CURRENT_OR_DEFAULT_DISTRIBUTOR -> tryUseCurrentOrDefaultDistributor(result)
             PLUGIN_EVENT_UNREGISTER -> unregister(mContext!!, args, result)
             PLUGIN_EVENT_INITIALIZED -> onInitialized(result)
             else -> result.notImplemented()

@@ -76,6 +76,16 @@ class UnifiedPush {
     await register(instance, features);
   }
 
+  /// Try to use the saved distributor else, use the default distributor
+  /// of the system
+  ///
+  /// Returns `Future<true>` if we can register to the current or default
+  /// distributor, else you should ask what the users want to use. The list
+  /// of installed services can be found with [getDistributors]
+  static Future<bool> tryUseCurrentOrDefaultDistributor() async {
+    return await UnifiedPushPlatform.instance.tryUseCurrentOrDefaultDistributor();
+  }
+
   /// Send an unregistration request for the instance to the saved distributor
   /// and remove the registration. Remove the distributor if this is the last
   /// instance registered.

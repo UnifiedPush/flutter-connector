@@ -70,8 +70,9 @@ class UnifiedPush {
   /// distributor and token.
   static Future<void> register(
       [String instance = defaultInstance,
-      List<String>? features = const []]) async {
-    await UnifiedPushPlatform.instance.register(instance, features ?? []);
+      List<String>? features = const [],
+      String? vapid]) async {
+    await UnifiedPushPlatform.instance.register(instance, features ?? [], vapid);
   }
 
   @Deprecated("Renamed [register]")

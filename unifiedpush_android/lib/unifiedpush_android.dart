@@ -50,9 +50,9 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
   @override
-  Future<void> register(String instance, List<String> features) async {
+  Future<void> register(String instance, List<String> features, String? vapid) async {
     await _channel.invokeMethod(
-        pluginEventRegisterApplication, [instance, jsonEncode(features)]);
+        pluginEventRegisterApplication, [instance, jsonEncode(features), vapid]);
   }
 
   /// Try to use the saved distributor else, use the default distributor

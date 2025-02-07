@@ -75,13 +75,14 @@ class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                          args: ArrayList<String>?,
                          result: MethodChannel.Result) {
         val instance = args?.get(0)
+        val vapid = args?.get(2)
         // We ignore features at this moment
         // val features = parseFeatures(args?.get(1))
         Log.d(TAG, "registerApp: instance=$instance")
         if (instance.isNullOrBlank()) {
-            up.register(context)
+            up.register(context, vapid = vapid)
         } else {
-            up.register(context, instance)
+            up.register(context, instance = instance, vapid = vapid)
         }
         result.success(true)
     }

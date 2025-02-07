@@ -41,7 +41,7 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   /// identified with the instance parameter
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
-  Future<void> register(String instance, List<String> features) {
+  Future<void> register(String instance, List<String> features, String? vapid) {
     throw UnimplementedError('registerApp has not been implemented.');
   }
 

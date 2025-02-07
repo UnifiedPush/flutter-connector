@@ -25,6 +25,7 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
   static void Function(PushMessage message, String instance)? _onMessage =
       (PushMessage m, String i) {};
 
+  /// Returns the qualified identifier of all available distributors on the system.
   @override
   Future<List<String>> getDistributors(List<String> features) async {
     return (await _channel
@@ -32,27 +33,41 @@ class UnifiedPushAndroid extends UnifiedPushPlatform {
         .cast<String>();
   }
 
+  /// Returns the qualified identifier of the distributor used.
   @override
   Future<String?> getDistributor() async {
     return await _channel.invokeMethod(pluginEventGetDistributor);
   }
 
+  /// Save the distributor to be used.
   @override
   Future<void> saveDistributor(String distributor) async {
     await _channel.invokeMethod(pluginEventSaveDistributor, [distributor]);
   }
 
+  /// Register the app to the saved distributor with a specified token
+  /// identified with the instance parameter
+  /// This method needs to be called at every app startup with the same
+  /// distributor and token.
   @override
-  Future<void> registerApp(String instance, List<String> features) async {
+  Future<void> register(String instance, List<String> features) async {
     await _channel.invokeMethod(
         pluginEventRegisterApplication, [instance, jsonEncode(features)]);
   }
 
+  /// Send an unregistration request for the instance to the saved distributor
+  /// and remove the registration. Remove the distributor if this is the last
+  /// instance registered.
   @override
   Future<void> unregister(String instance) async {
     await _channel.invokeMethod(pluginEventUnregister, [instance]);
   }
 
+  /// Register callbacks to receive the push messages and other infos.
+  /// Please see the spec for more infos on those callbacks and their
+  /// parameters.
+  /// This needs to be called BEFORE registerApp so onNewEndpoint get called
+  /// and you get the info in your app, or this will be lost.
   @override
   Future<void> initializeCallback({
     void Function(PushEndpoint endpoint, String instance)? onNewEndpoint,

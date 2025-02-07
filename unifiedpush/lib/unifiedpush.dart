@@ -45,8 +45,11 @@ export 'package:unifiedpush_platform_interface/data/push_message.dart';
 class UnifiedPush {
   /// Initialize the different event listener.
   ///
+  /// Returns `Future<true>` if a distributor is already registered,
+  /// `Future<false>` else;
+  ///
   /// You can ignore instances if you don't use them.
-  static Future<void> initialize({
+  static Future<bool> initialize({
     void Function(PushEndpoint endpoint, String instance)? onNewEndpoint,
     void Function(FailedReason reason, String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
@@ -56,7 +59,9 @@ class UnifiedPush {
         onNewEndpoint: (PushEndpoint e, String i) async => onNewEndpoint?.call(e, i),
         onRegistrationFailed: (FailedReason r,String i) async => onRegistrationFailed?.call(r, i),
         onUnregistered: (String i) async => onUnregistered?.call(i),
-        onMessage: (PushMessage m, String i) async => onMessage?.call(m, i));
+        onMessage: (PushMessage m, String i) async => onMessage?.call(m, i)
+    );
+    return await UnifiedPush.getDistributor() != null;
   }
 
   /// Register the app to the saved distributor with a specified token

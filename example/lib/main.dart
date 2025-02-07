@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
       onUnregistered: onUnregistered, // takes (String instance)
       onMessage: UPNotificationUtils
           .basicOnNotification, // takes (String message, String instance) in args
-    );
+    ).then((registered) => { if (registered) UnifiedPush.register(instance) });
     try {
       _isAndroidPermissionGranted();
     } on Exception catch(_) {

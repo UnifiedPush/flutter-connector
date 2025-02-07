@@ -79,7 +79,7 @@ A registration can be canceled with `UnifiedPush.unregister`.
 
 On Android, this is possible to embed a distributor that will register to the Google play services directly. For more information refer to <https://unifiedpush.org/kdoc/embedded_fcm_distributor/>.
 
-# Send push messages
+## Send push messages
 
 You can then send web push messages to your applications. The messages need to be encrypted. The required information them are retrieved onNewEndpoint: [PushEndpoint.pubKeySet]
 

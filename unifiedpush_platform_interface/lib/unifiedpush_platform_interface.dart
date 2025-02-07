@@ -45,13 +45,6 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
     throw UnimplementedError('registerApp has not been implemented.');
   }
 
-  // TODO DELETE
-  /// Deprecated: renamed [register]
-  @Deprecated("Renamed register")
-  Future<void> registerApp(String instance, List<String> features) {
-    return register(instance, features);
-  }
-
   /// Send an unregistration request for the instance to the saved distributor
   /// and remove the registration. Remove the distributor if this is the last
   /// instance registered.

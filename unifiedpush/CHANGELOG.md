@@ -1,6 +1,11 @@
-## 6.0.0-rc1
+## 6.0.0-rc2
 **Breaking**:
 * Use new platform interface: Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages
+* registerApp
+
+**New**:
+* Add VAPID support
+* Add tryUseCurrentOrDefaultDistributor, to use the system default distributor
 
 ## 5.0.2
 * Add missing await for async tasks

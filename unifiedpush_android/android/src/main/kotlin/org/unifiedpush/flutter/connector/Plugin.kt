@@ -33,7 +33,7 @@ class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     val calls = MutableSharedFlow<Call>(replay = 20)
 
     init {
-        instance = this
+        Plugin.calls = calls
     }
 
     /**
@@ -190,7 +190,7 @@ class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     companion object {
         private const val TAG = "Plugin"
-        var instance : Plugin? = null
+        var calls: MutableSharedFlow<Call>? = null
         val dispatcher = Dispatchers.IO
     }
 }

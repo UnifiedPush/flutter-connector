@@ -78,3 +78,5 @@ flutter:
 #todev#    path: ../unifiedpush_platform_interface
 #todev#  unifiedpush_android:
 #todev#    path: ../unifiedpush_android
+#todev#  unifiedpush_linux:
+#todev#    path: ../unifiedpush_linux

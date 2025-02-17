@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:unifiedpush_linux/unifiedpush_linux.dart';
 import 'package:unifiedpush_platform_interface/data/failed_reason.dart';
 import 'package:unifiedpush_platform_interface/data/push_endpoint.dart';
 import 'package:unifiedpush_platform_interface/data/push_message.dart';
@@ -54,13 +56,19 @@ class UnifiedPush {
     void Function(FailedReason reason, String instance)? onRegistrationFailed,
     void Function(String instance)? onUnregistered,
     void Function(PushMessage message, String instance)? onMessage,
+    String? linuxDBusName,
   }) async {
+    if (Platform.isLinux) {
+      assert(linuxDBusName != null, "On Linux the linuxDBusName name should be set");
+      UnifiedPushPlatform.instance.setDBusName(linuxDBusName!);
+    }
     await UnifiedPushPlatform.instance.initializeCallback(
-        onNewEndpoint: (PushEndpoint e, String i) async => onNewEndpoint?.call(e, i),
-        onRegistrationFailed: (FailedReason r,String i) async => onRegistrationFailed?.call(r, i),
+        onNewEndpoint: (PushEndpoint e, String i) async =>
+            onNewEndpoint?.call(e, i),
+        onRegistrationFailed: (FailedReason r, String i) async =>
+            onRegistrationFailed?.call(r, i),
         onUnregistered: (String i) async => onUnregistered?.call(i),
-        onMessage: (PushMessage m, String i) async => onMessage?.call(m, i)
-    );
+        onMessage: (PushMessage m, String i) async => onMessage?.call(m, i));
     return await UnifiedPush.getDistributor() != null;
   }
 
@@ -68,20 +76,31 @@ class UnifiedPush {
   /// identified with the instance parameter
   /// This method needs to be called at every app startup with the same
   /// distributor and token.
-  static Future<void> register(
-      [String instance = defaultInstance,
-      List<String>? features = const [],
-      String? messageForDistributor,
-      String? vapid]) async {
-    await UnifiedPushPlatform.instance
-        .register(instance, features ?? [], messageForDistributor, vapid);
+  static Future<void> register({
+    String instance = defaultInstance,
+    List<String>? features = const [],
+    String? messageForDistributor,
+    String? vapid,
+    String? linuxDBusName,
+  }) async {
+    if (Platform.isLinux) {
+      assert(linuxDBusName != null, 'On Linux the linuxDBusName should be set');
+      UnifiedPushPlatform.instance.setDBusName(linuxDBusName!);
+    }
+
+    await UnifiedPushPlatform.instance.register(
+      instance,
+      features ?? [],
+      messageForDistributor,
+      vapid,
+    );
   }
 
   @Deprecated("Renamed [register]")
   static Future<void> registerApp(
       [String instance = defaultInstance,
-        List<String>? features = const []]) async {
-    await register(instance, features);
+      List<String>? features = const []]) async {
+    await register(instance: instance, features: features);
   }
 
   /// Try to use the saved distributor else, use the default distributor
@@ -91,7 +110,8 @@ class UnifiedPush {
   /// distributor, else you should ask what the users want to use. The list
   /// of installed services can be found with [getDistributors]
   static Future<bool> tryUseCurrentOrDefaultDistributor() async {
-    return await UnifiedPushPlatform.instance.tryUseCurrentOrDefaultDistributor();
+    return await UnifiedPushPlatform.instance
+        .tryUseCurrentOrDefaultDistributor();
   }
 
   /// Send an unregistration request for the instance to the saved distributor

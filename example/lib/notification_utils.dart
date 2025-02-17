@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -72,9 +71,12 @@ abstract class UPNotificationUtils {
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('notification_icon');
+    const LinuxInitializationSettings initializationSettingsLinux =
+        LinuxInitializationSettings(defaultActionName: 'open');
     const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
+      linux: initializationSettingsLinux,
     );
     _notificationInitialized = await _flutterLocalNotificationsPlugin
             .initialize(initializationSettings) ??

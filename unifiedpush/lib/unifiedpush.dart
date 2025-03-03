@@ -71,8 +71,10 @@ class UnifiedPush {
   static Future<void> register(
       [String instance = defaultInstance,
       List<String>? features = const [],
+      String? messageForDistributor,
       String? vapid]) async {
-    await UnifiedPushPlatform.instance.register(instance, features ?? [], vapid);
+    await UnifiedPushPlatform.instance
+        .register(instance, features ?? [], messageForDistributor, vapid);
   }
 
   @Deprecated("Renamed [register]")

@@ -1,4 +1,4 @@
-## 6.0.0-rc2
+## 6.0.0
 **Breaking**:
 * Use new platform interface: Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages
 * registerApp

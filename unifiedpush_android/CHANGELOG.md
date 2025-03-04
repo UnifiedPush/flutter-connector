@@ -1,4 +1,4 @@
-## 3.0.0-rc2
+## 3.0.0
 * Use new platform interface
 
 ## 2.3.0

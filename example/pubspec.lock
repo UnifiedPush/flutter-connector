@@ -150,6 +150,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  fixnum:
+    dependency: transitive
+    description:
+      name: fixnum
+      sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -474,6 +482,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -533,26 +549,30 @@ packages:
   unifiedpush:
     dependency: "direct main"
     description:
-      name: unifiedpush
-      sha256: e72bdccaad51687c8ab84dc894bdf2bfbd0fda0bde23c932fcb1fb800c73e752
-      url: "https://pub.dev"
-    source: hosted
+      path: "../unifiedpush"
+      relative: true
+    source: path
     version: "6.0.0-rc2"
   unifiedpush_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: unifiedpush_android
-      sha256: fbe6754a1e0ed50779ccff4d72cf5a71a9c903c544f08b4f8a2f1d02086245b8
-      url: "https://pub.dev"
-    source: hosted
+      path: "../unifiedpush_android"
+      relative: true
+    source: path
     version: "3.0.0-rc2"
-  unifiedpush_platform_interface:
-    dependency: transitive
+  unifiedpush_linux:
+    dependency: "direct overridden"
     description:
-      name: unifiedpush_platform_interface
-      sha256: "03bd562c59bd6b952c0e49f5fe07c15e01c098717d5b3fc98a46d3d9090d8c4a"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../unifiedpush_linux"
+      relative: true
+    source: path
+    version: "0.0.1"
+  unifiedpush_platform_interface:
+    dependency: "direct overridden"
+    description:
+      path: "../unifiedpush_platform_interface"
+      relative: true
+    source: path
     version: "3.0.0-rc2"
   unifiedpush_ui:
     dependency: "direct main"
@@ -562,6 +582,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  uuid:
+    dependency: transitive
+    description:
+      name: uuid
+      sha256: a5be9ef6618a7ac1e964353ef476418026db906c4facdedaa299b7a2e71690ff
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.1"
   vector_math:
     dependency: transitive
     description:

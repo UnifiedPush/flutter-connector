@@ -1,20 +1,36 @@
-import 'package:unifiedpush_linux/org.unifiedpush.Connector1.dart';
-import 'package:unifiedpush_linux/org.unifiedpush.Distributor1.dart';
+import 'package:unifiedpush_linux/org.unifiedpush.Connector2.dart';
 
 import 'package:dbus/dbus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unifiedpush_linux/org.unifiedpush.Distributor2.dart';
 import 'package:unifiedpush_platform_interface/data/failed_reason.dart';
 import 'package:unifiedpush_platform_interface/data/push_endpoint.dart';
 import 'package:unifiedpush_platform_interface/data/push_message.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
 import 'package:uuid/v4.dart';
 
-class UnifiedPushRegistrationFailed implements Exception {}
+enum RegistrationFailure {
+  internalError("INTERNAL_ERROR"),
+  network("NETWORK"),
+  actionRequired("ACTION_REQUIRED"),
+  vapidRequired("VAPID_REQUIRED"),
+  unauthorized("UNAUTHORIZED");
+
+  final String value;
+
+  const RegistrationFailure(this.value);
+}
+
+class UnifiedPushRegistrationFailed implements Exception {
+  final RegistrationFailure reason;
+
+  const UnifiedPushRegistrationFailed({required this.reason});
+}
 
 class UnifiedpushLinux extends UnifiedPushPlatform {
   final DBusClient _dbusClient;
-  OrgUnifiedpushDistributor1? _distributor;
-  OrgUnifiedpushConnector1? _connector;
+  OrgUnifiedpushDistributor2? _distributor;
+  OrgUnifiedpushConnector2? _connector;
   String? _instance;
   String? _dbusName;
 
@@ -51,6 +67,8 @@ class UnifiedpushLinux extends UnifiedPushPlatform {
     String? vapid,
   ) async {
     assert(_dbusName != null, "The DBus name should be set");
+    assert(_dbusName!.split(".").length >= 3,
+        "The DBus name should be a fully-qualified name (e.g. com.example.App)");
 
     var distributor = await getDistributor();
     if (distributor == null || _connector == null) return;
@@ -64,28 +82,38 @@ class UnifiedpushLinux extends UnifiedPushPlatform {
 
     _instance = instance;
 
-    _distributor = OrgUnifiedpushDistributor1(
+    _distributor = OrgUnifiedpushDistributor2(
       _dbusClient,
       distributor,
       DBusObjectPath('/org/unifiedpush/Distributor'),
     );
 
-    // We need a fully-qualified name (e.g. com.example.App)
     await _dbusClient.requestName(_dbusName!);
     if (_connector!.client == null) {
       await _dbusClient.registerObject(_connector!);
     }
 
     var result = await _distributor!.callRegister(
-      instance,
-      token,
-      _dbusName!,
+      {
+        "service": DBusString(instance),
+        "token": DBusString(token),
+        if (messageForDistributor != null) ...{
+          "description": DBusString(messageForDistributor),
+        },
+        if (vapid != null) ...{
+          "vapid": DBusString(vapid),
+        }
+      },
     );
 
-    var succeeded = result[0].asString() == "REGISTRATION_SUCCEEDED";
+    var succeeded = result["success"]!.asString() == "REGISTRATION_SUCCEEDED";
 
     if (!succeeded) {
-      throw UnifiedPushRegistrationFailed();
+      throw UnifiedPushRegistrationFailed(
+          reason: RegistrationFailure.values.firstWhere(
+        (possibleReason) =>
+            possibleReason.value == result["reason"]!.asString(),
+      ));
     }
   }
 
@@ -102,7 +130,9 @@ class UnifiedpushLinux extends UnifiedPushPlatform {
     var token = sharedPreferences.getString("instance_${instance}_token");
     assert(token != null, "You need to call register before unregistering");
 
-    await _distributor!.callUnregister(token!);
+    await _distributor!.callUnregister({
+      "token": DBusString(token!),
+    });
     await _dbusClient.unregisterObject(_connector!);
     _connector!.client = null;
     _instance = null;
@@ -115,7 +145,7 @@ class UnifiedpushLinux extends UnifiedPushPlatform {
     void Function(String instance)? onUnregistered,
     void Function(PushMessage message, String instance)? onMessage,
   }) async {
-    _connector ??= OrgUnifiedpushConnector1();
+    _connector ??= OrgUnifiedpushConnector2();
 
     return _connector!.initializeCallback(
       onNewEndpoint: (endpoint) => onNewEndpoint?.call(endpoint, _instance!),

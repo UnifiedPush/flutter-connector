@@ -69,14 +69,14 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
-#todev#dependency_overrides:
+dependency_overrides:
 #todev#  unifiedpush_ui:
 #todev#    path: ../unifiedpush_ui
-#todev#  unifiedpush:
-#todev#    path: ../unifiedpush
-#todev#  unifiedpush_platform_interface:
-#todev#    path: ../unifiedpush_platform_interface
-#todev#  unifiedpush_android:
-#todev#    path: ../unifiedpush_android
-#todev#  unifiedpush_linux:
-#todev#    path: ../unifiedpush_linux
+  unifiedpush:
+    path: ../unifiedpush
+  unifiedpush_platform_interface:
+    path: ../unifiedpush_platform_interface
+  unifiedpush_android:
+    path: ../unifiedpush_android
+  unifiedpush_linux:
+    path: ../unifiedpush_linux

@@ -3,21 +3,21 @@ description: "A new Flutter plugin project."
 version: 0.0.1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
-  flutter: '>=3.10.6'
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
 
 dependencies:
   flutter:
     sdk: flutter
   unifiedpush_platform_interface: ^3.0.0-rc2
   dbus: ^0.7.11
-  shared_preferences: ^2.5.2
-  uuid: ^4.5.1
+  shared_preferences: ^2.2.1
+  uuid: ^4.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   plugin:

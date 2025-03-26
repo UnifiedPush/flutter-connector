@@ -20,29 +20,31 @@ abstract class UPNotificationUtils {
       try {
         decoded[i.split("=")[0]] = i.split("=")[1];
       } on Exception {
-        debugPrint("Couldn't decode " + i);
+        debugPrint("Couldn't decode $i");
       }
     }
     return decoded;
   }
 
   static Future<bool> basicOnNotification(
-      PushMessage _message, String _instance) async {
-    debugPrint("instance " + _instance);
-    if (_instance != instance) {
+    PushMessage message,
+    String instance,
+  ) async {
+    debugPrint("instance $instance");
+    if (instance != localInstance) {
       return false;
     }
     debugPrint("onNotification");
-    var payload = utf8.decode(_message.content);
+    var payload = utf8.decode(message.content);
 
     String title = 'UP-Example'; // Default title
     String body = 'Could not get the content'; // Default body
 
     try {
       // Try to decode title and message (JSON)
-      Map<String, String> message = decodeMessageContentsUri(payload);
-      title = message['title'] ?? title;
-      body = message['message'] ?? body;
+      Map<String, String> decodedMessage = decodeMessageContentsUri(payload);
+      title = decodedMessage['title'] ?? title;
+      body = decodedMessage['message'] ?? body;
     } catch (e) {
       // If decoding fails, use plain payload as body
       body = payload.isNotEmpty ? payload : 'Empty message';

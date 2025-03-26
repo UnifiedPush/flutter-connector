@@ -17,7 +17,7 @@ Future<void> main() async {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-const instance = "myInstance";
+const localInstance = "myInstance";
 // The Linux app name is used to register the application with DBus
 // Because of this it needs to be a valid fully-qualified name
 const linuxAppName = "org.unifiedpush.Example";
@@ -39,7 +39,10 @@ class UPFunctions extends UnifiedPushFunctions {
 
   @override
   Future<void> registerApp(String instance) async {
-    await UnifiedPush.registerApp(instance, features);
+    await UnifiedPush.register(
+      instance: instance,
+      features: features,
+    );
   }
 
   @override
@@ -52,10 +55,10 @@ class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   @override
   void initState() {
     UnifiedPush.initialize(
@@ -68,7 +71,7 @@ class _MyAppState extends State<MyApp> {
     ).then((registered) {
       if (registered) {
         UnifiedPush.register(
-          instance: instance,
+          instance: localInstance,
           linuxDBusName: linuxAppName,
         );
       }
@@ -87,31 +90,29 @@ class _MyAppState extends State<MyApp> {
           flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
 
-      await androidImplementation
-          ?.requestNotificationsPermission()
-          .catchError(print);
+      await androidImplementation?.requestNotificationsPermission();
     }
   }
 
-  void onNewEndpoint(PushEndpoint _endpoint, String _instance) {
-    if (_instance != instance) {
+  void onNewEndpoint(PushEndpoint endpoint, String instance) {
+    if (instance != localInstance) {
       return;
     }
     registered = true;
-    endpoint = _endpoint;
+    endpoint = endpoint;
     setState(() {
-      debugPrint("Endpoint: ${_endpoint.url}");
+      debugPrint("Endpoint: ${endpoint.url}");
       debugPrint(
-          "To test: https://unifiedpush.org/test_wp.html#endpoint=${_endpoint.url}&p256dh=${_endpoint.pubKeySet?.pubKey}&auth=${_endpoint.pubKeySet?.auth}");
+          "To test: https://unifiedpush.org/test_wp.html#endpoint=${endpoint.url}&p256dh=${endpoint.pubKeySet?.pubKey}&auth=${endpoint.pubKeySet?.auth}");
     });
   }
 
-  void onRegistrationFailed(FailedReason reason, String _instance) {
-    onUnregistered(_instance);
+  void onRegistrationFailed(FailedReason reason, String instance) {
+    onUnregistered(instance);
   }
 
-  void onUnregistered(String _instance) {
-    if (_instance != instance) {
+  void onUnregistered(String instance) {
+    if (instance != localInstance) {
       return;
     }
     registered = false;
@@ -162,7 +163,7 @@ class HomePage extends StatelessWidget {
     UnifiedPush.tryUseCurrentOrDefaultDistributor().then((success) {
       debugPrint("Current or Default found=$success");
       if (success) {
-        UnifiedPush.register(instance: instance);
+        UnifiedPush.register(instance: localInstance);
       } else {
         upDialogs.registerAppWithDialog();
       }
@@ -176,7 +177,7 @@ class HomePage extends StatelessWidget {
         child: Text(registered ? 'Unregister' : "Register"),
         onPressed: () async {
           if (registered) {
-            UnifiedPush.unregister(instance);
+            UnifiedPush.unregister(localInstance);
             registered = false;
             onPressed();
           } else {
@@ -186,7 +187,7 @@ class HomePage extends StatelessWidget {
              *            which uses a dialog
              */
             registerWithDefault(
-                UnifiedPushUi(context, [instance], UPFunctions()));
+                UnifiedPushUi(context, [localInstance], UPFunctions()));
 
             /**
              * Registration

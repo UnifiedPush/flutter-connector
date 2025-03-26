@@ -17,7 +17,10 @@ Future<void> main() async {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-var instance = "myInstance";
+const instance = "myInstance";
+// The Linux app name is used to register the application with DBus
+// Because of this it needs to be a valid fully-qualified name
+const linuxAppName = "org.unifiedpush.Example";
 
 var endpoint = PushEndpoint("undefined", null);
 var registered = false;
@@ -62,13 +65,20 @@ class _MyAppState extends State<MyApp> {
       onUnregistered: onUnregistered, // takes (String instance)
       onMessage: UPNotificationUtils
           .basicOnNotification, // takes (String message, String instance) in args
-    ).then((registered) => { if (registered) UnifiedPush.register(instance) });
+    ).then((registered) {
+      if (registered) {
+        UnifiedPush.register(
+          instance: instance,
+          linuxDBusName: linuxAppName,
+        );
+      }
+    });
     try {
       _isAndroidPermissionGranted();
-    } on Exception catch(_) {
+    } on Exception catch (_) {
       debugPrint("Exception while granting permissions");
     }
-      super.initState();
+    super.initState();
   }
 
   Future<void> _isAndroidPermissionGranted() async {
@@ -91,7 +101,8 @@ class _MyAppState extends State<MyApp> {
     endpoint = _endpoint;
     setState(() {
       debugPrint("Endpoint: ${_endpoint.url}");
-      debugPrint("To test: https://unifiedpush.org/test_wp.html#endpoint=${_endpoint.url}&p256dh=${_endpoint.pubKeySet?.pubKey}&auth=${_endpoint.pubKeySet?.auth}");
+      debugPrint(
+          "To test: https://unifiedpush.org/test_wp.html#endpoint=${_endpoint.url}&p256dh=${_endpoint.pubKeySet?.pubKey}&auth=${_endpoint.pubKeySet?.auth}");
     });
   }
 
@@ -132,14 +143,9 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.onPressed}) : super(key: key);
 
   Future<void> notify() async {
-    final resp = await http.post(
-        Uri.parse(endpoint.url),
-        headers: {
-          "content-encoding": "aes128gcm",
-          "ttl": "5"
-        },
-        body: "title=${title.text}&message=${message.text}&priority=6"
-    );
+    final resp = await http.post(Uri.parse(endpoint.url),
+        headers: {"content-encoding": "aes128gcm", "ttl": "5"},
+        body: "title=${title.text}&message=${message.text}&priority=6");
     debugPrint("resp: ${resp.statusCode}");
   }
 
@@ -156,7 +162,7 @@ class HomePage extends StatelessWidget {
     UnifiedPush.tryUseCurrentOrDefaultDistributor().then((success) {
       debugPrint("Current or Default found=$success");
       if (success) {
-        UnifiedPush.register(instance);
+        UnifiedPush.register(instance: instance);
       } else {
         upDialogs.registerAppWithDialog();
       }
@@ -180,8 +186,7 @@ class HomePage extends StatelessWidget {
              *            which uses a dialog
              */
             registerWithDefault(
-                UnifiedPushUi(context, [instance], UPFunctions())
-            );
+                UnifiedPushUi(context, [instance], UPFunctions()));
 
             /**
              * Registration

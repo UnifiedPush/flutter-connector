@@ -73,6 +73,12 @@ abstract class UnifiedPushPlatform extends PlatformInterface {
   }) {
     throw UnimplementedError('initializeCallback has not been implemented.');
   }
+
+  /// Set the name the application will register with on the DBus session bus.
+  /// Required for Linux applications.
+  void setDBusName(String name) {
+    throw UnimplementedError('setDBusName has not been implemented.');
+  }
 }
 
 class DefaultUnifiedPush extends UnifiedPushPlatform {}

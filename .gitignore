@@ -247,3 +247,6 @@ fabric.properties
 .pub/
 
 build/
+
+.fvm
+

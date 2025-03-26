@@ -27,9 +27,13 @@ flutter:
     platforms:
       android:
         default_package: unifiedpush_android
+      linux:
+        default_package: unifiedpush_linux
 
 #todev#dependency_overrides:
 #todev#  unifiedpush_platform_interface:
 #todev#    path: ../unifiedpush_platform_interface
 #todev#  unifiedpush_android:
 #todev#    path: ../unifiedpush_android
+#todev#  unifiedpush_linux:
+#todev#    path: ../unifiedpush_linux

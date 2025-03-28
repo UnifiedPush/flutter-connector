@@ -69,20 +69,22 @@ class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
      * Register instance
      * instance = argv1
      * features = argv2 (not used for android at this moment)
-     * vapid = argv3 <= TODO
+     * message for distrib = argv3
+     * vapid = argv4
      */
     private fun register(context: Context,
                          args: ArrayList<String>?,
                          result: MethodChannel.Result) {
         val instance = args?.get(0)
-        val vapid = args?.get(2)
+        val message = args?.get(2)
+        val vapid = args?.get(3)
         // We ignore features at this moment
         // val features = parseFeatures(args?.get(1))
         Log.d(TAG, "registerApp: instance=$instance")
         if (instance.isNullOrBlank()) {
-            up.register(context, vapid = vapid)
+            up.register(context, messageForDistributor = message, vapid = vapid)
         } else {
-            up.register(context, instance = instance, vapid = vapid)
+            up.register(context, instance = instance, messageForDistributor = message, vapid = vapid)
         }
         result.success(true)
     }

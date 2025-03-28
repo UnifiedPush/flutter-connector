@@ -1,5 +1,7 @@
-## 3.0.0-rc2
+## 3.0.0-rc3
 * Use new platform interface
+* Add VAPID
+* Add messageForDistributor
 
 ## 2.3.0
 * Upgrade android-connector to 2.5.0

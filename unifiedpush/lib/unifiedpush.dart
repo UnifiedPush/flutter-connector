@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:unifiedpush_linux/unifiedpush_linux.dart';
 import 'package:unifiedpush_platform_interface/data/failed_reason.dart';
 import 'package:unifiedpush_platform_interface/data/push_endpoint.dart';
 import 'package:unifiedpush_platform_interface/data/push_message.dart';
@@ -59,7 +58,8 @@ class UnifiedPush {
     String? linuxDBusName,
   }) async {
     if (Platform.isLinux) {
-      assert(linuxDBusName != null, "On Linux the linuxDBusName name should be set");
+      assert(linuxDBusName != null,
+          "On Linux the linuxDBusName name should be set");
       UnifiedPushPlatform.instance.setDBusName(linuxDBusName!);
     }
     await UnifiedPushPlatform.instance.initializeCallback(

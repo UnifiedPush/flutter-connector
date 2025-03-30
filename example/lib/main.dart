@@ -52,7 +52,7 @@ class UPFunctions extends UnifiedPushFunctions {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   MyAppState createState() => MyAppState();
@@ -141,7 +141,7 @@ class HomePage extends StatelessWidget {
   final title = TextEditingController(text: "Notification Title");
   final message = TextEditingController(text: "Notification Body");
 
-  HomePage({Key? key, required this.onPressed}) : super(key: key);
+  HomePage({super.key, required this.onPressed});
 
   Future<void> notify() async {
     final resp = await http.post(Uri.parse(endpoint.url),

@@ -24,6 +24,7 @@ dev_dependencies:
 
 flutter:
   plugin:
+    implements: unifiedpush
     platforms:
       linux:
         dartPluginClass: UnifiedpushLinux

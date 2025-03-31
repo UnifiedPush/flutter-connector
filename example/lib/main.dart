@@ -27,6 +27,7 @@ var registered = false;
 
 class UPFunctions extends UnifiedPushFunctions {
   final List<String> features = [/*list of features*/];
+
   @override
   Future<String?> getDistributor() async {
     return await UnifiedPush.getDistributor();
@@ -52,7 +53,7 @@ class UPFunctions extends UnifiedPushFunctions {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   MyAppState createState() => MyAppState();
@@ -134,14 +135,32 @@ class MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   static const routeName = '/';
   final VoidCallback onPressed;
 
-  final title = TextEditingController(text: "Notification Title");
-  final message = TextEditingController(text: "Notification Body");
+  const HomePage({
+    required this.onPressed,
+    super.key,
+  });
 
-  HomePage({Key? key, required this.onPressed}) : super(key: key);
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  TextEditingController title =
+      TextEditingController(text: "Notification Title");
+  TextEditingController message =
+      TextEditingController(text: "Notification Body");
+
+  @override
+  void dispose() {
+    title.dispose();
+    message.dispose();
+
+    super.dispose();
+  }
 
   Future<void> notify() async {
     final resp = await http.post(Uri.parse(endpoint.url),
@@ -172,75 +191,84 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> row = [
-      ElevatedButton(
-        child: Text(registered ? 'Unregister' : "Register"),
-        onPressed: () async {
-          if (registered) {
-            UnifiedPush.unregister(localInstance);
-            registered = false;
-            onPressed();
-          } else {
-            /**
-             * Registration
-             * Option 1:  Use the default distributor picker
-             *            which uses a dialog
-             */
-            registerWithDefault(
-                UnifiedPushUi(context, [localInstance], UPFunctions()));
-
-            /**
-             * Registration
-             * Option 2: Do your own function to pick the distrib
-             */
-            /*
-            if (await UnifiedPush.tryUseCurrentOrDefaultDistributor()) {
-              UnifiedPush.registerApp(instance);
-            } else {
-              final distributors = await UnifiedPush.getDistributors();
-              if (distributors.length == 0) {
-                return;
-              }
-              final distributor = myPickerFunc(distributors);
-              UnifiedPush.saveDistributor(distributor);
-              UnifiedPush.registerApp(instance);
-            }
-            */
-          }
-        },
-      ),
-    ];
-
-    if (registered) {
-      row.add(SelectableText("Endpoint: ${endpoint.url}"));
-      final key = endpoint.pubKeySet;
-      if (key != null) {
-        row.add(SelectableText("P256dh: ${key.pubKey}"));
-        row.add(SelectableText("Auth: ${key.auth}"));
-      }
-      row.add(ElevatedButton(onPressed: notify, child: const Text("Notify")));
-      row.add(
-        TextField(
-          controller: title,
-          decoration: const InputDecoration(
-              border: OutlineInputBorder(), hintText: 'Enter a title'),
-        ),
-      );
-      row.add(TextField(
-        controller: message,
-        decoration: const InputDecoration(
-            border: OutlineInputBorder(), hintText: 'Enter a body'),
-      ));
-    }
+    final key = endpoint.pubKeySet;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Unifiedpush Example'),
+      appBar: AppBar(
+        title: const Text('Unifiedpush Example'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            ElevatedButton(
+              child: Text(registered ? 'Unregister' : "Register"),
+              onPressed: () async {
+                if (registered) {
+                  UnifiedPush.unregister(localInstance);
+                  registered = false;
+                  widget.onPressed();
+                } else {
+                  /**
+                   * Registration
+                   * Option 1:  Use the default distributor picker
+                   *            which uses a dialog
+                   */
+                  registerWithDefault(
+                    UnifiedPushUi(
+                      context,
+                      [localInstance],
+                      UPFunctions(),
+                    ),
+                  );
+
+                  /**
+                   * Registration
+                   * Option 2: Do your own function to pick the distrib
+                   */
+                  /*
+                    if (await UnifiedPush.tryUseCurrentOrDefaultDistributor()) {
+                      UnifiedPush.registerApp(instance);
+                    } else {
+                      final distributors = await UnifiedPush.getDistributors();
+                      if (distributors.length == 0) {
+                        return;
+                      }
+                      final distributor = myPickerFunc(distributors);
+                      UnifiedPush.saveDistributor(distributor);
+                      UnifiedPush.registerApp(instance);
+                    }
+                  */
+                }
+              },
+            ),
+            if (registered) ...[
+              SelectableText("Endpoint: ${endpoint.url}"),
+              if (key != null) ...[
+                SelectableText("P256dh: ${key.pubKey}"),
+                SelectableText("Auth: ${key.auth}"),
+              ],
+              ElevatedButton(
+                onPressed: notify,
+                child: const Text("Notify"),
+              ),
+              TextField(
+                controller: title,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter a title',
+                ),
+              ),
+              TextField(
+                controller: message,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter a body',
+                ),
+              ),
+            ],
+          ],
         ),
-        body: Center(
-          child: Column(
-            children: row,
-          ),
-        ));
+      ),
+    );
   }
 }

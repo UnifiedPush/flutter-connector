@@ -515,14 +515,14 @@ packages:
       path: "../unifiedpush"
       relative: true
     source: path
-    version: "6.0.0-rc2"
+    version: "6.0.0-rc3"
   unifiedpush_android:
     dependency: "direct overridden"
     description:
       path: "../unifiedpush_android"
       relative: true
     source: path
-    version: "3.0.0-rc2"
+    version: "3.0.0-rc3"
   unifiedpush_linux:
     dependency: "direct overridden"
     description:
@@ -536,7 +536,7 @@ packages:
       path: "../unifiedpush_platform_interface"
       relative: true
     source: path
-    version: "3.0.0-rc2"
+    version: "3.0.0-rc3"
   unifiedpush_ui:
     dependency: "direct main"
     description:

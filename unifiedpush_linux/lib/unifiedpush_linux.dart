@@ -27,17 +27,17 @@ class UnifiedPushRegistrationFailed implements Exception {
   const UnifiedPushRegistrationFailed({required this.reason});
 }
 
-class UnifiedpushLinux extends UnifiedPushPlatform {
+class UnifiedPushLinux extends UnifiedPushPlatform {
   final DBusClient _dbusClient;
   OrgUnifiedpushDistributor2? _distributor;
   OrgUnifiedpushConnector2? _connector;
   String? _instance;
   String? _dbusName;
 
-  UnifiedpushLinux() : _dbusClient = DBusClient.session();
+  UnifiedPushLinux() : _dbusClient = DBusClient.session();
 
   static void registerWith() {
-    UnifiedPushPlatform.instance = UnifiedpushLinux();
+    UnifiedPushPlatform.instance = UnifiedPushLinux();
   }
 
   @override

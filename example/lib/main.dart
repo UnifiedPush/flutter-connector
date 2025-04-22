@@ -69,11 +69,11 @@ class MyAppState extends State<MyApp> {
       onUnregistered: onUnregistered, // takes (String instance)
       onMessage: UPNotificationUtils
           .basicOnNotification, // takes (String message, String instance) in args
+      linuxDBusName: linuxAppName,
     ).then((registered) {
       if (registered) {
         UnifiedPush.register(
           instance: localInstance,
-          linuxDBusName: linuxAppName,
         );
       }
     });

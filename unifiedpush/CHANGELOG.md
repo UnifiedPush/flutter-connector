@@ -1,4 +1,4 @@
-## 6.0.0
+## 6.0.1
 
 **Breaking**:
 * Use new platform interface: Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages

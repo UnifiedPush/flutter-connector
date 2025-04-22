@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Use released platform interface
+
 ## 0.0.2
 
 * Fix plugin declaration

@@ -1,4 +1,4 @@
-## 3.0.0-rc3
+## 3.0.0
 * Use new platform interface
 * Add VAPID
 * Add messageForDistributor

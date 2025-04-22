@@ -1,4 +1,4 @@
-## 0.0.3
+## 0.1.0
 
 * Use released platform interface
 

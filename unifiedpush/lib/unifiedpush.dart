@@ -79,12 +79,7 @@ class UnifiedPush {
     List<String>? features = const [],
     String? messageForDistributor,
     String? vapid,
-    String? linuxDBusName,
   }) async {
-    if (Platform.isLinux) {
-      UnifiedPushPlatform.instance.setDBusName(linuxDBusName);
-    }
-
     await UnifiedPushPlatform.instance.register(
       instance,
       features ?? [],

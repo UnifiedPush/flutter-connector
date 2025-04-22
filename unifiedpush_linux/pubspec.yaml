@@ -27,7 +27,7 @@ flutter:
     implements: unifiedpush
     platforms:
       linux:
-        dartPluginClass: UnifiedpushLinux
+        dartPluginClass: UnifiedPushLinux
 
 #dependency_overrides:
 #  unifiedpush_platform_interface:

@@ -1,6 +1,6 @@
 name: unifiedpush_platform_interface
 description: UnifiedPush platform interface
-version: 3.0.0
+version: 3.0.1
 homepage: "https://unifiedpush.org/developers/flutter"
 documentation: "https://unifiedpush.org/developers/flutter"
 repository: https://codeberg.org/UnifiedPush/flutter-connector/src/branch/main/unifiedpush_platform_interface

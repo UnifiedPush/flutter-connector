@@ -1,4 +1,5 @@
-## 3.0.0
+## 3.0.1
+
 **Breaking**:
 * Process PushEndpoint/PushMessage, to get public keys informations and auto decrypt push messages
 * Rename registerApp => register

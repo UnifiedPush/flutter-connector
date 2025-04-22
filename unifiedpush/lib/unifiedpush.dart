@@ -58,9 +58,7 @@ class UnifiedPush {
     String? linuxDBusName,
   }) async {
     if (Platform.isLinux) {
-      assert(linuxDBusName != null,
-          "On Linux the linuxDBusName name should be set");
-      UnifiedPushPlatform.instance.setDBusName(linuxDBusName!);
+      UnifiedPushPlatform.instance.setDBusName(linuxDBusName);
     }
     await UnifiedPushPlatform.instance.initializeCallback(
         onNewEndpoint: (PushEndpoint e, String i) async =>
@@ -84,8 +82,7 @@ class UnifiedPush {
     String? linuxDBusName,
   }) async {
     if (Platform.isLinux) {
-      assert(linuxDBusName != null, 'On Linux the linuxDBusName should be set');
-      UnifiedPushPlatform.instance.setDBusName(linuxDBusName!);
+      UnifiedPushPlatform.instance.setDBusName(linuxDBusName);
     }
 
     await UnifiedPushPlatform.instance.register(

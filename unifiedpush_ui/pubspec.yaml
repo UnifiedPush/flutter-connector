@@ -12,10 +12,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.11
+  unifiedpush_storage: ^0.1.0
 
 dev_dependencies:
   dependency_validator: ^4.0.0 # Keep 4+ to avoid increasing min SDK.
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0 # Keep 3+ to avoid increasing min SDK.
+
+dependency_overrides:
+  unifiedpush_storage:
+    path: ../unifiedpush_storage
+  unifiedpush_storage_interface:
+    path: ../unifiedpush_storage_interface

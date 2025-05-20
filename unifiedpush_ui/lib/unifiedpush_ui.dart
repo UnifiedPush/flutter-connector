@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unifiedpush_storage/storage.dart';
 
 import 'dialogs.dart';
 
@@ -21,7 +21,7 @@ class UnifiedPushUi {
   static const noDistribAck = "noDistributorAck";
 
   Future<void> onNoDistributorFound() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await UnifiedPushStorage.getInstance();
     if (!context.mounted) return;
     if (!(prefs.getBool(noDistribAck) ?? false)) {
       return showDialog(
@@ -69,7 +69,7 @@ class UnifiedPushUi {
   }
 
   static Future<void> removeNoDistributorDialogACK() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await UnifiedPushStorage.getInstance();
     prefs.remove(noDistribAck);
   }
 }

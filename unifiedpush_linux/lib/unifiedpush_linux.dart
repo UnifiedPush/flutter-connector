@@ -1,12 +1,12 @@
 import 'package:unifiedpush_linux/org.unifiedpush.Connector2.dart';
 
 import 'package:dbus/dbus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unifiedpush_linux/org.unifiedpush.Distributor2.dart';
 import 'package:unifiedpush_platform_interface/data/failed_reason.dart';
 import 'package:unifiedpush_platform_interface/data/push_endpoint.dart';
 import 'package:unifiedpush_platform_interface/data/push_message.dart';
 import 'package:unifiedpush_platform_interface/unifiedpush_platform_interface.dart';
+import 'package:unifiedpush_storage/storage.dart';
 import 'package:uuid/v4.dart';
 
 enum RegistrationFailure {
@@ -49,14 +49,14 @@ class UnifiedPushLinux extends UnifiedPushPlatform {
 
   @override
   Future<String?> getDistributor() async {
-    var sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.getString("selected_distributor");
+    var storage = await UnifiedPushStorage.getInstance();
+    return storage.getString("selected_distributor");
   }
 
   @override
   Future<void> saveDistributor(String distributor) async {
-    var sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("selected_distributor", distributor);
+    var storage = await UnifiedPushStorage.getInstance();
+    storage.setString("selected_distributor", distributor);
   }
 
   @override
@@ -72,11 +72,11 @@ class UnifiedPushLinux extends UnifiedPushPlatform {
     var distributor = await getDistributor();
     if (distributor == null || _connector == null) return;
 
-    var sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("instance_${instance}_token");
+    var storage = await UnifiedPushStorage.getInstance();
+    var token = storage.getString("instance_${instance}_token");
     if (token == null) {
       token = const UuidV4().generate();
-      sharedPreferences.setString("instance_${instance}_token", token);
+      storage.setString("instance_${instance}_token", token);
     }
 
     _instance = instance;
@@ -125,8 +125,8 @@ class UnifiedPushLinux extends UnifiedPushPlatform {
   Future<void> unregister(String instance) async {
     if (_distributor == null || _connector == null) return;
 
-    var sharedPreferences = await SharedPreferences.getInstance();
-    var token = sharedPreferences.getString("instance_${instance}_token");
+    var storage = await UnifiedPushStorage.getInstance();
+    var token = storage.getString("instance_${instance}_token");
     assert(token != null, "You need to call register before unregistering");
 
     await _distributor!.callUnregister({

@@ -1,0 +1,11 @@
+name: unifiedpush_storage_interface
+description: UnifiedPush Storage Interface
+version: 0.1.0
+homepage: "https://unifiedpush.org/developers/flutter"
+documentation: "https://unifiedpush.org/developers/flutter"
+repository: https://codeberg.org/UnifiedPush/flutter-connector/src/branch/main/unifiedpush_storage_interface
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+

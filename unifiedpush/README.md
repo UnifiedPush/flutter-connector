@@ -77,11 +77,15 @@ A registration can be canceled with `UnifiedPush.unregister`.
 
 ## Embed a distributor
 
-On Android, this is possible to embed a distributor that will register to the Google play services directly. For more information refer to <https://unifiedpush.org/kdoc/embedded_fcm_distributor/>.
+On Android, this is possible to embed a distributor that will register to the Google play services directly. You will need to update the Android side of your flutter project. For more information refer to <https://unifiedpush.org/kdoc/embedded_fcm_distributor/>.
 
 ## Send push messages
 
-You can then send web push messages to your applications. The messages need to be encrypted. The required information them are retrieved onNewEndpoint: [PushEndpoint.pubKeySet]
+You can then send web push messages to your applications. Web push is defined by 3 RFC: [RFC8030](https://www.rfc-editor.org/rfc/rfc8030) defines the content of the http request used to push a message, [RFC8291](https://www.rfc-editor.org/rfc/rfc8291) defines the (required) encryption of the push messages, and [RFC8292](https://www.rfc-editor.org/rfc/rfc8292) defines the authorization used to control the sender of push messages, this authoization is known as VAPID and is optional with most distributors, required by others.
+
+When the application receives a new endpoint, it comes with information used by the server to encrypt notifications too: [PushEndpoint.pubKeySet].
+
+The application automatically decrypt incoming notifications. When onNewMessage is called, [PushMessage.content] contains the decrypted content of the push notification. If it wasn't possible to correctly decrypt it, [PushMessage.decrypted] is false, and [PushMessage.content] contains the encrypted content of push notifications.
 
 ## Example
 

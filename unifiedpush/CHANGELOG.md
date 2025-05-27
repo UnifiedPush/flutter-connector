@@ -1,3 +1,7 @@
+## 6.0.2
+* Essentially to update the doc
+* Require unifiedpush_android ^3.1.0
+
 ## 6.0.1
 
 **Breaking**:

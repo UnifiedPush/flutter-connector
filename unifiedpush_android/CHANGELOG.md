@@ -1,3 +1,9 @@
+## 3.1.0
+* Fix exposition of android-connector by the lib
+* Compile with SDK 35
+* Upgrade android-connector to 3.0.9
+* Bump dependencies
+
 ## 3.0.0
 * Use new platform interface
 * Add VAPID

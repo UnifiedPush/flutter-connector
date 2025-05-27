@@ -90,3 +90,37 @@ The application automatically decrypt incoming notifications. When onNewMessage 
 ## Example
 
 An example app can be found on the [repository](https://codeberg.org/UnifiedPush/flutter-connector/src/branch/main/example).
+
+## Troubleshooting
+
+### The build fails because of duplicate classes
+
+An error is thrown during build about duplicate classes, _related to tink_:
+
+```
+> A failure occurred while executing com.android.build.gradle.internal.tasks.CheckDuplicatesRunnable
+   > Duplicate class com.google.crypto.tink.AccessesPartialKey found in modules tink-1.16.0.jar -> jetified-tink-1.16.0 (com.google.crypto.tink:tink:1.16.0) and tink-android-1.9.0.jar -> jetified-tink-android-1.9.0 (com.google.crypto.tink:tink-android:1.9.0)
+     Duplicate class com.google.crypto.tink.Aead found in modules tink-1.16.0.jar -> jetified-tink-1.16.0 (com.google.crypto.tink:tink:1.16.0) and tink-android-1.9.0.jar -> jetified-tink-android-1.9.0 (com.google.crypto.tink:tink-android:1.9.0)
+     Duplicate class com.google.crypto.tink.BinaryKeysetReader found in modules tink-1.16.0.jar -> jetified-tink-1.16.0 (com.google.crypto.tink:tink:1.16.0) and tink-android-1.9.0.jar -> jetified-tink-android-1.9.0 (com.google.crypto.tink:tink-android:1.9.0)
+    [...]
+```
+
+This is due to another library using another version of _tink_.
+
+To resolve the issue, edit _android/app/build.gradle.kts_, and add, after the `plugins` section:
+
+```kotlin
+configurations.all {
+    // Use the latest version published: https://central.sonatype.com/artifact/com.google.crypto.tink/tink-android
+    val tink = "com.google.crypto.tink:tink-android:1.17.0"
+    // You can also use the library declaration catalog
+    // val tink = libs.google.tink
+    resolutionStrategy {
+        force(tink)
+        dependencySubstitution {
+            substitute(module("com.google.crypto.tink:tink")).using(module(tink))
+        }
+    }
+}
+
+```

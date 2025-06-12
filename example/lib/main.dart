@@ -40,6 +40,7 @@ class UPFunctions extends UnifiedPushFunctions {
 
   @override
   Future<void> registerApp(String instance) async {
+    debugPrint("Calling registerApp");
     await UnifiedPush.register(
       instance: instance,
       features: features,
@@ -199,12 +200,10 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             ElevatedButton(
-              child: Text(registered ? 'Unregister' : "Register"),
+              child: Text(registered ? 'Re-register' : "Register"),
               onPressed: () async {
                 if (registered) {
-                  UnifiedPush.unregister(localInstance);
-                  registered = false;
-                  widget.onPressed();
+                  UPFunctions().registerApp(localInstance);
                 } else {
                   /**
                    * Registration
@@ -240,6 +239,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             if (registered) ...[
+              ElevatedButton(
+                  child: Text("Unregister"),
+                  onPressed: () async {
+                    UnifiedPush.unregister(localInstance);
+                    registered = false;
+                    widget.onPressed();
+                  }),
               SelectableText("Endpoint: ${endpoint.url}"),
               if (key != null) ...[
                 SelectableText("P256dh: ${key.pubKey}"),

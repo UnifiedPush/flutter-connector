@@ -93,12 +93,12 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  void onNewEndpoint(PushEndpoint endpoint, String instance) {
+  void onNewEndpoint(PushEndpoint nEndpoint, String instance) {
     if (instance != localInstance) {
       return;
     }
     registered = true;
-    endpoint = endpoint;
+    endpoint = nEndpoint;
     setState(() {
       debugPrint("Endpoint: ${endpoint.url}");
       debugPrint(

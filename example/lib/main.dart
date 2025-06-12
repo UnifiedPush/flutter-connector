@@ -77,11 +77,9 @@ class MyAppState extends State<MyApp> {
         );
       }
     });
-    try {
-      _isAndroidPermissionGranted();
-    } on Exception catch (_) {
+    _isAndroidPermissionGranted().catchError((err) {
       debugPrint("Exception while granting permissions");
-    }
+    });
     super.initState();
   }
 

@@ -18,6 +18,7 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        // mavenLocal()
     }
 }
 
@@ -50,7 +51,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    api 'org.unifiedpush.android:connector:3.0.9'
+    api 'org.unifiedpush.android:connector:3.0.10'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.0'
     // implementation files("../../../flutter/bin/cache/artifacts/engine/android-x64/flutter.jar")
 }

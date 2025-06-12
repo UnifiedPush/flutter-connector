@@ -1,3 +1,8 @@
+## 3.1.1
+* Fix events with updated Plugin
+* Bump android-connector to 3.0.10:
+    * Fix UnifiedPush service initialization from the background
+
 ## 3.1.0
 * Fix exposition of android-connector by the lib
 * Compile with SDK 35

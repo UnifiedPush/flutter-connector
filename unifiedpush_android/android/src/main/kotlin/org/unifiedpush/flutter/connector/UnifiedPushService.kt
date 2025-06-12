@@ -6,7 +6,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.PushService
@@ -35,16 +34,15 @@ import org.unifiedpush.flutter.connector.Plugin.Companion.dispatcher
  */
 open class UnifiedPushService: PushService() {
 
-    private lateinit var calls: MutableSharedFlow<Call>
-
     override fun onCreate() {
-        calls = Plugin.calls ?: run {
+        Log.d(TAG, "Starting UnifiedPushService")
+        Plugin.calls ?: run {
             val registry = getEngine(this).plugins
-            val plugin = (registry.get(Plugin::class.java) as? Plugin)
+            (registry.get(Plugin::class.java) as? Plugin)
                 ?: Plugin().also { registry.add(it) }
-            plugin.calls
         }
         super.onCreate()
+        Log.d(TAG, "UnifiedPushService started")
     }
 
     /**
@@ -71,7 +69,7 @@ open class UnifiedPushService: PushService() {
             PLUGIN_ARG_MESSAGE_DECRYPTED to message.decrypted,
         )
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call(PLUGIN_CALL_MESSAGE, data))
+            Plugin.calls?.emit(Call(PLUGIN_CALL_MESSAGE, data))
             coroutineContext.cancel()
         }
     }
@@ -85,7 +83,7 @@ open class UnifiedPushService: PushService() {
             PLUGIN_ARG_ENDPOINT_KEY_AUTH to endpoint.pubKeySet?.auth
         )
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call(PLUGIN_CALL_NEW_ENDPOINT, data))
+            Plugin.calls?.emit(Call(PLUGIN_CALL_NEW_ENDPOINT, data))
             coroutineContext.cancel()
         }
     }
@@ -97,7 +95,7 @@ open class UnifiedPushService: PushService() {
             PLUGIN_ARG_REASON to reason.name
         )
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call(PLUGIN_CALL_REGISTRATION_FAILED, data))
+            Plugin.calls?.emit(Call(PLUGIN_CALL_REGISTRATION_FAILED, data))
             coroutineContext.cancel()
         }
     }
@@ -106,7 +104,7 @@ open class UnifiedPushService: PushService() {
         Log.d(TAG, "onUnregistered")
         val data = mapOf(PLUGIN_ARG_INSTANCE to instance)
         CoroutineScope(dispatcher).launch {
-            calls.emit(Call(PLUGIN_CALL_UNREGISTERED, data))
+            Plugin.calls?.emit(Call(PLUGIN_CALL_UNREGISTERED, data))
             coroutineContext.cancel()
         }
     }

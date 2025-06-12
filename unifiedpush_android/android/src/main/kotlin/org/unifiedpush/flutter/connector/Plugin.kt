@@ -33,6 +33,7 @@ class Plugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     val calls = MutableSharedFlow<Call>(replay = 20)
 
     init {
+        Log.d(TAG, "Init new Plugin: $this")
         Plugin.calls = calls
     }
 
